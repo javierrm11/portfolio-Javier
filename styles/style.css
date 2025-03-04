@@ -20,6 +20,7 @@ body{
 }
 #container{
     max-width: 850px;
+    width: 100%;
     filter: drop-shadow(0px 0px 23px var(--primary-color));
     background-color: var(--hover-color);
     position: relative; /* Ensure the container is positioned relative to the viewport */
@@ -198,6 +199,72 @@ main > nav ul li a{
     font-size: 0.8rem;
 }
 
+/*caja twitter */
+.section-container{
+    margin: 0 5vw;
+}
+.article-container{
+    margin: 2rem 0 5rem 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+.article-container header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+.article-container header div{
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.article-container header div i{
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    cursor: pointer;
+}
+.article-container header #foto{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    object-fit: cover;
+}
+.article-container header h4{
+    color: var(--text-primary);
+    font-family: 'Kanit';
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+.article-container > div > p{
+    color: var(--text-primary);
+    font-family: 'Kanit';
+    font-size: 1rem;
+    font-weight: 300;
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+.article-container footer{
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+}
+.article-container footer div{
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+.article-container footer i{
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
 
 /* footer */
 #footer{
@@ -245,7 +312,27 @@ main > nav ul li a{
     main > nav ul li a {
         font-size: 1.2rem;
     }
-    
+    .article-container header div #foto {
+        width: 70px;
+        height: 70px;
+    }
+    .article-container header h4 {
+        font-size: 2rem;
+    }
+    .article-container header div i {
+        font-size: 2rem;
+    }
+    .article-container div p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+    }
+    .article-container footer i {
+        font-size: 2rem;
+    }
+    .article-container header div {
+        gap: 1rem;
+    }
+
     #footer nav ul li a {
         font-size: 2rem;
     }

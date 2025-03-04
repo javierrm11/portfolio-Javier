@@ -1,0 +1,26 @@
+
+
+#lenguajes{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 5px;
+}
+.article-container > div  img{
+    width: 100%;
+    object-fit: cover;
+}
+#frameworks, #herramientas{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+}
+
+
+@media screen and (650px <= width) {
+    .tecnologias div p{
+        font-size: 1.2rem;
+    }
+    .tecnologias div i{
+        font-size: 1.2rem;
+    }
+}
