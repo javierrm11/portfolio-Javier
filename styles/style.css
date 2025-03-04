@@ -1,0 +1,254 @@
+/* colores */
+:root{
+    --primary-color: #7B4AE2;
+    --hover-color: #06001C;
+    --secondary-color: #896BF5;
+    --text-primary: #ffff;
+    --text-secondary: #ffd700;
+    --text-terciary: #708090;
+    --text-black: #000;
+    --text-green: #2ECC71;
+}
+
+/* general */
+body{
+    margin: 0;
+    background: url(../imgs/fondo-about.png);
+    -webkit-backdrop-filter: brightness(0.5) blur(9px);
+    backdrop-filter: brightness(0.5) blur(9px);
+    justify-items: center;
+}
+#container{
+    max-width: 850px;
+    filter: drop-shadow(0px 0px 23px var(--primary-color));
+    background-color: var(--hover-color);
+    position: relative; /* Ensure the container is positioned relative to the viewport */
+}
+main{
+    padding-top: 7.5rem;
+}
+#contactame { /* cambiar */
+    color: var(--text-primary);
+    text-decoration: none;
+    font-family: 'Kanit';
+    font-weight: 500;
+    font-size: 1.2rem;
+    padding: 1vh 2vw;
+    border-radius: 10px;
+    background-color: var(--primary-color);
+    position: fixed; /* Fijar la posición respecto a la ventana del navegador */
+    bottom: 10px;    /* Ajusta la distancia desde el borde inferior */
+    right: 10px;     /* Ajusta la distancia desde el borde derecho */
+    z-index: 1000;   /* Asegura que esté por encima de otros elementos */
+    width: auto;     /* Ajusta el ancho del elemento */
+}
+
+
+/* header */
+#header{
+    background-color: var(--hover-color);
+    padding: 1vh 2vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+#header #logo{
+    flex: 1;
+}
+#logo img{
+    max-width: 6rem;
+}
+#funcionalidades{
+    flex: 1;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+#funcionalidades img{
+    max-width: 3rem;
+}
+#traducir{
+    filter: invert(1);
+}
+
+/* introducion */
+#introducion{
+    background-color: var(--secondary-color);
+    padding: 1.5rem 1.5rem;
+}
+
+/* perfil */
+#perfil{
+    position: absolute;
+    top: 4rem;
+    left: 5%;
+    display: flex;
+    gap: 2vw;
+    align-items: center;
+}
+
+#perfil img{
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    border: 5px solid var(--hover-color);
+}
+#perfil div p{
+    color: var(--text-primary);
+    background-color: var(--text-green);
+    padding: 1vh 2vw;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-family: 'Kanit';
+    font-weight: 500;
+    position: absolute;
+    width: max-content;
+    top: 0;
+    left: 143px;
+}
+
+#perfil div > div{
+    display: flex;
+    gap: 10px;
+    border-radius: 10px;
+    align-items: center;
+    background-color: var(--primary-color);
+    padding: 1vh 2vw;
+    margin-top: 2rem;
+}
+#perfil div > div a{
+    color: var(--text-primary);
+    text-decoration: none;
+    font-family: 'Kanit';
+    font-weight: 500;
+    font-size: 1.2rem;
+    border-radius: 10px;
+}
+#perfil div > div i{
+    color: var(--text-primary);
+}
+
+
+#introducion h1{
+    color: var(--text-primary);
+    font-size: 2rem;
+    font-family: 'Kanit';
+    font-weight: 500;
+    margin-bottom: 0;
+}
+#introducion h2{
+    color: var(--hover-color);
+    font-size: 1.2rem;
+    font-family: 'Kanit';
+    font-weight: 500;
+    margin-top: 1vh;
+}
+#introducion div{
+    display: flex;
+    gap: 2vw;
+}
+#introducion div a{
+    color: var(--primary-color);
+    text-decoration: none;
+    font-family: 'Kanit';
+    font-weight: 500;
+    font-size: 1.2rem;
+    padding: 1vh 2vw;
+    border-radius: 10px;
+    background-color: var(--hover-color);
+    transition: 0.5s;
+}
+#introducion div a:hover{
+    background-color: var(--primary-color);
+    color: var(--hover-color);
+}
+#introducion footer{
+    display: flex;
+    align-items: center;
+    margin-top: 1vh;
+    gap: 1rem;
+}
+#introducion footer i{
+    font-size: 1rem;
+}
+#introducion footer p{
+    font-size: 1rem;
+    color: var(--hover-color);
+    font-family: 'Kanit';
+    font-weight: 500;
+}
+/* nav */
+main > nav ul{
+    display: flex;
+    justify-content: space-evenly;
+    gap: 1vw;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+main > nav ul li{
+    padding: 2vh 2vw;
+
+}
+main > nav ul li a{
+    color: var(--text-primary);
+    text-decoration: none;
+    font-family: 'Kanit';
+    font-weight: 300;
+    font-size: 0.8rem;
+}
+
+
+/* footer */
+#footer{
+    padding: 1vh 2vw;
+    text-align: center;
+    place-items: center;
+}
+
+#footer nav ul{
+    display: flex;
+    gap: 1rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+#footer nav ul li a{
+    color: var(--text-primary);
+    text-decoration: none;
+    font-family: 'Kanit';
+    font-weight: 300;
+    font-size: 1.5rem;
+}
+#footer p{
+    color: var(--text-primary);
+    font-family: 'Kanit';
+    font-weight: 300;
+    font-size: 1rem;
+}
+
+@media screen and (650px <= width) {
+    #perfil{
+        left: calc(50% - 290px);
+    }
+    #perfil div > div {
+        margin-left: 21rem;
+    }
+    #introducion {
+        padding: 1rem 8.5rem;
+    }
+    #introducion div {
+        position: absolute;
+        top: 13rem;
+        left: calc(50% + 71px);
+    }
+    main > nav ul li a {
+        font-size: 1.2rem;
+    }
+    
+    #footer nav ul li a {
+        font-size: 2rem;
+    }
+
+    
+}
