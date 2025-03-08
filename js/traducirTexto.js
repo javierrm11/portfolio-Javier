@@ -1,30 +1,41 @@
-document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('traducir').addEventListener('click', function() {
-        // Verificar si el script ya está cargado
-        if (!document.getElementById('google_translate_script')) {
-            let script = document.createElement('script');
-            script.id = 'google_translate_script'; // Evitar múltiples cargas
-            script.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-            document.body.appendChild(script);
-        } else {
-            // Si ya está cargado, inicializa la traducción
-            googleTranslateElementInit();
-        }
+document.addEventListener("DOMContentLoaded", () => {
+    const espana = document.getElementById('espana');
+    const ingles = document.getElementById('ingles');
+
+    // Función para traducir el contenido de la página
+    const translatePage = (languageCode) => {
+        const bodyContent = document.body.innerHTML; // Obtiene todo el contenido HTML de la página
+
+        // Envía el contenido al servicio de traducción
+        fetch('https://libretranslate.de/translate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                q: bodyContent,
+                source: 'auto', // Detecta automáticamente el idioma
+                target: languageCode, // El idioma al que se va a traducir
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.translatedText) {
+                // Reemplaza todo el contenido de la página con la traducción
+                document.body.innerHTML = data.translatedText;
+            }
+        })
+        .catch(error => console.error('Error al traducir el texto:', error));
+    };
+
+    // Traducir al español
+    espana.addEventListener("click", () => {
+        console.log('Traducir a español');
+        translatePage('es'); // Traducir a español
+    });
+
+    // Traducir al inglés
+    ingles.addEventListener("click", () => {
+        translatePage('en'); // Traducir a inglés
     });
 });
-
-// Esta función se ejecuta automáticamente cuando la API se carga
-function googleTranslateElementInit() {
-    new google.translate.TranslateElement({
-        pageLanguage: 'es', // Define el idioma original de la página (por ejemplo, español 'es')
-        includedLanguages: 'en', // Solo inglés disponible
-        autoDisplay: false // No mostrar el selector
-    }, 'google_translate_element');
-
-    // Forzar la traducción al inglés
-    let translateElement = document.querySelector('.goog-te-combo');
-    if (translateElement) {
-        translateElement.value = 'en';
-        translateElement.dispatchEvent(new Event('change'));
-    }
-}

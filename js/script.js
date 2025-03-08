@@ -1,7 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById("meGusta").addEventListener("click", () => {
-        document.getElementById("meGusta").classList.remove("fa-regular");
-        document.getElementById("meGusta").classList.add("fa-solid");
-        document.getElementById("meGusta").style.color = "red";
-    });
+    let meGustas = document.querySelectorAll('.meGusta');
+    console.log("meGustas", meGustas);
+    meGustas.forEach(meGusta =>{
+        console.log(meGusta);
+        meGusta.addEventListener('click', () => {
+            meGusta.classList.toggle('meGustaActivo');
+            meGusta.classList.toggle('fa-solid');
+            meGusta.style.color = meGusta.classList.contains('meGustaActivo') ? 'red' : '';
+        });
+    })
 });

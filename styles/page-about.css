@@ -16,7 +16,49 @@
 #about-article{
     margin: 5rem 0;
 }
-
+#about form{
+    display: flex;
+    align-items: center;
+    margin: 3rem 0;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+#about form .input-container-50{
+    flex: 1 0 48%;
+}
+#about form .input-container label{
+    display: block;
+    color: var(--text-primary);
+    font-family: 'Kanit';
+    font-size: 1.2rem;
+    font-weight: 300;
+}
+#about form .input-container input, #about form .input-container textarea{
+    width: -webkit-fill-available;
+    padding: 0.5rem;
+    margin: 0.5rem 0;
+    border: 1px solid var(--text-primary);
+    border-radius: 5px;
+    color: var(--text-primary);
+    font-family: 'Kanit';
+    font-size: 1rem;
+    font-weight: 300;
+}
+#mensaje-container{
+    flex: 0 0 100%;
+}
+#about form input[type="submit"]{
+    background-color: var(--primary-color);
+    color: var(--text-primary);
+    font-family: 'Kanit';
+    font-size: 1.2rem;
+    font-weight: 300;
+    padding: 0.5rem 2rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-transform: uppercase;
+}
 
 
 @media screen and (650px <= width) {

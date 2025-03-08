@@ -1,13 +1,36 @@
 /* colores */
-:root{
-    --primary-color: #7B4AE2;
-    --hover-color: #06001C;
-    --secondary-color: #896BF5;
-    --text-primary: #ffff;
-    --text-secondary: #ffd700;
-    --text-terciary: #708090;
-    --text-black: #000;
-    --text-green: #2ECC71;
+:root {
+    color-scheme: light dark;
+}
+
+/* Modo claro (default) */
+@media (prefers-color-scheme: light) {
+    :root {
+        --primary-color: #7B4AE2;
+        --hover-color: #f5f5f5;
+        --secondary-color: #896BF5;
+        --text-primary: #000;
+        --text-secondary: #7B4AE2;
+        --text-terciary: #708090;
+        --text-black: #000;
+        --text-green: #2ECC71;
+        --bg-color: #ffffff;
+    }
+}
+
+/* Modo oscuro */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --primary-color: #7B4AE2;
+        --hover-color: #06001C;
+        --secondary-color: #896BF5;
+        --text-primary: #ffffff;
+        --text-secondary: #ffd700;
+        --text-terciary: #708090;
+        --text-black: #000;
+        --text-green: #2ECC71;
+        --bg-color: #121212;
+    }
 }
 
 /* general */
@@ -17,6 +40,7 @@ body{
     -webkit-backdrop-filter: brightness(0.5) blur(9px);
     backdrop-filter: brightness(0.5) blur(9px);
     justify-items: center;
+    timeline-scope: --sobre-mi, --trabajos, --proyectos, --habilidades;
 }
 #container{
     max-width: 850px;
@@ -48,7 +72,7 @@ main{
 
 /* header */
 #header{
-    background-color: var(--hover-color);
+    background-color: light-dark(var(--hover-color, var(--primary-color)));
     padding: 1vh 2vw;
     display: flex;
     justify-content: space-between;
@@ -69,8 +93,72 @@ main{
 #funcionalidades img{
     max-width: 3rem;
 }
-#traducir{
-    filter: invert(1);
+/* boton cambiar modo */
+#modo-toogle{
+    display: flex;
+    align-items: center;
+    border: 2px solid var(--hover-color);
+    border-radius: 999px;
+    width: 6rem;
+    height: 2.5rem;
+    background-color: var(--secondary-color);
+    transition: background-color 0.5s ease;
+}
+body.active #modo-toogle{
+    background-color: var(--primary-color);
+}
+#modo-toogle .circle{
+    width: 40%;
+    height: 80%;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: var(--text-primary);
+    
+    position: relative;
+    left: 5%; 
+    overflow: hidden;
+    transition: transform 0.5s ease;
+}
+
+#modo-toogle svg{
+    width: 2rem;
+    height: 2rem;
+    position: absolute;
+    cursor: pointer;
+    transition: transform 0.5s ease;
+}
+.moon{
+    transform: translateY(-120%);
+}
+.sun{
+    fill: var(--text-secondary);
+}
+body.active .circle {
+    transform: translateX(110%);
+    background-color: var(--hover-color) !important;
+}
+
+body.active .circle .moon {
+    transform: translateX(0);
+    fill: var(--text-primary);
+}
+
+.active .circle .sun{
+    transform: translateY(120%);
+}
+
+
+
+
+
+/* Traducir */
+#traducir img{
+    width: 2rem;
+    height: 2rem;
+    cursor: pointer;
 }
 
 /* introducion */
@@ -172,14 +260,42 @@ main{
 }
 #introducion footer i{
     font-size: 1rem;
+    color: var(--hover-color);
 }
 #introducion footer p{
     font-size: 1rem;
+    margin: 0;
     color: var(--hover-color);
     font-family: 'Kanit';
     font-weight: 500;
 }
 /* nav */
+nav {
+    container-type: scroll-state;
+    position: sticky;
+    top: 0px;
+
+    > ul{
+        transition: background-color .3s ease-in-out;
+        background-color: var(--hover-color);
+        >li a{
+            color: var(--text-primary);
+            transition: color .3s ease-in-out;
+        }
+    }
+    /* Cambia el color del nav cuando se vuelve sticky */
+    @container scroll-state(stuck: top) {
+        > ul {
+            background-color: var(--primary-color);
+            li a{
+                color: var(--text-primary);
+            }
+        }
+    }
+}
+
+
+
 main > nav ul{
     display: flex;
     justify-content: space-evenly;
@@ -190,14 +306,31 @@ main > nav ul{
 }
 main > nav ul li{
     padding: 2vh 2vw;
+    flex: 1;
 
+    text-align: center;
 }
 main > nav ul li a{
-    color: var(--text-primary);
     text-decoration: none;
     font-family: 'Kanit';
     font-weight: 300;
     font-size: 0.8rem;
+}
+@keyframes highlight {
+    25%, 50% {
+      border-block-end-color: var(--text-primary);
+    }
+}
+nav {
+    > ul li {
+        animation: highlight linear both;
+        animation-range: cover 20% exit-crossing 50%;
+        border-block-end: 3px solid transparent;
+    }
+    > ul li:nth-child(1) a { animation-timeline: --sobre-mi; }
+    > ul li:nth-child(2) a { animation-timeline: --trabajos; }
+    > ul li:nth-child(3) a { animation-timeline: --proyectos; }
+    > ul li:nth-child(4) a { animation-timeline: --habilidades; }
 }
 
 /*caja twitter */
