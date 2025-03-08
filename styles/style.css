@@ -38,12 +38,12 @@ body{
     margin: 0;
     background: url(../imgs/fondo-about.png);
     -webkit-backdrop-filter: brightness(0.5) blur(9px);
-    backdrop-filter: brightness(0.5) blur(9px);
+    backdrop-filter: brightness(0.2) blur(3rem);
     justify-items: center;
     timeline-scope: --sobre-mi, --trabajos, --proyectos, --habilidades;
 }
 #container{
-    max-width: 850px;
+    max-width: 1400px;
     min-height: 100vh;
     width: 100%;
     filter: drop-shadow(0px 0px 23px var(--primary-color));
@@ -51,7 +51,7 @@ body{
     position: relative; /* Ensure the container is positioned relative to the viewport */
 }
 main{
-    padding-top: 7.5rem;
+    padding-top: 13.5rem;
 }
 #contactame { /* cambiar */
     color: var(--text-primary);
@@ -163,13 +163,15 @@ body.active .circle .moon {
 #introducion{
     background-color: var(--secondary-color);
     padding: 1.5rem 1.5rem;
+    text-align: center;
+    place-items: center;
 }
 
 /* perfil */
 #perfil{
     position: absolute;
-    top: 4rem;
-    left: 5%;
+    top: 7rem;
+    left: calc(50% - 5rem);
     display: flex;
     gap: 2vw;
     align-items: center;
@@ -181,21 +183,19 @@ body.active .circle .moon {
     border-radius: 50%;
     border: 5px solid var(--hover-color);
 }
-#perfil div p{
+#perfil  #empleo{
     color: var(--text-primary);
     background-color: var(--text-green);
     padding: 1vh 2vw;
     border-radius: 10px;
+    margin-left: 0.6rem;
     font-size: 0.8rem;
     font-family: 'Kanit';
     font-weight: 500;
-    position: absolute;
     width: max-content;
-    top: 0;
-    left: 143px;
 }
 
-#perfil div > div{
+#perfil > #descargar{
     display: flex;
     gap: 10px;
     border-radius: 10px;
@@ -204,7 +204,7 @@ body.active .circle .moon {
     padding: 1vh 2vw;
     margin-top: 2rem;
 }
-#perfil div > div a{
+#perfil #descargar a{
     color: var(--text-primary);
     text-decoration: none;
     font-family: 'Kanit';
@@ -212,7 +212,7 @@ body.active .circle .moon {
     font-size: 1.2rem;
     border-radius: 10px;
 }
-#perfil div > div i{
+#perfil #descargar i{
     color: var(--text-primary);
 }
 
@@ -241,7 +241,7 @@ body.active .circle .moon {
     font-family: 'Kanit';
     font-weight: 500;
     font-size: 1.2rem;
-    padding: 1vh 2vw;
+    padding: 0.5rem 2rem;
     border-radius: 10px;
     background-color: var(--hover-color);
     transition: 0.5s;
@@ -250,17 +250,18 @@ body.active .circle .moon {
     background-color: var(--primary-color);
     color: var(--hover-color);
 }
-#introducion footer{
+#introducion #localizacion{
     display: flex;
     align-items: center;
     margin-top: 1vh;
     gap: 1rem;
+    margin-bottom: 1rem;
 }
-#introducion footer i{
+#introducion #localizacion i{
     font-size: 1rem;
     color: var(--hover-color);
 }
-#introducion footer p{
+#introducion #localizacion p{
     font-size: 1rem;
     margin: 0;
     color: var(--hover-color);
@@ -437,19 +438,26 @@ nav {
 }
 
 @media screen and (650px <= width) {
+    nav ul{
+        padding: 0 5vw;
+    }
     #perfil{
-        left: calc(50% - 290px);
+        top: 4rem;
+        left: calc(50% - 6rem);
+    }
+    #perfil img {
+        width: 180px;
+        height: 180px;
+    }
+    #perfil div p {
+        font-size: 1rem;
+        left: 12rem;
     }
     #perfil div > div {
-        margin-left: 21rem;
+        margin-left: 15rem;
     }
     #introducion {
-        padding: 1rem 8.5rem;
-    }
-    #introducion div {
-        position: absolute;
-        top: 13rem;
-        left: calc(50% + 71px);
+        padding: 1rem 5vw;
     }
     main > nav ul li a {
         font-size: 1.2rem;
