@@ -85,9 +85,9 @@ main{
     max-width: 6rem;
 }
 #funcionalidades{
-    flex: 1;
+    flex: 5;
     display: flex;
-    gap: 10px;
+    gap: 20px;
     justify-content: flex-end;
 }
 #funcionalidades img{
@@ -99,8 +99,8 @@ main{
     align-items: center;
     border: 2px solid var(--hover-color);
     border-radius: 999px;
-    width: 6rem;
-    height: 2.5rem;
+    width: 4rem;
+    height: 2rem;
     background-color: var(--secondary-color);
     transition: background-color 0.5s ease;
 }
@@ -108,24 +108,22 @@ body.active #modo-toogle{
     background-color: var(--primary-color);
 }
 #modo-toogle .circle{
-    width: 40%;
-    height: 80%;
+    width: 50%;
+    height: 100%;
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    background-color: var(--text-primary);
-    
+    background-color: var(--text-primary);   
     position: relative;
-    left: 5%; 
     overflow: hidden;
     transition: transform 0.5s ease;
 }
 
 #modo-toogle svg{
-    width: 2rem;
-    height: 2rem;
+    width: 1.5rem;
+    height: 1.5rem;
     position: absolute;
     cursor: pointer;
     transition: transform 0.5s ease;
@@ -137,7 +135,7 @@ body.active #modo-toogle{
     fill: var(--text-secondary);
 }
 body.active .circle {
-    transform: translateX(110%);
+    transform: translateX(102%);
     background-color: var(--hover-color) !important;
 }
 
@@ -355,21 +353,31 @@ nav {
     gap: 0.5rem;
 }
 .article-container header div i{
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     color: var(--text-primary);
     cursor: pointer;
 }
 .article-container header #foto{
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     background-color: var(--primary-color);
     object-fit: cover;
 }
+.article-container header #verificado{
+    width: 2rem;
+    height: 2rem;
+}
+.article-container header p{
+    color: var(--text-terciary);
+    font-family: 'Kanit';
+    font-size: 0.8rem;
+    margin: 0;
+}
 .article-container header h4{
     color: var(--text-primary);
     font-family: 'Kanit';
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-weight: 500;
     margin: 0;
 }
@@ -456,7 +464,10 @@ nav {
     .article-container header div i {
         font-size: 2rem;
     }
-    .article-container div p {
+    .article-container header p{
+        font-size: 1rem;
+    }
+    .article-container > div p {
         font-size: 1.2rem;
         margin-bottom: 2rem;
     }
