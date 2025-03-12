@@ -43,6 +43,7 @@
     font-family: 'Kanit';
     font-size: 1rem;
     font-weight: 300;
+    outline: none;
 }
 #mensaje-container{
     flex: 0 0 100%;
@@ -59,6 +60,19 @@
     cursor: pointer;
     text-transform: uppercase;
 }
+#about form input[type="text"]:valid, #about form input[type="email"]:valid, #about form textarea:valid{
+    border: 1px solid var(--primary-color);
+}
+
+#about form input[type="submit"]:hover{
+    background-color: var(--text-secondary);
+    color: var(--hover-color);
+}
+#about form input[type="submit"]:active{
+    background-color: var(--text-secondary);
+    color: var(--hover-color);
+}
+
 
 
 @media screen and (650px <= width) {

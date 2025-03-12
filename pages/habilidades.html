@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title data-es="Habilidades - Javier Ruiz Molero" data-en="Skills - Javier Ruiz Molero">Habilidades - Javier Ruiz Molero</title>
     <link rel="stylesheet" href="../styles/normalize.css" />
     <link rel="stylesheet" href="../styles/style.css" />
     <link rel="stylesheet" href="../styles/page-habilidades.css" />
@@ -20,18 +20,19 @@
     />
     <script src="../js/script.js"></script>
     <script src="../js/dark-mode.js"></script>
+    <script src="../js/traducirTexto.js"></script>
   </head>
   <body>
+    <a href="../index.html#about-article" id="contactame" data-es="Contactame" data-en="Contact Me">Contactame</a>
     <div id="container">
-      <a href="" id="contactame">Contactame</a>
       <header id="header">
         <div id="logo">
-          <img src="../imgs/logo.png" alt="" srcset="" />
+          <a href="../index.html"><img src="../imgs/logo.webp" alt="" srcset=""/></a>
         </div>
         <div id="funcionalidades">
           <div id="traducir">
-            <img src="../imgs/espana.png" alt="" srcset="" id="espana" />
-            <img src="../imgs/ingles.png" alt="" srcset="" id="ingles" />
+            <img src="../imgs/espana.webp" alt="" srcset="" id="espana" />
+            <img src="../imgs/ingles.webp" alt="" srcset="" id="ingles" />
           </div>
           <div id="modo-toogle">
             <div class="circle">
@@ -60,20 +61,22 @@
       <main>
         <div id="perfil">
           <div>
-            <p id="empleo">En busca de empleo</p>
-            <img src="../imgs/javier.png" alt="" srcset="" />
+            <p id="empleo" data-es="En busca de empleo" data-en="Looking for a job">En busca de empleo</p>
+            <img src="../imgs/javier.webp" alt="" srcset="" />
           </div>
-          <div id="descargar">
-            <i class="fa-solid fa-download"></i>
-            <a href="">CV</a>
-          </div>
+          <a href="../assets/Curriculum.pdf">
+            <div id="descargar">
+              <i class="fa-solid fa-download"></i>
+              <a href="./assets/Curriculum.pdf" data-es="CV" data-en="CV">CV</a>
+            </div>
+          </a>
         </div>
         <section id="introducion">
-          <h1>Javier Ruiz Molero</h1>
-          <h2>Desarrollador Web</h2>
+          <h1 data-es="Javier Ruiz Molero" data-en="Javier Ruiz Molero">Javier Ruiz Molero</h1>
+          <h2 data-es="Desarrollador Web" data-en="Web Developer">Desarrollador Web</h2>
           <div id="localizacion">
             <i class="fa-solid fa-location-dot"></i>
-            <p>Villafranca de Córdoba, España</p>
+            <p data-es="Villafranca de Córdoba, España" data-en="Villafranca de Córdoba, Spain">Villafranca de Córdoba, España</p>
           </div>
           <div>
             <a href="https://github.com/javierrm11">Github</a>
@@ -83,24 +86,16 @@
         <nav>
           <ul>
             <li>
-              <a href="../index.html#about" data-section="--sobre-mi"
-                >Sobre Mi</a
-              >
+              <a href="../index.html#about" data-section="--sobre-mi" data-es="Sobre Mi" data-en="About Me">Sobre Mi</a>
             </li>
             <li>
-              <a href="./trabajos.html#trabajos" data-section="--trabajos"
-                >Trabajos</a
-              >
+              <a href="./trabajos.html#trabajos" data-section="--trabajos" data-es="Trabajos" data-en="Works">Trabajos</a>
             </li>
             <li>
-              <a href="./proyectos.html#proyectos" data-section="--proyectos"
-                >Proyectos</a
-              >
+              <a href="./proyectos.html#proyectos" data-section="--proyectos" data-es="Proyectos" data-en="Projects">Proyectos</a>
             </li>
             <li>
-              <a href="#habilidades" data-section="--habilidades"
-                >Habilidades</a
-              >
+              <a href="#habilidades" data-section="--habilidades" data-es="Habilidades" data-en="Skills">Habilidades</a>
             </li>
           </ul>
         </nav>
@@ -109,9 +104,9 @@
             <header>
               <div>
                 <img src="../imgs/js.png" alt="" srcset="" id="foto" />
-                <h4>Desarrollo Web</h4>
+                <h4 data-es="Desarrollo Web" data-en="Web Development">Desarrollo Web</h4>
                 <img
-                  src="../imgs/verificado.png"
+                  src="../imgs/verificado.webp"
                   alt=""
                   srcset=""
                   id="verificado"
@@ -122,7 +117,7 @@
               </div>
             </header>
             <div>
-              <p>
+              <p data-es="Estos son los lenguajes de programación que he aprendido a lo largo de mi carrera educativa." data-en="These are the programming languages I have learned throughout my educational career.">
                 Estos son los lenguajes de programación que he aprendido a lo
                 largo de mi carrera educativa.
               </p>
@@ -138,7 +133,7 @@
             <footer>
               <div>
                 <i class="fa-regular fa-heart meGusta"></i>
-                <i class="fa-solid fa-retweet"></i>
+                <i class="fa-solid fa-retweet retwittear"></i>
                 <i class="fa-regular fa-comment"></i>
               </div>
               <a href="https://github.com/javierrm11"
@@ -150,9 +145,9 @@
             <header>
               <div>
                 <img src="../imgs/react.png" alt="" srcset="" id="foto" />
-                <h4>FrameWorks</h4>
+                <h4 data-es="FrameWorks" data-en="Frameworks">FrameWorks</h4>
                 <img
-                  src="../imgs/verificado.png"
+                  src="../imgs/verificado.webp"
                   alt=""
                   srcset=""
                   id="verificado"
@@ -163,7 +158,7 @@
               </div>
             </header>
             <div>
-              <p>Los frameworks que he aprendido son los siguientes.</p>
+              <p data-es="Los frameworks que he aprendido son los siguientes." data-en="The frameworks I have learned are the following.">Los frameworks que he aprendido son los siguientes.</p>
               <div id="frameworks">
                 <img src="../imgs/react.png" alt="" srcset="" />
                 <img src="../imgs/laravel.png" alt="" srcset="" />
@@ -174,7 +169,7 @@
             <footer>
               <div>
                 <i class="fa-regular fa-heart meGusta"></i>
-                <i class="fa-solid fa-retweet"></i>
+                <i class="fa-solid fa-retweet retwittear"></i>
                 <i class="fa-regular fa-comment"></i>
               </div>
               <a href="https://github.com/javierrm11"
@@ -186,9 +181,9 @@
             <header>
               <div>
                 <img src="../imgs/git.png" alt="" srcset="" id="foto" />
-                <h4>Herramientas</h4>
+                <h4 data-es="Herramientas" data-en="Tools">Herramientas</h4>
                 <img
-                  src="../imgs/verificado.png"
+                  src="../imgs/verificado.webp"
                   alt=""
                   srcset=""
                   id="verificado"
@@ -199,7 +194,7 @@
               </div>
             </header>
             <div>
-              <p>
+              <p data-es="También me he convertido en experto de estas tecnologías que nos sirve en el desarrollo." data-en="I have also become an expert in these technologies that are useful in development.">
                 También me he convertido en experto de estas tecnologías que nos
                 sirve en el desarrollo.
               </p>
@@ -211,8 +206,8 @@
             <footer>
               <div>
                 <i class="fa-regular fa-heart meGusta"></i>
-                <i class="fa-solid fa-retweet"></i>
-                <i class="fa-regular fa-comment"></i>
+                <i class="fa-solid fa-retweet retwittear"></i>
+                <i class="fa-regular fa-comment comentar"></i>
               </div>
               <a href="https://github.com/javierrm11"
                 ><i class="fa-brands fa-github"></i
@@ -230,7 +225,7 @@
               ></a>
             </li>
             <li>
-              <a href=""><i class="fa-brands fa-linkedin"></i></a>
+              <a href="https://www.linkedin.com/in/javierrm11/"><i class="fa-brands fa-linkedin"></i></a>
             </li>
             <li>
               <a href=""><i class="fa-brands fa-square-x-twitter"></i></a>
@@ -240,7 +235,7 @@
             </li>
           </ul>
         </nav>
-        <p>© 2025 Javier Ruiz Molero</p>
+        <p data-es="© 2025 Javier Ruiz Molero" data-en="© 2025 Javier Ruiz Molero">© 2025 Javier Ruiz Molero</p>
       </footer>
     </div>
   </body>

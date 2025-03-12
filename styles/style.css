@@ -1,49 +1,41 @@
 /* colores */
 :root {
-    color-scheme: light dark;
+    --primary-color: #7B4AE2;
+    --hover-color: #f5f5f5;
+    --secondary-color: #896BF5;
+    --text-primary: #000;
+    --text-secondary: #7B4AE2;
+    --text-terciary: #708090;
+    --text-black: #000;
+    --text-green: #2ECC71;
+    --bg-color: #ffffff;
 }
 
 /* Modo claro (default) */
 @media (prefers-color-scheme: light) {
-    :root {
-        --primary-color: #7B4AE2;
-        --hover-color: #f5f5f5;
-        --secondary-color: #896BF5;
-        --text-primary: #000;
-        --text-secondary: #7B4AE2;
-        --text-terciary: #708090;
-        --text-black: #000;
-        --text-green: #2ECC71;
-        --bg-color: #ffffff;
-    }
+    
 }
-
-/* Modo oscuro */
-@media (prefers-color-scheme: dark) {
-    :root {
-        --primary-color: #7B4AE2;
-        --hover-color: #06001C;
-        --secondary-color: #896BF5;
-        --text-primary: #ffffff;
-        --text-secondary: #ffd700;
-        --text-terciary: #708090;
-        --text-black: #000;
-        --text-green: #2ECC71;
-        --bg-color: #121212;
-    }
+.active{
+    --primary-color: #7B4AE2;
+    --hover-color: #06001C;
+    --secondary-color: #896BF5;
+    --text-primary: #ffffff;
+    --text-secondary: #ffd700;
+    --text-terciary: #708090;
+    --text-black: #000;
+    --text-green: #2ECC71;
+    --bg-color: #121212;
+    --bg-article: #1e1e1e;
 }
 
 /* general */
 body{
     margin: 0;
-    background: url(../imgs/fondo-about.png);
-    -webkit-backdrop-filter: brightness(0.5) blur(9px);
-    backdrop-filter: brightness(0.2) blur(3rem);
+    background-color: var(--bg-color);
     justify-items: center;
     timeline-scope: --sobre-mi, --trabajos, --proyectos, --habilidades;
 }
 #container{
-    max-width: 1400px;
     min-height: 100vh;
     width: 100%;
     filter: drop-shadow(0px 0px 23px var(--primary-color));
@@ -53,26 +45,46 @@ body{
 main{
     padding-top: 13.5rem;
 }
-#contactame { /* cambiar */
+#contactame {
     color: var(--text-primary);
     text-decoration: none;
-    font-family: 'Kanit';
+    font-family: 'Kanit', sans-serif;
     font-weight: 500;
     font-size: 1.2rem;
     padding: 1vh 2vw;
     border-radius: 10px;
     background-color: var(--primary-color);
-    position: fixed; /* Fijar la posición respecto a la ventana del navegador */
-    bottom: 10px;    /* Ajusta la distancia desde el borde inferior */
-    right: 10px;     /* Ajusta la distancia desde el borde derecho */
-    z-index: 1000;   /* Asegura que esté por encima de otros elementos */
-    width: auto;     /* Ajusta el ancho del elemento */
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    z-index: 1000;
+    width: auto;
+    box-shadow: 0 0 10px var(--primary-color);
+    animation: brillo 1.5s infinite;
 }
+#contactame:hover{
+    background-color: var(--hover-color);
+    color: var(--primary-color);
+    box-shadow: 0 0 20px var(--primary-color);
+    animation: none;
+}
+@keyframes brillo {
+    0% {
+        box-shadow: 0 0 10px var(--primary-color);
+    }
+    50% {
+        box-shadow: 0 0 20px var(--primary-color);
+    }
+    100% {
+        box-shadow: 0 0 10px var(--primary-color);
+    }
+}
+
+
 
 
 /* header */
 #header{
-    background-color: light-dark(var(--hover-color, var(--primary-color)));
     padding: 1vh 2vw;
     display: flex;
     justify-content: space-between;
@@ -81,8 +93,14 @@ main{
 #header #logo{
     flex: 1;
 }
+.active #logo img{
+    filter: invert(0);
+    transition: filter 0.5s ease;
+}
 #logo img{
     max-width: 6rem;
+    filter: invert(1);
+    transition: filter 0.5s ease;
 }
 #funcionalidades{
     flex: 5;
@@ -176,6 +194,9 @@ body.active .circle .moon {
     gap: 2vw;
     align-items: center;
 }
+#perfil > div{
+    place-items: center;
+}
 
 #perfil img{
     width: 140px;
@@ -188,7 +209,6 @@ body.active .circle .moon {
     background-color: var(--text-green);
     padding: 1vh 2vw;
     border-radius: 10px;
-    margin-left: 0.6rem;
     font-size: 0.8rem;
     font-family: 'Kanit';
     font-weight: 500;
@@ -298,7 +318,6 @@ nav {
 main > nav ul{
     display: flex;
     justify-content: space-evenly;
-    gap: 1vw;
     list-style: none;
     padding: 0;
     margin: 0;
@@ -306,8 +325,12 @@ main > nav ul{
 main > nav ul li{
     padding: 2vh 2vw;
     flex: 1;
-
+    cursor: pointer;
     text-align: center;
+    transition: background-color 0.5s ease;
+}
+main > nav ul li:hover{
+    background-color: var(--secondary-color);
 }
 main > nav ul li a{
     text-decoration: none;
@@ -332,16 +355,21 @@ nav {
     > ul li:nth-child(4) a { animation-timeline: --habilidades; }
 }
 
+
 /*caja twitter */
 .section-container{
     margin: 0 5vw;
+    padding: 4rem 0 0 0;
 }
 .article-container{
-    margin: 2rem 0 5rem 0;
+    padding: 1rem;
+    margin: 0 0 5rem 0;
     display: grid;
     grid-template-columns: 1fr;
     gap: 1rem;
+    border-radius: 10px;
 }
+
 .article-container header{
     display: flex;
     align-items: center;
@@ -401,11 +429,25 @@ nav {
     display: flex;
     gap: 1rem;
     align-items: center;
+    flex: 1;
 }
 .article-container footer i{
     font-size: 1.5rem;
     color: var(--text-primary);
     cursor: pointer;
+}
+
+.article-container footer i:hover{
+    color: var(--text-secondary);
+}
+.article-container footer .meGusta:hover{
+    color: red;
+}
+.article-container footer .retwittear:hover{
+    color: green;
+}
+.article-container footer .comentar:hover{
+    color: blue;
 }
 
 
@@ -429,6 +471,9 @@ nav {
     font-family: 'Kanit';
     font-weight: 300;
     font-size: 1.5rem;
+}
+#footer nav ul li a:hover{
+    color: var(--primary-color);
 }
 #footer p{
     color: var(--text-primary);

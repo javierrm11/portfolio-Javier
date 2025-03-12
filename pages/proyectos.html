@@ -3,10 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title
+      data-es="Proyectos - Javier Ruiz Molero"
+      data-en="Projects - Javier Ruiz Molero"
+    >
+      Proyectos - Javier Ruiz Molero
+    </title>
     <link rel="stylesheet" href="../styles/normalize.css" />
     <link rel="stylesheet" href="../styles/style.css" />
-    <link rel="stylesheet" href="../styles/page-proyectos.css	" />
+    <link rel="stylesheet" href="../styles/page-proyectos.css" />
 
     <script
       src="https://kit.fontawesome.com/5952267027.js"
@@ -20,18 +25,27 @@
     />
     <script src="../js/script.js"></script>
     <script src="../js/dark-mode.js"></script>
+    <script src="../js/traducirTexto.js"></script>
   </head>
   <body>
+    <a
+      href="../index.html#about-article"
+      id="contactame"
+      data-es="Contactame"
+      data-en="Contact Me"
+      >Contactame</a
+    >
     <div id="container">
-      <a href="" id="contactame">Contactame</a>
       <header id="header">
         <div id="logo">
-          <img src="../imgs/logo.png" alt="" srcset="" />
+          <a href="../index.html"
+            ><img src="../imgs/logo.webp" alt="" srcset=""
+          /></a>
         </div>
         <div id="funcionalidades">
           <div id="traducir">
-            <img src="../imgs/espana.png" alt="" srcset="" id="espana" />
-            <img src="../imgs/ingles.png" alt="" srcset="" id="ingles" />
+            <img src="../imgs/espana.webp" alt="" srcset="" id="espana" />
+            <img src="../imgs/ingles.webp" alt="" srcset="" id="ingles" />
           </div>
           <div id="modo-toogle">
             <div class="circle">
@@ -60,20 +74,37 @@
       <main>
         <div id="perfil">
           <div>
-            <p id="empleo">En busca de empleo</p>
-            <img src="../imgs/javier.png" alt="" srcset="" />
+            <p
+              id="empleo"
+              data-es="En busca de empleo"
+              data-en="Looking for a job"
+            >
+              En busca de empleo
+            </p>
+            <img src="../imgs/javier.webp" alt="" srcset="" />
           </div>
-          <div id="descargar">
-            <i class="fa-solid fa-download"></i>
-            <a href="">CV</a>
-          </div>
+          <a href="../assets/Curriculum.pdf">
+            <div id="descargar">
+              <i class="fa-solid fa-download"></i>
+              <a href="./assets/Curriculum.pdf" data-es="CV" data-en="CV">CV</a>
+            </div>
+          </a>
         </div>
         <section id="introducion">
-          <h1>Javier Ruiz Molero</h1>
-          <h2>Desarrollador Web</h2>
+          <h1 data-es="Javier Ruiz Molero" data-en="Javier Ruiz Molero">
+            Javier Ruiz Molero
+          </h1>
+          <h2 data-es="Desarrollador Web" data-en="Web Developer">
+            Desarrollador Web
+          </h2>
           <div id="localizacion">
             <i class="fa-solid fa-location-dot"></i>
-            <p>Villafranca de Córdoba, España</p>
+            <p
+              data-es="Villafranca de Córdoba, España"
+              data-en="Villafranca de Córdoba, Spain"
+            >
+              Villafranca de Córdoba, España
+            </p>
           </div>
           <div>
             <a href="https://github.com/javierrm11">Github</a>
@@ -83,22 +114,38 @@
         <nav>
           <ul>
             <li>
-              <a href="../index.html#about" data-section="--sobre-mi"
+              <a
+                href="../index.html#about"
+                data-section="--sobre-mi"
+                data-es="Sobre Mi"
+                data-en="About Me"
                 >Sobre Mi</a
               >
             </li>
             <li>
-              <a href="./trabajos.html#trabajos" data-section="--trabajos"
+              <a
+                href="./trabajos.html#trabajos"
+                data-section="--trabajos"
+                data-es="Trabajos"
+                data-en="Works"
                 >Trabajos</a
               >
             </li>
             <li>
-              <a href="#proyectos" data-section="--proyectos">Proyectos</a>
+              <a
+                href="#proyectos"
+                data-section="--proyectos"
+                data-es="Proyectos"
+                data-en="Projects"
+                >Proyectos</a
+              >
             </li>
             <li>
               <a
                 href="./habilidades.html#habilidades"
                 data-section="--habilidades"
+                data-es="Habilidades"
+                data-en="Skills"
                 >Habilidades</a
               >
             </li>
@@ -108,15 +155,17 @@
           <article class="article-container">
             <header>
               <div>
-                <img src="../imgs/mvc.png" alt="" srcset="" id="foto" />
-                <h4>MVC Portfolios</h4>
+                <img src="../imgs/mvc.webp" alt="" srcset="" id="foto" />
+                <h4 data-es="MVC Portfolios" data-en="MVC Portfolios">
+                  MVC Portfolios
+                </h4>
                 <img
-                  src="../imgs/verificado.png"
+                  src="../imgs/verificado.webp"
                   alt=""
                   srcset=""
                   id="verificado"
                 />
-                <p>7 feb 2025</p>
+                <p data-es="7 feb 2025" data-en="7 Feb 2025">7 feb 2025</p>
               </div>
               <div>
                 <i class="fa-solid fa-ellipsis-h"></i>
@@ -125,32 +174,35 @@
             <section class="tecnologias">
               <div>
                 <i class="fa-brands fa-html5"></i>
-                <p>HTML</p>
+                <p data-es="HTML" data-en="HTML">HTML</p>
               </div>
               <div>
                 <i class="fa-brands fa-css3"></i>
-                <p>CSS</p>
+                <p data-es="CSS" data-en="CSS">CSS</p>
               </div>
               <div>
                 <i class="fa-brands fa-php"></i>
-                <p>PHP</p>
+                <p data-es="PHP" data-en="PHP">PHP</p>
               </div>
             </section>
             <div>
-              <p>
+              <p
+                data-es="Aplicación web hecha con MVC (Modelo Vista Controlador) con PHP. La aplicación costa de usuarios que pueden manejar sus portfolios."
+                data-en="Web application made with MVC (Model View Controller) with PHP. The application consists of users who can manage their portfolios."
+              >
                 Aplicación web hecha con MVC (Modelo Vista Controlador) con PHP.
                 La aplicación costa de usuarios que pueden manejar sus
                 portfolios.
               </p>
-              <img src="../imgs/mvc.png" alt="" srcset="" />
+              <img src="../imgs/mvc.webp" alt="" srcset="" />
             </div>
             <footer>
               <div>
                 <i class="fa-regular fa-heart meGusta"></i>
-                <i class="fa-solid fa-retweet"></i>
-                <i class="fa-regular fa-comment"></i>
+                <i class="fa-solid fa-retweet retwittear"></i>
+                <i class="fa-regular fa-comment comentar"></i>
               </div>
-              <a href="https://github.com/javierrm11"
+              <a href="https://github.com/javierrm11/proyect-MVC-Portfolio"
                 ><i class="fa-brands fa-github"></i
               ></a>
             </footer>
@@ -158,15 +210,17 @@
           <article class="article-container">
             <header>
               <div>
-                <img src="../imgs/1rm.png" alt="" srcset="" id="foto" />
-                <h4>1RM Calculator</h4>
+                <img src="../imgs/1rm.webp" alt="" srcset="" id="foto" />
+                <h4 data-es="1RM Calculator" data-en="1RM Calculator">
+                  1RM Calculator
+                </h4>
                 <img
-                  src="../imgs/verificado.png"
+                  src="../imgs/verificado.webp"
                   alt=""
                   srcset=""
                   id="verificado"
                 />
-                <p>15 feb 2025</p>
+                <p data-es="15 feb 2025" data-en="15 Feb 2025">15 feb 2025</p>
               </div>
               <div>
                 <i class="fa-solid fa-ellipsis-h"></i>
@@ -175,15 +229,18 @@
             <section class="tecnologias">
               <div>
                 <i class="fa-brands fa-react"></i>
-                <p>React</p>
+                <p data-es="React" data-en="React">React</p>
               </div>
               <div>
                 <i class="fa-brands fa-css3"></i>
-                <p>Tailwind</p>
+                <p data-es="Tailwind" data-en="Tailwind">Tailwind</p>
               </div>
             </section>
             <div>
-              <p>
+              <p
+                data-es="Aplicación para calcultar tu repetición máxima en el gimansio poniendo las repeticiones y el peso que levantas. Hecha con React y Tailwind."
+                data-en="Application to calculate your maximum repetition in the gym by entering the repetitions and the weight you lift. Made with React and Tailwind."
+              >
                 Aplicación para calcultar tu repetición máxima en el gimansio
                 poniendo las repeticiones y el peso que levantas. Hecha con
                 React y Tailwind.
@@ -193,10 +250,13 @@
             <footer>
               <div>
                 <i class="fa-regular fa-heart meGusta"></i>
-                <i class="fa-solid fa-retweet"></i>
-                <i class="fa-regular fa-comment"></i>
+                <i class="fa-solid fa-retweet retwittear"></i>
+                <i class="fa-regular fa-comment comentar"></i>
               </div>
-              <a href="https://github.com/javierrm11"
+              <a href="https://1-rm-calculator-sand.vercel.app/" id="enlace"
+                ><i class="fa-solid fa-link"></i
+              ></a>
+              <a href="https://github.com/javierrm11/1RM-calculator"
                 ><i class="fa-brands fa-github"></i
               ></a>
             </footer>
@@ -212,7 +272,9 @@
               ></a>
             </li>
             <li>
-              <a href=""><i class="fa-brands fa-linkedin"></i></a>
+              <a href="https://www.linkedin.com/in/javierrm11/"
+                ><i class="fa-brands fa-linkedin"></i
+              ></a>
             </li>
             <li>
               <a href=""><i class="fa-brands fa-square-x-twitter"></i></a>
@@ -222,7 +284,12 @@
             </li>
           </ul>
         </nav>
-        <p>© 2025 Javier Ruiz Molero</p>
+        <p
+          data-es="© 2025 Javier Ruiz Molero"
+          data-en="© 2025 Javier Ruiz Molero"
+        >
+          © 2025 Javier Ruiz Molero
+        </p>
       </footer>
     </div>
   </body>
