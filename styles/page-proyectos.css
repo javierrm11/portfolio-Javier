@@ -1,3 +1,10 @@
+/*fuente*/
+@font-face {
+    font-family: 'Kanit';
+    src: url('../assets/fonts/Kanit/Kanit-Regular.ttf') format('truetype'); 
+    font-style: normal;
+}
+
 .article-container > div > img{
     width: 100%;
     max-height: 60vh;

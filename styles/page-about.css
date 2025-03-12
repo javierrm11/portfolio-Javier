@@ -1,3 +1,9 @@
+/*fuente*/
+@font-face {
+    font-family: 'Kanit';
+    src: url('../assets/fonts/Kanit/Kanit-Regular.ttf') format('truetype'); 
+    font-style: normal;
+}
 
 .section-container h3{
     color: var(--text-primary);

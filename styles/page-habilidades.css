@@ -1,4 +1,9 @@
-
+/*fuente*/
+@font-face {
+    font-family: 'Kanit';
+    src: url('../assets/fonts/Kanit/Kanit-Regular.ttf') format('truetype'); 
+    font-style: normal;
+}
 
 #lenguajes{
     display: grid;
@@ -7,6 +12,7 @@
 }
 .article-container > div  img{
     width: 100%;
+    height: -webkit-fill-available;
     max-height: 60vh;
     object-position: top;
     object-fit: cover;
