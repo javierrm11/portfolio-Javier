@@ -223,6 +223,10 @@ body.active .circle .moon {
     background-color: var(--primary-color);
     padding: 1vh 2vw;
     margin-top: 2rem;
+    cursor: pointer;
+}
+#perfil #descargar:hover{
+    background-color: var(--secondary-color);
 }
 #perfil #descargar a{
     color: var(--text-primary);
@@ -301,6 +305,11 @@ nav {
             color: var(--text-primary);
             transition: color .3s ease-in-out;
         }
+        >li a.active {
+            border-bottom: 3px solid var(--primary-color);
+            font-weight: bold;
+            color: var(--primary-color);
+        }
     }
     /* Cambia el color del nav cuando se vuelve sticky */
     @container scroll-state(stuck: top) {
@@ -308,6 +317,11 @@ nav {
             background-color: var(--primary-color);
             li a{
                 color: var(--text-primary);
+            }
+            li a.active{
+                color: var(--hover-color);
+                border-bottom: 3px solid var(--hover-color);
+
             }
         }
     }
@@ -390,7 +404,6 @@ nav {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: var(--primary-color);
     object-fit: cover;
 }
 .article-container header #verificado{
