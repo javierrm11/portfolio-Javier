@@ -12,15 +12,20 @@
 }
 .article-container > div  img{
     width: 100%;
-    height: -webkit-fill-available;
+    height: 30vh;
     max-height: 60vh;
-    object-position: top;
+    object-position: center;
     object-fit: cover;
 }
 #frameworks, #herramientas{
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 5px;
+}
+#git{
+    align-self: center;
+    object-position: center;
+    object-fit: contain;
 }
 #docker{
     width: 100%;
