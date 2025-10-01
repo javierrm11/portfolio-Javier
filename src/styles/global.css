@@ -1,0 +1,18 @@
+:root {
+    --primary-bg: #0f0f23;
+    --secondary-bg: #1a1a2e;
+    --accent-color: #7c3aed;
+    --highlight-color: #06b6d4;
+    --text-color: #e2e8f0;
+    --gradient-1: linear-gradient(135deg, #7c3aed, #06b6d4);
+    --gradient-2: linear-gradient(135deg, #f59e0b, #ef4444);
+    --neon-glow: 0 0 30px rgba(124, 58, 237, 0.4);
+}
+
+body{
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: var(--primary-bg);
+    color: var(--text-color);
+    overflow-x: hidden;
+}

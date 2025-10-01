@@ -1,0 +1,47 @@
+/* experience */
+#experiencia {
+  min-height: 100dvh;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+}
+#experiencia h2 {
+  box-sizing: border-box;
+  flex: 0 0 100%;
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: var(--highlight-color);
+  padding: 1rem 1rem 0 1rem;
+}
+#experiencia article {
+  box-sizing: border-box;
+  flex: 0 0 100%;
+  padding: 1rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  justify-content: space-between;
+}
+#experiencia article img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  object-fit: cover;
+}
+#experiencia article h3 {
+  font-size: 1.5rem;
+  margin: 0.5rem 0;
+  color: var(--text-color);
+}
+#experiencia article span {
+  font-size: 1.2rem;
+  margin: 0.5rem 0;
+  color: var(--highlight-color);
+}
+#experiencia article p{
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--text-color);
+  flex-grow: 1;
+}

@@ -1,16 +1,38 @@
 ---
-
+import Header from '../components/Header.astro';
+import Main from '../components/Main.astro';
+import Footer from '../components/Footer.astro';
 ---
 
-<html lang="en">
+<html lang="es">
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
+		<title>Javier Ruiz Molero</title>
+		<meta name="description" content="Portfolio de Javier Ruiz Molero, desarrollador web especializado en crear sitios con código limpio, buenas prácticas y rendimiento óptimo.">
+		<meta name="keywords" content="Javier Ruiz Molero, desarrollador web, portfolio, proyectos, habilidades, trabajos, desarrollo web, front-end, back-end, código limpio, mejores prácticas, rendimiento web">
+		<meta name="author" content="Javier Ruiz Molero">
+		<meta property="og:title" content="Portfolio Javier Ruiz Molero">
+		<meta property="og:description" content="Portfolio de Javier Ruiz Molero, desarrollador web que da vida a las ideas con código limpio y buenas prácticas.">
+		<meta property="og:image" content="./imgs/javier.webp">
+		<meta property="og:type" content="website">
+		<meta property="og:url" content="https://javierm.dev">
+		<meta property="og:site_name" content="Javier Ruiz Molero">
+		<script src="/src/scripts/menu.js" type="module" defer></script>
+		<link rel="stylesheet" href="/src/styles/header.css" />
+		<link rel="stylesheet" href="/src/styles/main.css" />
+		<link rel="stylesheet" href="/src/styles/global.css" />
+		<link rel="stylesheet" href="/src/styles/about.css" />
+		<link rel="stylesheet" href="/src/styles/experiencia.css" />
+		<link rel="stylesheet" href="/src/styles/proyectos.css" />
+		<link rel="stylesheet" href="/src/styles/skills.css" />
+
 	</head>
 	<body>
-		<h1>Astro</h1>
+		<Header />
+		<Main />
+		<Footer/>
 	</body>
 </html>

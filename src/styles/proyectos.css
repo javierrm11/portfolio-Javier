@@ -1,0 +1,56 @@
+/* proyectos */
+#proyectos{
+    min-height: 100dvh;
+}
+#proyectos h2{
+    font-size: 3rem;
+    text-align: center;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+    padding: 1rem;
+}
+#proyectos section{
+    display: flex;
+    flex-direction: column;
+}
+#proyectos section article{
+    background-color: var(--secondary-bg);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    justify-content: space-between;
+}
+#proyectos section article h3{
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+}
+#proyectos section article p{
+    font-size: 1.2rem;
+    line-height: 1.5;
+    color: var(--highlight-color);
+    margin-bottom: 0.5rem;
+}
+#proyectos section article a{
+    color: var(--accent-color);
+    text-decoration: none;
+}
+
+@media (min-width: 768px) {
+    /* proyectos */
+    #proyectos section{
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding: 0 1rem 1rem 1rem;
+    }
+    #proyectos section article{
+        flex: 1 1 calc(50% - 3rem);
+    }
+}
+@media (min-width: 1200px) {
+    /* proyectos */
+    #proyectos section article{
+        flex: 1 1 calc(33.33% - 3rem);
+    }
+}

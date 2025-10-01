@@ -1,0 +1,32 @@
+---
+// About.astro
+
+---
+<section id="about-me">
+    <article>
+        <h2>Sobre mí</h2>
+        <p>¡Hola! Tengo 20 años, soy desarrollador web con pasión por el diseño futurista 
+        y la creación de experiencias digitales innovadoras. Me encanta trabajar con 
+        tecnologías modernas y transformar ideas en proyectos funcionales y atractivos.</p>
+    </article>
+    <img src="/javier.webp">
+</section>
+
+
+<script>
+    import { gsap } from "gsap";
+    import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const tl = gsap.timeline({
+        scrollTrigger: {
+        trigger: "#about-me",
+        start: "#about-me top",
+        end: "#about-me bottom",
+        scrub: true
+        }
+
+    });
+
+</script>
