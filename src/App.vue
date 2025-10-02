@@ -1,5 +1,5 @@
 <template>
-    <Index />
+    <Index client:load/>
 </template>
 <script>
 import Index from './pages/index.vue';
