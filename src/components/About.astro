@@ -3,30 +3,41 @@
 
 ---
 <section id="about-me">
-    <article>
-        <h2>Sobre mí</h2>
-        <p>¡Hola! Tengo 20 años, soy desarrollador web con pasión por el diseño futurista 
-        y la creación de experiencias digitales innovadoras. Me encanta trabajar con 
-        tecnologías modernas y transformar ideas en proyectos funcionales y atractivos.</p>
-    </article>
-    <img src="/javier.webp">
+    <div class="about-container">
+        <article class="about-content">
+            <div class="title-wrapper">
+                <h2>Sobre mí</h2>
+                <div class="title-decoration"></div>
+            </div>
+            <p class="intro-text">
+                <span class="highlight">¡Hola!</span> Tengo 20 años, soy <span class="accent-text">desarrollador web</span> con pasión por el diseño futurista 
+                y la creación de experiencias digitales innovadoras.
+            </p>
+            <p class="description-text">
+                Me encanta trabajar con tecnologías modernas y transformar ideas en proyectos 
+                funcionales y atractivos. Cada línea de código es una oportunidad para crear 
+                algo extraordinario.
+            </p>
+            <div class="tech-stack">
+                <span class="tech-pill">Comunicacion</span>
+                <span class="tech-pill">Trabajo en equipo</span>
+                <span class="tech-pill">Creatividad</span>
+                <span class="tech-pill">Resolución de problemas</span>
+                <span class="tech-pill">Adaptabilidad</span>
+            </div>
+        </article>
+        
+        <div class="image-container">
+            <div class="image-wrapper">
+                <img src="/javier.webp" alt="Javier Ruiz Molero" />
+                <div class="image-glow"></div>
+                <div class="floating-elements">
+                    <div class="floating-element element-1"></div>
+                    <div class="floating-element element-2"></div>
+                    <div class="floating-element element-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 
-
-<script>
-    import { gsap } from "gsap";
-    import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-    gsap.registerPlugin(ScrollTrigger);
-
-    const tl = gsap.timeline({
-        scrollTrigger: {
-        trigger: "#about-me",
-        start: "#about-me top",
-        end: "#about-me bottom",
-        scrub: true
-        }
-
-    });
-
-</script>

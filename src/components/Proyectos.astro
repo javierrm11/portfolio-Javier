@@ -2,22 +2,112 @@
 // Proyectos.astro
 ---
 <article id="proyectos">
-    <h2>Proyectos</h2>
-    <section>
-        <article class="project">
-            <h3>MoleroFit</h3>
-            <p>Aplicación que conecta usuarios para compartir rutinas, seguir usuarios y poder ejecutar rutinas y muchos más</p>
-            <a href="https://molerofit.es" target="_blank" rel="noopener noreferrer">Ver proyecto</a>
+    <div class="projects-header">
+        <h2>Proyectos</h2>
+        <div class="header-decoration"></div>
+        <p class="projects-subtitle">Explora mis trabajos más recientes y destacados</p>
+    </div>
+    
+    <section class="projects-grid">
+        <article class="project-card">
+            <div class="project-image">
+                <div class="image-overlay"></div>
+                <img src="/molerofit.png" alt="MoleroFit App" />
+                <div class="project-links">
+                    <a href="https://molerofit.es" target="_blank" rel="noopener noreferrer" class="project-link">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                            <polyline points="15 3 21 3 21 9"></polyline>
+                            <line x1="10" y1="14" x2="21" y2="3"></line>
+                        </svg>
+                        Ver Live
+                    </a>
+                </div>
+            </div>
+            <div class="project-content">
+                <div class="project-header">
+                    <h3>MoleroFit</h3>
+                    <div class="project-badge">Full Stack</div>
+                </div>
+                <p class="project-description">
+                    Aplicación que conecta usuarios para compartir rutinas, seguir usuarios y poder ejecutar rutinas y muchos más
+                </p>
+                <div class="project-tech">
+                    <span class="tech-tag">Astro</span>
+                    <span class="tech-tag">Vue</span>
+                    <span class="tech-tag">Node.js</span>
+                    <span class="tech-tag">Express</span>
+                    <span class="tech-tag">MySql</span>
+                </div>
+            </div>
+            <div class="project-glow"></div>
         </article>
-        <article class="project">
-            <h3>ApiVuelos</h3>
-            <p>Aplicacion sobre vuelos en tiempo real con estadisticas y mapa de localización</p>
-            <a href="https://apivuelos.com" target="_blank" rel="noopener noreferrer">Ver proyecto</a>
+
+        <article class="project-card">
+            <div class="project-image">
+                <div class="image-overlay"></div>
+                <img src="/apivuelos.png" alt="ApiVuelos" />
+                <div class="project-links">
+                    <a href="https://apivuelos.es" target="_blank" rel="noopener noreferrer" class="project-link">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                            <polyline points="15 3 21 3 21 9"></polyline>
+                            <line x1="10" y1="14" x2="21" y2="3"></line>
+                        </svg>
+                        Ver Live
+                    </a>
+                </div>
+            </div>
+            <div class="project-content">
+                <div class="project-header">
+                    <h3>ApiVuelos</h3>
+                    <div class="project-badge">API</div>
+                </div>
+                <p class="project-description">
+                    Aplicación sobre vuelos en tiempo real con estadísticas y mapa de localización
+                </p>
+                <div class="project-tech">
+                    <span class="tech-tag">Astro</span>
+                    <span class="tech-tag">JavaScript</span>
+                    <span class="tech-tag">API REST</span>
+                    <span class="tech-tag">Leaflet</span>
+                    <span class="tech-tag">Chart.js</span>
+                </div>
+            </div>
+            <div class="project-glow"></div>
         </article>
-        <article class="project">
-            <h3>MVC Portfolio</h3>
-            <p>Aplicación que conecta usuarios para compartir tus portfolio con los demas</p>
-            <a href="https://onlinestore.com" target="_blank" rel="noopener noreferrer">Ver proyecto</a>
+
+        <article class="project-card">
+            <div class="project-image">
+                <div class="image-overlay"></div>
+                <img src="/mvc.webp" alt="MVC Portfolio" />
+                <div class="project-links">
+                    <a href="https://github.com/javierrm11/proyect-MVC-Portfolio" target="_blank" rel="noopener noreferrer" class="project-link">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                            <polyline points="15 3 21 3 21 9"></polyline>
+                            <line x1="10" y1="14" x2="21" y2="3"></line>
+                        </svg>
+                        Ver Live
+                    </a>
+                </div>
+            </div>
+            <div class="project-content">
+                <div class="project-header">
+                    <h3>MVC Portfolio</h3>
+                    <div class="project-badge">Web App</div>
+                </div>
+                <p class="project-description">
+                    Aplicación que conecta usuarios para compartir tus portfolio con los demás
+                </p>
+                <div class="project-tech">
+                    <span class="tech-tag">PHP</span>
+                    <span class="tech-tag">MySQL</span>
+                    <span class="tech-tag">MVC</span>
+                    <span class="tech-tag">Bootstrap</span>
+                </div>
+            </div>
+            <div class="project-glow"></div>
         </article>
     </section>
 </article>

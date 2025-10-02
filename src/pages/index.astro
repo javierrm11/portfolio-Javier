@@ -28,11 +28,201 @@ import Footer from '../components/Footer.astro';
 		<link rel="stylesheet" href="/src/styles/experiencia.css" />
 		<link rel="stylesheet" href="/src/styles/proyectos.css" />
 		<link rel="stylesheet" href="/src/styles/skills.css" />
+		<link rel="stylesheet" href="/src/styles/contacto.css" />
+		<link rel="stylesheet" href="/src/styles/footer.css" />
+		<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Exo+2:wght@400;600&display=swap" rel="stylesheet">
 
 	</head>
 	<body>
+		<div class="animated-background"></div>
+    <div class="stars" id="stars-container"></div>
+    <div class="nebula nebula-1"></div>
+    <div class="nebula nebula-2"></div>
+    <div class="nebula nebula-3"></div>
+    <div class="connection-lines" id="lines-container"></div>
+    <div class="grid-overlay"></div>
+    <div class="light-pulse pulse-1"></div>
+    <div class="light-pulse pulse-2"></div>
+    <div class="light-pulse pulse-3"></div>
+    <canvas id="particles-canvas"></canvas>
 		<Header />
 		<Main />
 		<Footer/>
 	</body>
 </html>
+<script>
+	// Crear estrellas dinámicas
+	function createStars() {
+		const starsContainer = document.getElementById('stars-container');
+		const starCount = 150;
+
+		for (let i = 0; i < starCount; i++) {
+			const star = document.createElement('div');
+			star.className = 'star';
+			
+			// Posición aleatoria
+			const left = Math.random() * 100;
+			const top = Math.random() * 100;
+			
+			// Tamaño aleatorio
+			const size = Math.random() * 2 + 1;
+			
+			// Duración y delay aleatorios
+			const duration = Math.random() * 5 + 3;
+			const delay = Math.random() * 5;
+			
+			star.style.cssText = `
+				left: ${left}%;
+				top: ${top}%;
+				width: ${size}px;
+				height: ${size}px;
+				--duration: ${duration}s;
+				--delay: ${delay}s;
+			`;
+			
+			starsContainer.appendChild(star);
+		}
+	}
+
+	// Crear líneas de conexión
+	function createConnectionLines() {
+		const linesContainer = document.getElementById('lines-container');
+		const lineCount = 20;
+
+		for (let i = 0; i < lineCount; i++) {
+			const line = document.createElement('div');
+			line.className = 'line';
+			
+			// Posición vertical aleatoria
+			const top = Math.random() * 100;
+			
+			// Duración y delay aleatorios
+			const duration = Math.random() * 20 + 10;
+			const delay = Math.random() * 15;
+			
+			line.style.cssText = `
+				top: ${top}%;
+				--line-duration: ${duration}s;
+				--line-delay: ${delay}s;
+			`;
+			
+			linesContainer.appendChild(line);
+		}
+	}
+
+	// Sistema de partículas con Canvas
+	function initParticles() {
+		const canvas = document.getElementById('particles-canvas');
+		const ctx = canvas.getContext('2d');
+		
+		// Ajustar tamaño del canvas
+		function resizeCanvas() {
+			canvas.width = window.innerWidth;
+			canvas.height = window.innerHeight;
+		}
+		
+		resizeCanvas();
+		window.addEventListener('resize', resizeCanvas);
+
+		// Configuración de partículas
+		const particles = [];
+		const particleCount = 80;
+
+		class Particle {
+			constructor() {
+				this.reset();
+			}
+			
+			reset() {
+				this.x = Math.random() * canvas.width;
+				this.y = Math.random() * canvas.height;
+				this.size = Math.random() * 2 + 0.5;
+				this.speedX = Math.random() * 0.5 - 0.25;
+				this.speedY = Math.random() * 0.5 - 0.25;
+				this.color = `rgba(124, 58, 237, ${Math.random() * 0.3 + 0.1})`;
+				this.alpha = Math.random() * 0.5 + 0.2;
+			}
+			
+			update() {
+				this.x += this.speedX;
+				this.y += this.speedY;
+				
+				// Rebotar en los bordes
+				if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+				if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+				
+				// Fade in/out
+				this.alpha += Math.random() * 0.02 - 0.01;
+				this.alpha = Math.max(0.1, Math.min(0.6, this.alpha));
+			}
+			
+			draw() {
+				ctx.save();
+				ctx.globalAlpha = this.alpha;
+				ctx.fillStyle = this.color;
+				ctx.beginPath();
+				ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+				ctx.fill();
+				ctx.restore();
+			}
+		}
+
+		// Crear partículas
+		for (let i = 0; i < particleCount; i++) {
+			particles.push(new Particle());
+		}
+
+		// Animación
+		function animate() {
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			
+			// Dibujar conexiones
+			ctx.strokeStyle = 'rgba(124, 58, 237, 0.1)';
+			ctx.lineWidth = 0.5;
+			
+			for (let i = 0; i < particles.length; i++) {
+				for (let j = i + 1; j < particles.length; j++) {
+					const dx = particles[i].x - particles[j].x;
+					const dy = particles[i].y - particles[j].y;
+					const distance = Math.sqrt(dx * dx + dy * dy);
+					
+					if (distance < 100) {
+						ctx.beginPath();
+						ctx.moveTo(particles[i].x, particles[i].y);
+						ctx.lineTo(particles[j].x, particles[j].y);
+						ctx.stroke();
+					}
+				}
+			}
+			
+			// Actualizar y dibujar partículas
+			particles.forEach(particle => {
+				particle.update();
+				particle.draw();
+			});
+			
+			requestAnimationFrame(animate);
+		}
+		
+		animate();
+	}
+
+	// Inicializar todos los efectos cuando cargue la página
+	document.addEventListener('DOMContentLoaded', function() {
+		createStars();
+		createConnectionLines();
+		initParticles();
+		
+		// Efecto de parallax para las nebulosas
+		window.addEventListener('scroll', function() {
+			const scrolled = window.pageYOffset;
+			const nebula1 = document.querySelector('.nebula-1');
+			const nebula2 = document.querySelector('.nebula-2');
+			const nebula3 = document.querySelector('.nebula-3');
+			
+			nebula1.style.transform = `translate(${scrolled * 0.02}px, ${scrolled * 0.03}px)`;
+			nebula2.style.transform = `translate(${scrolled * -0.01}px, ${scrolled * 0.02}px)`;
+			nebula3.style.transform = `translate(${scrolled * 0.015}px, ${scrolled * -0.01}px)`;
+		});
+	});
+</script>
