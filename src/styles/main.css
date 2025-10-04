@@ -47,9 +47,9 @@ main{
     text-decoration: none;
     color: var(--text-color);
 }
-#curriculum{
-    position: absolute;
-    bottom: 10rem;
+#curriculum {
+    position: fixed; 
+    bottom: 5rem;
     right: 50%;
     transform: translateX(50%);
 }
@@ -77,6 +77,9 @@ main{
     #about{
         flex-direction: row;
         gap: 2rem;
+    }
+    #curriculum {
+        bottom: 10rem;
     }
     #about #avatar{
         width: 200px;

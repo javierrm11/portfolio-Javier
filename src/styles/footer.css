@@ -50,7 +50,7 @@
 }
 
 .footer-logo .logo {
-  width: 120px;
+  width: clamp(60px, 10vw, 80px);
   height: auto;
   filter: brightness(0) invert(1);
   opacity: 0.9;
@@ -269,14 +269,7 @@
       text-align: left;
   }
 
-  .footer-logo .logo {
-      width: 140px;
-  }
 
-  .logo-glow {
-      width: 160px;
-      height: 160px;
-  }
 }
 
 @media (min-width: 1024px) {
