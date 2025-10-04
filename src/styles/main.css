@@ -79,7 +79,7 @@ main{
         gap: 2rem;
     }
     #curriculum {
-        bottom: 10rem;
+        bottom: clamp(1rem, 10vh, 10rem);
     }
     #about #avatar{
         width: 200px;
