@@ -183,6 +183,7 @@
   align-items: center;
   gap: 1rem;
   text-align: center;
+  place-self: center;
 }
 
 .bottom-content p {
@@ -266,7 +267,7 @@
   .bottom-content {
       flex-direction: row;
       justify-content: space-between;
-      text-align: left;
+      
   }
 
 
