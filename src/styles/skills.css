@@ -31,7 +31,7 @@
 
 .skills-subtitle {
     font-size: clamp(1rem, 2.5vw, 1.25rem);
-    color: rgba(226, 232, 240, 0.8);
+    color: var(--text-color);
     max-width: 500px;
     margin: 0 auto;
 }
@@ -52,6 +52,10 @@
     backdrop-filter: blur(10px);
     transition: all 0.3s ease;
     position: relative;
+}
+.claro .skill-category {
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(124, 58, 237, 0.2);
 }
 
 .skill-category:hover {

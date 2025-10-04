@@ -31,7 +31,7 @@
 
 .projects-subtitle {
     font-size: clamp(1rem, 2.5vw, 1.25rem);
-    color: rgba(226, 232, 240, 0.8);
+    color: var(--text-color);
     max-width: 500px;
     margin: 0 auto;
 }
@@ -53,6 +53,11 @@
     backdrop-filter: blur(10px);
     transition: all 0.3s ease;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+.claro .project-card {
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
 }
 
 .project-card:hover {
@@ -131,7 +136,7 @@
     align-items: center;
     gap: 0.5rem;
     background: var(--gradient-1);
-    color: white;
+    color: var(--text-color);
     padding: 0.8rem 1.5rem;
     border-radius: 25px;
     text-decoration: none;
@@ -177,7 +182,7 @@
 .project-description {
     font-size: clamp(0.9rem, 2.5vw, 1rem);
     line-height: 1.6;
-    color: rgba(226, 232, 240, 0.9);
+    color: var(--text-color);
     margin-bottom: 1.5rem;
 }
 

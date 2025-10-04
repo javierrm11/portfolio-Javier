@@ -1,6 +1,6 @@
 #header {
     position: fixed;
-    background: rgba(15, 15, 35, 0.8);
+    background: var(--primary-bg);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     top: 0;
@@ -12,15 +12,12 @@
     padding: clamp(0.5rem, 5vw, 1rem) 2rem;
     box-sizing: border-box;
     z-index: 1000;
-    border-bottom: 1px solid rgba(124, 58, 237, 0.1);
     transition: all 0.3s ease;
   }
 
   #header.scrolled {
-    background: rgba(15, 15, 35, 0.95);
     backdrop-filter: blur(30px);
-    border-bottom-color: rgba(124, 58, 237, 0.2);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 20px var(--primary-bg);
   }
 
   .logoPagina {
@@ -40,6 +37,9 @@
     transition: all 0.3s ease;
     position: relative;
     z-index: 2;
+  }
+  .claro .logoPagina img {
+    filter: invert(1);
   }
 
   .logo-glow {
@@ -131,10 +131,10 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(15, 15, 35, 0.95);
+    background: var(--primary-bg);
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
-    z-index: 999;
+    z-index: 1;
   }
 
   #main-nav.open {
@@ -271,3 +271,48 @@
   html {
     scroll-behavior: smooth;
   }
+  /* Botón general */
+#theme-toggle {
+  cursor: pointer;
+  border: none;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: background-color var(--transition-speed), transform var(--transition-speed);
+}
+
+#theme-toggle:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  transform: rotate(10deg);
+}
+
+/* Iconos */
+.theme-icon {
+  width: var(--icon-size);
+  height: var(--icon-size);
+  color: var(--text-color, #333);
+  transition: opacity var(--transition-speed), transform var(--transition-speed);
+  position: absolute;
+}
+
+/* Sol (modo claro) */
+.theme-icon--light {
+  color: #ffd600;
+  display: none;
+}
+
+/* Luna (modo oscuro) */
+.theme-icon--dark {
+  color: #9fb6ff;
+  display: none;
+  transform: scale(1.5);
+}
+
+#header-buttons{
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}

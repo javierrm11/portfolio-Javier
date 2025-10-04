@@ -55,8 +55,8 @@
 
 .job-card {
   display: flex;
-  background: rgba(26, 26, 46, 0.6);
-  border: 1px solid rgba(124, 58, 237, 0.2);
+  background: var(--secondary-bg);
+  border: 1px solid var(--primary-bg);
   border-radius: 20px;
   padding: 2rem;
   backdrop-filter: blur(10px);
@@ -111,7 +111,7 @@
 .job-description {
   font-size: clamp(1rem, 2.5vw, 1.2rem);
   line-height: 1.6;
-  color: rgba(226, 232, 240, 0.9);
+  color: var(--text-color);
   margin-bottom: 1.5rem;
 }
 
