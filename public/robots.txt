@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://javierm.dev/sitemap.xml
+Sitemap: https://www.javierm.dev/sitemap.xml
