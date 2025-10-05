@@ -647,23 +647,7 @@ import "../styles/contacto.css";
         // Animación de entrada del header con efecto holográfico
         const headerTl = gsap.timeline();
         
-        headerTl
-            .fromTo("#header", 
-                { 
-                    y: -200, 
-                    opacity: 0,
-                    rotationX: -90,
-                    transformPerspective: 1000
-                },
-                { 
-                    y: 0, 
-                    opacity: 1,
-                    rotationX: 0,
-                    duration: 1.5, 
-                    ease: config.ease.back
-                }
-            )
-            .add(() => {
+        headerTl.add(() => {
                 gsap.to("#header", {
                     boxShadow: "0 0 30px rgba(0, 255, 255, 0.5)",
                     duration: 0.5,
