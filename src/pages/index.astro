@@ -1,7 +1,7 @@
 ---
-import Header from '../components/Header.astro';
-import Main from '../components/Main.astro';
-import Footer from '../components/Footer.astro';
+import Header from "../components/Header.astro";
+import Main from "../components/Main.astro";
+import Footer from "../components/Footer.astro";
 import "../styles/global.css";
 import "../styles/header.css";
 import "../styles/main.css";
@@ -11,89 +11,122 @@ import "../styles/experiencia.css";
 import "../styles/proyectos.css";
 import "../styles/skills.css";
 import "../styles/contacto.css";
-
 ---
 
 <html lang="es">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/logo.png" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		
-		<!-- Title optimizado -->
-		<title>Javier Ruiz Molero | Desarrollador Web Full Stack</title>
-		
-		<!-- Meta descriptions mejorada (150-160 caracteres) -->
-		<meta name="description" content="Desarrollador web full stack especializado en crear aplicaciones modernas con React, Astro y Node.js. Código limpio, rendimiento óptimo y mejores prácticas.">
-		
-		<!-- Keywords más específicas -->
-		<meta name="keywords" content="Javier Ruiz Molero, desarrollador full stack, React, Astro, Node.js, TypeScript, JavaScript, portfolio desarrollador, desarrollo web Madrid, front-end developer, back-end developer">
-		
-		<meta name="author" content="Javier Ruiz Molero">
-		
-		<!-- Canonical URL -->
-		<link rel="canonical" href="https://javierm.dev">
-		
-		<!-- Open Graph mejorado -->
-		<meta property="og:title" content="Javier Ruiz Molero | Desarrollador Web Full Stack">
-		<meta property="og:description" content="Desarrollador web full stack especializado en crear aplicaciones modernas con React, Astro y Node.js. Código limpio y rendimiento óptimo.">
-		<meta property="og:image" content="https://javierm.dev/javier.webp">
-		<meta property="og:image:alt" content="Javier Ruiz Molero - Desarrollador Web">
-		<meta property="og:image:width" content="1200">
-		<meta property="og:image:height" content="630">
-		<meta property="og:type" content="website">
-		<meta property="og:url" content="https://javierm.dev">
-		<meta property="og:site_name" content="Javier Ruiz Molero">
-		<meta property="og:locale" content="es_ES">
-		
-		<!-- Twitter Card -->
-		<meta name="twitter:card" content="summary_large_image">
-		<meta name="twitter:title" content="Javier Ruiz Molero | Desarrollador Web Full Stack">
-		<meta name="twitter:description" content="Desarrollador web full stack especializado en crear aplicaciones modernas con React, Astro y Node.js.">
-		<meta name="twitter:image" content="https://javierm.dev/javier.webp">
-		<meta name="twitter:image:alt" content="Javier Ruiz Molero - Desarrollador Web">
-		
-		<!-- Datos estructurados JSON-LD -->
-		<script type="application/ld+json">
-		{
-			"@context": "https://schema.org",
-			"@type": "Person",
-			"name": "Javier Ruiz Molero",
-			"jobTitle": "Desarrollador Web Full Stack",
-			"url": "https://javierm.dev",
-			"image": "https://javierm.dev/javier.webp",
-			"sameAs": [
-				"https://github.com/javierrm11",
-				"https://www.linkedin.com/in/javierrm11",
-				"https://www.instagram.com/javiermdevweb/"
-			],
-			"knowsAbout": ["Desarrollo Web", "React", "Astro", "Node.js", "TypeScript", "JavaScript"],
-			"workLocation": {
-				"@type": "Place",
-				"address": {
-					"@type": "PostalAddress",
-					"addressLocality": "Córdoba",
-					"addressCountry": "ES"
-				}
-			}
-		}
-		</script>
-		
-		<!-- Preconnect para optimización de fuentes -->
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Exo+2:wght@400;600&display=swap" rel="stylesheet">
-		
-		<!-- Robots -->
-		<meta name="robots" content="index, follow">
-		<meta name="googlebot" content="index, follow">
-		
-		<!-- Idioma -->
-		<meta http-equiv="content-language" content="es">
-	</head>
-	<body>
-		<div class="animated-background"></div>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/logo.png" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Title optimizado -->
+    <title>Javier Ruiz Molero | Desarrollador Web Full Stack</title>
+
+    <!-- Meta descriptions mejorada (150-160 caracteres) -->
+    <meta
+      name="description"
+      content="Desarrollador web full stack especializado en crear aplicaciones modernas con React, Astro y Node.js. Código limpio, rendimiento óptimo y mejores prácticas."
+    />
+
+    <!-- Keywords más específicas -->
+    <meta
+      name="keywords"
+      content="Javier Ruiz Molero, desarrollador full stack, React, Astro, Node.js, TypeScript, JavaScript, portfolio desarrollador, desarrollo web Madrid, front-end developer, back-end developer"
+    />
+
+    <meta name="author" content="Javier Ruiz Molero" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://javierm.dev" />
+
+    <!-- Open Graph mejorado -->
+    <meta
+      property="og:title"
+      content="Javier Ruiz Molero | Desarrollador Web Full Stack"
+    />
+    <meta
+      property="og:description"
+      content="Desarrollador web full stack especializado en crear aplicaciones modernas con React, Astro y Node.js. Código limpio y rendimiento óptimo."
+    />
+    <meta property="og:image" content="https://javierm.dev/javier.webp" />
+    <meta
+      property="og:image:alt"
+      content="Javier Ruiz Molero - Desarrollador Web"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://javierm.dev" />
+    <meta property="og:site_name" content="Javier Ruiz Molero" />
+    <meta property="og:locale" content="es_ES" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Javier Ruiz Molero | Desarrollador Web Full Stack"
+    />
+    <meta
+      name="twitter:description"
+      content="Desarrollador web full stack especializado en crear aplicaciones modernas con React, Astro y Node.js."
+    />
+    <meta name="twitter:image" content="https://javierm.dev/javier.webp" />
+    <meta
+      name="twitter:image:alt"
+      content="Javier Ruiz Molero - Desarrollador Web"
+    />
+
+    <!-- Datos estructurados JSON-LD -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Javier Ruiz Molero",
+        "jobTitle": "Desarrollador Web Full Stack",
+        "url": "https://javierm.dev",
+        "image": "https://javierm.dev/javier.webp",
+        "sameAs": [
+          "https://github.com/javierrm11",
+          "https://www.linkedin.com/in/javierrm11",
+          "https://www.instagram.com/javiermdevweb/"
+        ],
+        "knowsAbout": [
+          "Desarrollo Web",
+          "React",
+          "Astro",
+          "Node.js",
+          "TypeScript",
+          "JavaScript"
+        ],
+        "workLocation": {
+          "@type": "Place",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Córdoba",
+            "addressCountry": "ES"
+          }
+        }
+      }
+    </script>
+
+    <!-- Preconnect para optimización de fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Exo+2:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Robots -->
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow" />
+
+    <!-- Idioma -->
+    <meta http-equiv="content-language" content="es" />
+  </head>
+  <body>
+    <div class="animated-background"></div>
     <div class="stars" id="stars-container"></div>
     <div class="nebula nebula-1"></div>
     <div class="nebula nebula-2"></div>
@@ -104,33 +137,33 @@ import "../styles/contacto.css";
     <div class="light-pulse pulse-2"></div>
     <div class="light-pulse pulse-3"></div>
     <canvas id="particles-canvas"></canvas>
-		<Header />
-		<Main />
-		<Footer/>
-	</body>
+    <Header />
+    <Main />
+    <Footer />
+  </body>
 </html>
 <script>
-	// Crear estrellas dinámicas
-	function createStars() {
-		const starsContainer = document.getElementById('stars-container');
-		const starCount = 150;
+  // Crear estrellas dinámicas
+  function createStars() {
+    const starsContainer = document.getElementById("stars-container");
+    const starCount = 150;
 
-		for (let i = 0; i < starCount; i++) {
-			const star = document.createElement('div');
-			star.className = 'star';
-			
-			// Posición aleatoria
-			const left = Math.random() * 100;
-			const top = Math.random() * 100;
-			
-			// Tamaño aleatorio
-			const size = Math.random() * 2 + 1;
-			
-			// Duración y delay aleatorios
-			const duration = Math.random() * 5 + 3;
-			const delay = Math.random() * 5;
-			
-			star.style.cssText = `
+    for (let i = 0; i < starCount; i++) {
+      const star = document.createElement("div");
+      star.className = "star";
+
+      // Posición aleatoria
+      const left = Math.random() * 100;
+      const top = Math.random() * 100;
+
+      // Tamaño aleatorio
+      const size = Math.random() * 2 + 1;
+
+      // Duración y delay aleatorios
+      const duration = Math.random() * 5 + 3;
+      const delay = Math.random() * 5;
+
+      star.style.cssText = `
 				left: ${left}%;
 				top: ${top}%;
 				width: ${size}px;
@@ -138,208 +171,208 @@ import "../styles/contacto.css";
 				--duration: ${duration}s;
 				--delay: ${delay}s;
 			`;
-			
-			starsContainer.appendChild(star);
-		}
-	}
 
-	// Crear líneas de conexión
-	function createConnectionLines() {
-		const linesContainer = document.getElementById('lines-container');
-		const lineCount = 20;
+      starsContainer.appendChild(star);
+    }
+  }
 
-		for (let i = 0; i < lineCount; i++) {
-			const line = document.createElement('div');
-			line.className = 'line';
-			
-			// Posición vertical aleatoria
-			const top = Math.random() * 100;
-			
-			// Duración y delay aleatorios
-			const duration = Math.random() * 20 + 10;
-			const delay = Math.random() * 15;
-			
-			line.style.cssText = `
+  // Crear líneas de conexión
+  function createConnectionLines() {
+    const linesContainer = document.getElementById("lines-container");
+    const lineCount = 20;
+
+    for (let i = 0; i < lineCount; i++) {
+      const line = document.createElement("div");
+      line.className = "line";
+
+      // Posición vertical aleatoria
+      const top = Math.random() * 100;
+
+      // Duración y delay aleatorios
+      const duration = Math.random() * 20 + 10;
+      const delay = Math.random() * 15;
+
+      line.style.cssText = `
 				top: ${top}%;
 				--line-duration: ${duration}s;
 				--line-delay: ${delay}s;
 			`;
-			
-			linesContainer.appendChild(line);
-		}
-	}
 
-	// Sistema de partículas con Canvas
-	function initParticles() {
-		const canvas = document.getElementById('particles-canvas');
-		const ctx = canvas.getContext('2d');
-		
-		// Ajustar tamaño del canvas
-		function resizeCanvas() {
-			canvas.width = window.innerWidth;
-			canvas.height = window.innerHeight;
-		}
-		
-		resizeCanvas();
-		window.addEventListener('resize', resizeCanvas);
+      linesContainer.appendChild(line);
+    }
+  }
 
-		// Configuración de partículas
-		const particles = [];
-		const particleCount = 80;
+  // Sistema de partículas con Canvas
+  function initParticles() {
+    const canvas = document.getElementById("particles-canvas");
+    const ctx = canvas.getContext("2d");
 
-		class Particle {
-			constructor() {
-				this.reset();
-			}
-			
-			reset() {
-				this.x = Math.random() * canvas.width;
-				this.y = Math.random() * canvas.height;
-				this.size = Math.random() * 2 + 0.5;
-				this.speedX = Math.random() * 0.5 - 0.25;
-				this.speedY = Math.random() * 0.5 - 0.25;
-				this.color = `rgba(124, 58, 237, ${Math.random() * 0.3 + 0.1})`;
-				this.alpha = Math.random() * 0.5 + 0.2;
-			}
-			
-			update() {
-				this.x += this.speedX;
-				this.y += this.speedY;
-				
-				// Rebotar en los bordes
-				if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
-				if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
-				
-				// Fade in/out
-				this.alpha += Math.random() * 0.02 - 0.01;
-				this.alpha = Math.max(0.1, Math.min(0.6, this.alpha));
-			}
-			
-			draw() {
-				ctx.save();
-				ctx.globalAlpha = this.alpha;
-				ctx.fillStyle = this.color;
-				ctx.beginPath();
-				ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-				ctx.fill();
-				ctx.restore();
-			}
-		}
+    // Ajustar tamaño del canvas
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
 
-		// Crear partículas
-		for (let i = 0; i < particleCount; i++) {
-			particles.push(new Particle());
-		}
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
 
-		// Animación
-		function animate() {
-			ctx.clearRect(0, 0, canvas.width, canvas.height);
-			
-			// Dibujar conexiones
-			ctx.strokeStyle = 'rgba(124, 58, 237, 0.1)';
-			ctx.lineWidth = 0.5;
-			
-			for (let i = 0; i < particles.length; i++) {
-				for (let j = i + 1; j < particles.length; j++) {
-					const dx = particles[i].x - particles[j].x;
-					const dy = particles[i].y - particles[j].y;
-					const distance = Math.sqrt(dx * dx + dy * dy);
-					
-					if (distance < 100) {
-						ctx.beginPath();
-						ctx.moveTo(particles[i].x, particles[i].y);
-						ctx.lineTo(particles[j].x, particles[j].y);
-						ctx.stroke();
-					}
-				}
-			}
-			
-			// Actualizar y dibujar partículas
-			particles.forEach(particle => {
-				particle.update();
-				particle.draw();
-			});
-			
-			requestAnimationFrame(animate);
-		}
-		
-		animate();
-	}
+    // Configuración de partículas
+    const particles = [];
+    const particleCount = 80;
 
-	// Inicializar todos los efectos cuando cargue la página
-	document.addEventListener('DOMContentLoaded', function() {
-		createStars();
-		createConnectionLines();
-		initParticles();
-		
-		// Efecto de parallax para las nebulosas
-		window.addEventListener('scroll', function() {
-			const scrolled = window.pageYOffset;
-			const nebula1 = document.querySelector('.nebula-1');
-			const nebula2 = document.querySelector('.nebula-2');
-			const nebula3 = document.querySelector('.nebula-3');
-			
-			nebula1.style.transform = `translate(${scrolled * 0.02}px, ${scrolled * 0.03}px)`;
-			nebula2.style.transform = `translate(${scrolled * -0.01}px, ${scrolled * 0.02}px)`;
-			nebula3.style.transform = `translate(${scrolled * 0.015}px, ${scrolled * -0.01}px)`;
-		});
-	});
-	// Menu toggle functionality
-document.addEventListener('DOMContentLoaded', () => {
-  const menuToggle = document.getElementById('menu-toggle');
-  const mainNav = document.getElementById('main-nav');
-  const body = document.body;
+    class Particle {
+      constructor() {
+        this.reset();
+      }
 
-  menuToggle.addEventListener('click', () => {
-    menuToggle.classList.toggle('active');
-    mainNav.classList.toggle('open');
-    body.style.overflow = mainNav.classList.contains('open') ? 'hidden' : '';
-  });
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2 + 0.5;
+        this.speedX = Math.random() * 0.5 - 0.25;
+        this.speedY = Math.random() * 0.5 - 0.25;
+        this.color = `rgba(124, 58, 237, ${Math.random() * 0.3 + 0.1})`;
+        this.alpha = Math.random() * 0.5 + 0.2;
+      }
 
-  // Close menu when clicking on nav links
-  const navLinks = document.querySelectorAll('.nav-link');
-  navLinks.forEach(link => {
-    link.addEventListener('click', () => {
-      menuToggle.classList.remove('active');
-      mainNav.classList.remove('open');
-      body.style.overflow = '';
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+
+        // Rebotar en los bordes
+        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+
+        // Fade in/out
+        this.alpha += Math.random() * 0.02 - 0.01;
+        this.alpha = Math.max(0.1, Math.min(0.6, this.alpha));
+      }
+
+      draw() {
+        ctx.save();
+        ctx.globalAlpha = this.alpha;
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    // Crear partículas
+    for (let i = 0; i < particleCount; i++) {
+      particles.push(new Particle());
+    }
+
+    // Animación
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Dibujar conexiones
+      ctx.strokeStyle = "rgba(124, 58, 237, 0.1)";
+      ctx.lineWidth = 0.5;
+
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < 100) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Actualizar y dibujar partículas
+      particles.forEach((particle) => {
+        particle.update();
+        particle.draw();
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  }
+
+  // Inicializar todos los efectos cuando cargue la página
+  document.addEventListener("DOMContentLoaded", function () {
+    createStars();
+    createConnectionLines();
+    initParticles();
+
+    // Efecto de parallax para las nebulosas
+    window.addEventListener("scroll", function () {
+      const scrolled = window.pageYOffset;
+      const nebula1 = document.querySelector(".nebula-1");
+      const nebula2 = document.querySelector(".nebula-2");
+      const nebula3 = document.querySelector(".nebula-3");
+
+      nebula1.style.transform = `translate(${scrolled * 0.02}px, ${scrolled * 0.03}px)`;
+      nebula2.style.transform = `translate(${scrolled * -0.01}px, ${scrolled * 0.02}px)`;
+      nebula3.style.transform = `translate(${scrolled * 0.015}px, ${scrolled * -0.01}px)`;
     });
   });
+  // Menu toggle functionality
+  document.addEventListener("DOMContentLoaded", () => {
+    const menuToggle = document.getElementById("menu-toggle");
+    const mainNav = document.getElementById("main-nav");
+    const body = document.body;
 
-  // Header scroll effect
-  const header = document.getElementById('header');
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 100) {
-      header.classList.add('scrolled');
-    } else {
-      header.classList.remove('scrolled');
-    }
-  });
+    menuToggle.addEventListener("click", () => {
+      menuToggle.classList.toggle("active");
+      mainNav.classList.toggle("open");
+      body.style.overflow = mainNav.classList.contains("open") ? "hidden" : "";
+    });
 
-  // Active section highlighting
-  const sections = document.querySelectorAll('section[id]');
-  const observerOptions = {
-    root: null,
-    rootMargin: '-20% 0px -80% 0px',
-    threshold: 0
-  };
+    // Close menu when clicking on nav links
+    const navLinks = document.querySelectorAll(".nav-link");
+    navLinks.forEach((link) => {
+      link.addEventListener("click", () => {
+        menuToggle.classList.remove("active");
+        mainNav.classList.remove("open");
+        body.style.overflow = "";
+      });
+    });
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const id = entry.target.getAttribute('id');
-        navLinks.forEach(link => {
-          link.classList.remove('active');
-          if (link.getAttribute('href') === `#${id}`) {
-            link.classList.add('active');
-          }
-        });
+    // Header scroll effect
+    const header = document.getElementById("header");
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 100) {
+        header.classList.add("scrolled");
+      } else {
+        header.classList.remove("scrolled");
       }
     });
-  }, observerOptions);
 
-  sections.forEach(section => {
-    observer.observe(section);
+    // Active section highlighting
+    const sections = document.querySelectorAll("section[id]");
+    const observerOptions = {
+      root: null,
+      rootMargin: "-20% 0px -80% 0px",
+      threshold: 0,
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const id = entry.target.getAttribute("id");
+          navLinks.forEach((link) => {
+            link.classList.remove("active");
+            if (link.getAttribute("href") === `#${id}`) {
+              link.classList.add("active");
+            }
+          });
+        }
+      });
+    }, observerOptions);
+
+    sections.forEach((section) => {
+      observer.observe(section);
+    });
   });
-});
 </script>
