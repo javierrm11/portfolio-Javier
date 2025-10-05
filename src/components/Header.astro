@@ -36,55 +36,5 @@
       </svg>
     </button>
   </div>
-  
-  
 </header>
 
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-  const themeToggle = document.getElementById('theme-toggle'); // corregido el id
-  if (!themeToggle) return; // seguridad por si no existe el botón
-
-  const iconLight = themeToggle.querySelector('.theme-icon--light');
-  const iconDark = themeToggle.querySelector('.theme-icon--dark');
-  const body = document.body;
-
-  // ---- Funciones auxiliares ----
-  const setTheme = (mode) => {
-    if (mode === 'claro') {
-      body.classList.add('claro');
-      iconLight.style.display = 'none';
-      iconDark.style.display = 'block';
-    } else {
-      body.classList.remove('claro');
-      iconLight.style.display = 'block';
-      iconDark.style.display = 'none';
-    }
-    // Guardar cookie por 30 días
-    document.cookie = `theme=${mode}; path=/; max-age=${60 * 60 * 24 * 30}`;
-  };
-
-  const getThemeFromCookie = () => {
-    const match = document.cookie.match(/(?:^|;)\s*theme=([^;]+)/);
-    return match ? match[1] : null;
-  };
-
-  // ---- Inicialización ----
-  let theme = getThemeFromCookie();
-
-  if (!theme) {
-    // Si no hay cookie, se toma el tema del sistema
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    theme = prefersDark ? 'oscuro' : 'claro';
-  }
-
-  setTheme(theme);
-
-  // ---- Evento toggle ----
-  themeToggle.addEventListener('click', () => {
-    const newTheme = body.classList.contains('claro') ? 'oscuro' : 'claro';
-    setTheme(newTheme);
-  });
-});
-
-</script>
