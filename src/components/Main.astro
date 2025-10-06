@@ -269,7 +269,7 @@ import Contacto from './Contacto.astro';
 
         // Animación de entrada del header con efecto holográfico
         const headerTl = gsap.timeline();
-        
+        if(!isMobile){
         headerTl
             .fromTo("#header", 
                 { 
@@ -294,6 +294,7 @@ import Contacto from './Contacto.astro';
                     repeat: 1
                 });
             }, "-=0.5");
+        
 
         // Avatar con efecto de materialización
         headerTl.fromTo("#avatar", 
@@ -313,7 +314,7 @@ import Contacto from './Contacto.astro';
             },
             "-=1"
         );
-
+        }
         // Texto con efecto glitch
         headerTl.fromTo("#info h2", 
             { 
@@ -408,6 +409,7 @@ import Contacto from './Contacto.astro';
         });
 
         // Botón curriculum con pulso
+        if(!isMobile){
         headerTl.fromTo("#curriculum", 
             { 
                 scale: 0,
@@ -432,6 +434,7 @@ import Contacto from './Contacto.astro';
             yoyo: true,
             ease: "sine.inOut"
         });
+    }
     });
 
     // ============================================
