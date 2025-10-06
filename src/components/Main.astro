@@ -55,3 +55,1494 @@ import Contacto from './Contacto.astro';
 
 </main>
 
+<script>
+    import { gsap } from "gsap";
+    import { ScrollTrigger } from "gsap/ScrollTrigger";
+    import { TextPlugin } from "gsap/TextPlugin";
+
+    gsap.registerPlugin(ScrollTrigger, TextPlugin);
+
+    // ============================================
+    // CONFIGURACIÓN GLOBAL
+    // ============================================
+    const config = {
+        colors: {
+            primary: 'var(--highlight-color)',
+            glow: 'rgba(0, 255, 255, 0.6)',
+            particles: ['#00ffff', '#ff00ff', '#ffff00', '#00ff00']
+        },
+        ease: {
+            elastic: "elastic.out(1, 0.3)",
+            back: "back.out(2)",
+            power: "power4.out"
+        }
+    };
+
+    // ============================================
+    // SISTEMA DE PARTÍCULAS AVANZADO
+    // ============================================
+    class ParticleSystem {
+        constructor() {
+            this.particles = [];
+            this.canvas = document.createElement('canvas');
+            this.ctx = this.canvas.getContext('2d');
+            this.setupCanvas();
+            this.createParticles();
+            this.animate();
+        }
+
+        setupCanvas() {
+            this.canvas.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                z-index: 1;
+                opacity: 0.3;
+            `;
+            document.body.prepend(this.canvas);
+            this.resize();
+            window.addEventListener('resize', () => this.resize());
+        }
+
+        resize() {
+            this.canvas.width = window.innerWidth;
+            this.canvas.height = window.innerHeight;
+        }
+
+        createParticles() {
+            for (let i = 0; i < 50; i++) {
+                this.particles.push({
+                    x: Math.random() * this.canvas.width,
+                    y: Math.random() * this.canvas.height,
+                    size: Math.random() * 3 + 1,
+                    speedX: (Math.random() - 0.5) * 0.5,
+                    speedY: (Math.random() - 0.5) * 0.5,
+                    color: config.colors.particles[Math.floor(Math.random() * config.colors.particles.length)]
+                });
+            }
+        }
+
+        animate() {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            
+            this.particles.forEach((particle, i) => {
+                particle.x += particle.speedX;
+                particle.y += particle.speedY;
+
+                if (particle.x < 0 || particle.x > this.canvas.width) particle.speedX *= -1;
+                if (particle.y < 0 || particle.y > this.canvas.height) particle.speedY *= -1;
+
+                // Dibujar partícula con glow
+                this.ctx.beginPath();
+                this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                this.ctx.fillStyle = particle.color;
+                this.ctx.shadowBlur = 15;
+                this.ctx.shadowColor = particle.color;
+                this.ctx.fill();
+
+                // Conectar partículas cercanas
+                for (let j = i + 1; j < this.particles.length; j++) {
+                    const dx = this.particles[j].x - particle.x;
+                    const dy = this.particles[j].y - particle.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 150) {
+                        this.ctx.beginPath();
+                        this.ctx.strokeStyle = `rgba(0, 255, 255, ${1 - distance / 150})`;
+                        this.ctx.lineWidth = 0.5;
+                        this.ctx.moveTo(particle.x, particle.y);
+                        this.ctx.lineTo(this.particles[j].x, this.particles[j].y);
+                        this.ctx.stroke();
+                    }
+                }
+            });
+
+            requestAnimationFrame(() => this.animate());
+        }
+    }
+
+    // ============================================
+    // CURSOR HOLOGRÁFICO
+    // ============================================
+    class HolographicCursor {
+        constructor() {
+            this.cursor = document.createElement('div');
+            this.trail = [];
+            this.setupCursor();
+            this.initTrail();
+        }
+
+        setupCursor() {
+            this.cursor.style.cssText = `
+                position: fixed;
+                width: 30px;
+                height: 30px;
+                border: 2px solid var(--highlight-color);
+                border-radius: 50%;
+                pointer-events: none;
+                z-index: 10000;
+                mix-blend-mode: difference;
+                transition: transform 0.15s ease-out;
+            `;
+            document.body.appendChild(this.cursor);
+
+            document.addEventListener('mousemove', (e) => {
+                gsap.to(this.cursor, {
+                    x: e.clientX - 15,
+                    y: e.clientY - 15,
+                    duration: 0.2,
+                    ease: "power2.out"
+                });
+
+                this.createTrailParticle(e.clientX, e.clientY);
+            });
+
+            // Efecto hover en elementos interactivos
+            document.querySelectorAll('a, button, .project-card, .skill-tag').forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    gsap.to(this.cursor, {
+                        scale: 1.5,
+                        borderWidth: 3,
+                        duration: 0.3,
+                        ease: config.ease.back
+                    });
+                });
+
+                el.addEventListener('mouseleave', () => {
+                    gsap.to(this.cursor, {
+                        scale: 1,
+                        borderWidth: 2,
+                        duration: 0.3,
+                        ease: config.ease.power
+                    });
+                });
+            });
+        }
+
+        initTrail() {
+            for (let i = 0; i < 10; i++) {
+                const dot = document.createElement('div');
+                dot.style.cssText = `
+                    position: fixed;
+                    width: 4px;
+                    height: 4px;
+                    background: var(--highlight-color);
+                    border-radius: 50%;
+                    pointer-events: none;
+                    z-index: 9999;
+                    opacity: ${1 - i * 0.1};
+                `;
+                document.body.appendChild(dot);
+                this.trail.push(dot);
+            }
+        }
+
+        createTrailParticle(x, y) {
+            this.trail.forEach((dot, i) => {
+                gsap.to(dot, {
+                    x: x - 2,
+                    y: y - 2,
+                    duration: 0.3 + i * 0.05,
+                    ease: "power2.out"
+                });
+            });
+        }
+    }
+
+    // ============================================
+    // ANIMACIONES INICIALES ÉPICAS
+    // ============================================
+    document.addEventListener('DOMContentLoaded', function() {
+        // Inicializar sistemas
+        new ParticleSystem();
+        new HolographicCursor();
+
+        // Logo de carga futurista
+        const loader = gsap.timeline({
+            onComplete: () => document.querySelector('.loader')?.remove()
+        });
+
+        // Animación de entrada del header con efecto holográfico
+        const headerTl = gsap.timeline();
+        
+        headerTl
+            .fromTo("#header", 
+                { 
+                    y: 0, 
+                    opacity: 0,
+                    rotationX: -90,
+                    transformPerspective: 1000
+                },
+                { 
+                    y: 0, 
+                    opacity: 1,
+                    rotationX: 0,
+                    duration: 1.5, 
+                    ease: config.ease.back
+                }
+            )
+            .add(() => {
+                gsap.to("#header", {
+                    boxShadow: "0 0 30px rgba(0, 255, 255, 0.5)",
+                    duration: 0.5,
+                    yoyo: true,
+                    repeat: 1
+                });
+            }, "-=0.5");
+
+        // Avatar con efecto de materialización
+        headerTl.fromTo("#avatar", 
+            { 
+                scale: 0,
+                rotation: -360,
+                opacity: 0,
+                filter: "blur(20px)"
+            },
+            { 
+                scale: 1,
+                rotation: 0,
+                opacity: 1,
+                filter: "blur(0px)",
+                duration: 1.5,
+                ease: config.ease.elastic
+            },
+            "-=1"
+        );
+
+        // Texto con efecto glitch
+        headerTl.fromTo("#info h2", 
+            { 
+                y: 100,
+                opacity: 0,
+                scale: 0.5,
+                filter: "blur(10px)",
+                textShadow: "0 0 20px rgba(0, 255, 255, 0)"
+            },
+            { 
+                y: 0,
+                opacity: 1,
+                scale: 1,
+                filter: "blur(0px)",
+                textShadow: "0 0 20px rgba(0, 255, 255, 0.8)",
+                duration: 1,
+                ease: config.ease.power,
+                onComplete: () => {
+                    // Efecto glitch intermitente
+                    gsap.to("#info h2", {
+                        x: "random(-2, 2)",
+                        duration: 0.1,
+                        repeat: 5,
+                        yoyo: true,
+                        ease: "none"
+                    });
+                }
+            },
+            "-=0.8"
+        );
+
+        // Descripción con typewriter futurista
+        headerTl.fromTo("#info p", 
+            { 
+                opacity: 0,
+                scale: 0.8,
+                y: 30
+            },
+            { 
+                opacity: 1,
+                scale: 1,
+                y: 0,
+                duration: 1,
+                ease: config.ease.power
+            },
+            "-=0.5"
+        );
+
+        // Redes sociales con efecto orbital
+        gsap.utils.toArray("#social-media a").forEach((link, i) => {
+            const angle = (i * 360) / 4;
+            const radius = 200;
+            
+            gsap.fromTo(link,
+                {
+                    x: Math.cos(angle * Math.PI / 180) * radius,
+                    y: Math.sin(angle * Math.PI / 180) * radius,
+                    opacity: 0,
+                    scale: 0,
+                    rotation: angle
+                },
+                {
+                    x: 0,
+                    y: 0,
+                    opacity: 1,
+                    scale: 1,
+                    rotation: 0,
+                    duration: 1.5,
+                    delay: 1 + i * 0.1,
+                    ease: config.ease.back
+                }
+            );
+
+            // Hover con rotación 3D
+            link.addEventListener('mouseenter', function() {
+                gsap.to(this, {
+                    scale: 1.3,
+                    rotationY: 360,
+                    duration: 0.6,
+                    ease: config.ease.back
+                });
+            });
+
+            link.addEventListener('mouseleave', function() {
+                gsap.to(this, {
+                    scale: 1,
+                    rotationY: 0,
+                    duration: 0.4,
+                    ease: config.ease.power
+                });
+            });
+        });
+
+        // Botón curriculum con pulso
+        headerTl.fromTo("#curriculum", 
+            { 
+                scale: 0,
+                opacity: 0,
+                rotation: 180
+            },
+            { 
+                scale: 1,
+                opacity: 1,
+                rotation: 0,
+                duration: 1,
+                ease: config.ease.elastic
+            },
+            "-=0.5"
+        );
+
+        gsap.to("#curriculum", {
+            boxShadow: "0 0 30px rgba(0, 255, 255, 0.8)",
+            scale: 1.05,
+            duration: 1.5,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut"
+        });
+    });
+
+    // ============================================
+    // TRANSICIÓN ABOUT CON EFECTO MATRIZ
+    // ============================================
+    const aboutTransition = gsap.timeline({
+        scrollTrigger: {
+            trigger: "#about",
+            start: "top top",
+            end: "bottom center",
+            scrub: 1,
+            onEnter: () => createMatrixEffect("#about")
+        }
+    });
+
+    aboutTransition
+        .to("#about", { 
+            y: -150,
+            opacity: 0,
+            scale: 0.7,
+            rotationX: -45,
+            transformPerspective: 1000,
+            filter: "blur(10px)",
+            duration: 2,
+            ease: "power2.inOut"
+        })
+        .to("#about-me", { 
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            rotationX: 0,
+            filter: "blur(0px)",
+            duration: 2,
+            ease: "power2.out"
+        }, "-=1.5");
+
+    function createMatrixEffect(selector) {
+        const element = document.querySelector(selector);
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*";
+        
+        for (let i = 0; i < 20; i++) {
+            const char = document.createElement('span');
+            char.textContent = chars[Math.floor(Math.random() * chars.length)];
+            char.style.cssText = `
+                position: absolute;
+                left: ${Math.random() * 100}%;
+                top: ${Math.random() * 100}%;
+                color: var(--highlight-color);
+                opacity: 0;
+                font-family: monospace;
+                font-size: 20px;
+            `;
+            element.appendChild(char);
+
+            gsap.to(char, {
+                y: 100,
+                opacity: 1,
+                duration: 1,
+                delay: Math.random() * 0.5,
+                onComplete: () => char.remove()
+            });
+        }
+    }
+
+    // ============================================
+    // ABOUT ME CON HOLOGRAMAS
+    // ============================================
+    gsap.timeline({
+        scrollTrigger: {
+            trigger: "#about-me",
+            start: "top 80%",
+            end: "bottom 20%",
+            toggleActions: "play none none reverse"
+        }
+    })
+    .fromTo("#about-me .about-content", 
+        { 
+            x: -200,
+            opacity: 0,
+            rotationY: -90,
+            transformPerspective: 1000
+        },
+        { 
+            x: 0,
+            opacity: 1,
+            rotationY: 0,
+            duration: 1.5,
+            ease: config.ease.back
+        }
+    )
+    .fromTo("#about-me .image-container", 
+        { 
+            x: 200,
+            opacity: 0,
+            rotationY: 90,
+            scale: 0.5,
+            transformPerspective: 1000
+        },
+        { 
+            x: 0,
+            opacity: 1,
+            rotationY: 0,
+            scale: 1,
+            duration: 1.5,
+            ease: config.ease.back
+        },
+        "-=1.2"
+    );
+
+    // Efecto de escaneo holográfico en la imagen
+    ScrollTrigger.create({
+        trigger: "#about-me .image-container",
+        start: "top 70%",
+        onEnter: () => {
+            const img = document.querySelector("#about-me .image-container");
+            const scanLine = document.createElement('div');
+            scanLine.style.cssText = `
+                position: absolute;
+                width: 100%;
+                height: 3px;
+                background: linear-gradient(90deg, transparent, var(--highlight-color), transparent);
+                box-shadow: 0 0 20px var(--highlight-color);
+                top: 0;
+            `;
+            img?.appendChild(scanLine);
+
+            gsap.to(scanLine, {
+                top: '100%',
+                duration: 2,
+                ease: "power1.inOut",
+                repeat: 2,
+                onComplete: () => scanLine.remove()
+            });
+        }
+    });
+
+    // ============================================
+    // EXPERIENCIA CON LÍNEA DE TIEMPO 3D
+    // ============================================
+    gsap.timeline({
+        scrollTrigger: {
+            trigger: "#experiencia",
+            start: "top 80%",
+            end: "bottom 20%",
+            toggleActions: "play none none reverse"
+        }
+    })
+    .fromTo("#experiencia h2", 
+        { 
+            scale: 0,
+            rotation: -180,
+            opacity: 0
+        },
+        { 
+            scale: 1,
+            rotation: 0,
+            opacity: 1,
+            duration: 1,
+            ease: config.ease.elastic
+        }
+    )
+    .fromTo(".job-card", 
+        { 
+            x: (i) => i % 2 === 0 ? -300 : 300,
+            opacity: 0,
+            rotationY: (i) => i % 2 === 0 ? -90 : 90,
+            transformPerspective: 1000,
+            scale: 0.5
+        },
+        { 
+            x: 0,
+            opacity: 1,
+            rotationY: 0,
+            scale: 1,
+            duration: 1.2,
+            stagger: 0.2,
+            ease: config.ease.back,
+            onComplete: function() {
+                // Efecto de datos cargando
+                this.targets().forEach(card => {
+                    gsap.to(card, {
+                        boxShadow: "0 0 30px rgba(0, 255, 255, 0.5)",
+                        duration: 0.3,
+                        yoyo: true,
+                        repeat: 1
+                    });
+                });
+            }
+        },
+        "-=0.5"
+    );
+
+    // Línea de tiempo animada con pulsos de energía
+    gsap.timeline({
+        scrollTrigger: {
+            trigger: ".experience-timeline",
+            start: "top 70%",
+            end: "bottom 30%",
+            scrub: 1
+        }
+    })
+    .fromTo(".timeline-line", 
+        { 
+            scaleY: 0,
+            transformOrigin: "top center",
+            filter: "blur(5px)"
+        },
+        { 
+            scaleY: 1,
+            filter: "blur(0px)",
+            duration: 2,
+            ease: "power2.out"
+        }
+    )
+    .fromTo(".job-indicator", 
+        { 
+            scale: 0,
+            opacity: 0,
+            rotation: -360
+        },
+        { 
+            scale: 1,
+            opacity: 1,
+            rotation: 0,
+            duration: 0.8,
+            stagger: 0.3,
+            ease: config.ease.elastic
+        },
+        "-=1.5"
+    );
+
+    // Pulsos de energía en la línea de tiempo
+    gsap.utils.toArray(".job-indicator").forEach((indicator, i) => {
+        gsap.to(indicator, {
+            boxShadow: "0 0 30px rgba(0, 255, 255, 1)",
+            scale: 1.2,
+            duration: 1,
+            delay: i * 0.5 + 1,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut"
+        });
+    });
+
+    // ============================================
+    // PROYECTOS CON EFECTO CYBERPUNK
+    // ============================================
+    const projectsTl = gsap.timeline({
+        scrollTrigger: {
+            trigger: "#proyectos",
+            start: "top 80%",
+            end: "bottom 20%",
+            toggleActions: "play none none reverse"
+        }
+    });
+
+    projectsTl
+        .fromTo("#proyectos h2", 
+            { 
+                y: 100,
+                opacity: 0,
+                scale: 0.5,
+                filter: "blur(10px)"
+            },
+            { 
+                y: 0,
+                opacity: 1,
+                scale: 1,
+                filter: "blur(0px)",
+                duration: 1,
+                ease: config.ease.back
+            }
+        )
+        .fromTo(".project-card", 
+            { 
+                y: 150,
+                opacity: 0,
+                rotationX: 90,
+                transformPerspective: 2000,
+                scale: 0.5,
+                filter: "brightness(0)"
+            },
+            { 
+                y: 0,
+                opacity: 1,
+                rotationX: 0,
+                scale: 1,
+                filter: "brightness(1)",
+                duration: 1.5,
+                stagger: 0.2,
+                ease: config.ease.back
+            },
+            "-=0.5"
+        );
+
+    // Efecto parallax 3D mejorado
+    gsap.utils.toArray(".project-card").forEach((card, i) => {
+        // Parallax principal
+        gsap.to(card, {
+            y: i % 2 === 0 ? -50 : 50,
+            rotationX: i % 2 === 0 ? 5 : -5,
+            ease: "none",
+            scrollTrigger: {
+                trigger: card,
+                start: "top bottom",
+                end: "bottom top",
+                scrub: 1
+            }
+        });
+
+        // Hover effect con transformación 3D
+        card.addEventListener('mouseenter', function() {
+            gsap.to(this, {
+                scale: 1.05,
+                rotationY: 5,
+                z: 50,
+                boxShadow: "0 20px 60px rgba(0, 255, 255, 0.3)",
+                duration: 0.5,
+                ease: config.ease.back
+            });
+
+            // Crear scan lines
+            createScanLines(this);
+        });
+
+        card.addEventListener('mouseleave', function() {
+            gsap.to(this, {
+                scale: 1,
+                rotationY: 0,
+                z: 0,
+                boxShadow: "0 10px 30px rgba(0, 0, 0, 0.3)",
+                duration: 0.4,
+                ease: config.ease.power
+            });
+        });
+
+        // Efecto de mouse move en 3D
+        card.addEventListener('mousemove', function(e) {
+            const rect = this.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = (y - centerY) / 10;
+            const rotateY = (centerX - x) / 10;
+
+            gsap.to(this, {
+                rotationX: rotateX,
+                rotationY: rotateY,
+                duration: 0.3,
+                ease: "power2.out"
+            });
+        });
+    });
+
+    function createScanLines(element) {
+        for (let i = 0; i < 5; i++) {
+            const line = document.createElement('div');
+            line.style.cssText = `
+                position: absolute;
+                width: 100%;
+                height: 1px;
+                background: var(--highlight-color);
+                top: ${i * 20}%;
+                opacity: 0;
+            `;
+            element.appendChild(line);
+
+            gsap.to(line, {
+                opacity: 0.5,
+                duration: 0.3,
+                delay: i * 0.05,
+                yoyo: true,
+                repeat: 1,
+                onComplete: () => line.remove()
+            });
+        }
+    }
+
+    // ============================================
+    // SKILLS CON EFECTO DE MATRIZ HEXAGONAL
+    // ============================================
+    gsap.timeline({
+        scrollTrigger: {
+            trigger: "#skills",
+            start: "top 80%",
+            end: "bottom 20%",
+            toggleActions: "play none none reverse"
+        }
+    })
+    .fromTo("#skills h2", 
+        { 
+            y: 100,
+            opacity: 0,
+            scale: 0,
+            rotation: -180
+        },
+        { 
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            rotation: 0,
+            duration: 1.2,
+            ease: config.ease.elastic
+        }
+    )
+    .fromTo(".skill-category", 
+        { 
+            scale: 0,
+            opacity: 0,
+            rotationX: -90,
+            transformPerspective: 1000,
+            y: 100
+        },
+        { 
+            scale: 1,
+            opacity: 1,
+            rotationX: 0,
+            y: 0,
+            duration: 1,
+            stagger: 0.2,
+            ease: config.ease.back
+        },
+        "-=0.6"
+    );
+
+    // Animación de skill tags con efecto orbital
+    gsap.utils.toArray(".skill-tag").forEach((tag, i) => {
+        gsap.fromTo(tag,
+            { 
+                scale: 0,
+                rotation: -360,
+                opacity: 0,
+                filter: "blur(5px)"
+            },
+            { 
+                scale: 1,
+                rotation: 0,
+                opacity: 1,
+                filter: "blur(0px)",
+                duration: 0.8,
+                delay: i * 0.03,
+                ease: config.ease.elastic,
+                scrollTrigger: {
+                    trigger: tag,
+                    start: "top 90%",
+                    toggleActions: "play none none reverse"
+                }
+            }
+        );
+
+        // Hover con efecto holográfico
+        tag.addEventListener('mouseenter', function() {
+            gsap.to(this, {
+                scale: 1.2,
+                rotationY: 360,
+                boxShadow: "0 0 20px var(--highlight-color)",
+                duration: 0.6,
+                ease: config.ease.back
+            });
+        });
+
+        tag.addEventListener('mouseleave', function() {
+            gsap.to(this, {
+                scale: 1,
+                rotationY: 0,
+                boxShadow: "0 0 0px var(--highlight-color)",
+                duration: 0.4,
+                ease: config.ease.power
+            });
+        });
+    });
+
+    // ============================================
+    // CONTACTO CON TRANSMISIÓN DE DATOS
+    // ============================================
+    gsap.timeline({
+        scrollTrigger: {
+            trigger: "#contact",
+            start: "top 80%",
+            end: "bottom 20%",
+            toggleActions: "play none none reverse",
+            onEnter: () => createDataStream("#contact")
+        }
+    })
+    .fromTo("#contact h2", 
+        { 
+            y: 100,
+            opacity: 0,
+            scale: 0,
+            filter: "blur(10px)"
+        },
+        { 
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            filter: "blur(0px)",
+            duration: 1,
+            ease: config.ease.back
+        }
+    )
+    .fromTo(".contact-card", 
+        { 
+            x: -150,
+            opacity: 0,
+            rotationY: -90,
+            transformPerspective: 1000,
+            scale: 0.5
+        },
+        { 
+            x: 0,
+            opacity: 1,
+            rotationY: 0,
+            scale: 1,
+            duration: 1,
+            stagger: 0.15,
+            ease: config.ease.back
+        },
+        "-=0.6"
+    );
+
+    function createDataStream(selector) {
+        const element = document.querySelector(selector);
+        const binary = ["0", "1"];
+        
+        for (let i = 0; i < 30; i++) {
+            const bit = document.createElement('span');
+            bit.textContent = binary[Math.floor(Math.random() * 2)];
+            bit.style.cssText = `
+                position: absolute;
+                left: ${Math.random() * 100}%;
+                top: -20px;
+                color: var(--highlight-color);
+                font-family: monospace;
+                font-size: 14px;
+                opacity: 0.7;
+            `;
+            element?.appendChild(bit);
+
+            gsap.to(bit, {
+                y: window.innerHeight,
+                opacity: 0,
+                duration: 3 + Math.random() * 2,
+                delay: Math.random() * 2,
+                ease: "none",
+                onComplete: () => bit.remove()
+            });
+        }
+    }
+
+    // ============================================
+    // FOOTER CON ONDAS CUÁNTICAS
+    // ============================================
+    const footerTl = gsap.timeline({
+        scrollTrigger: {
+            trigger: "#footer",
+            start: "top 90%",
+            end: "bottom top",
+            toggleActions: "play none none reverse"
+        }
+    });
+
+    footerTl
+        .fromTo(".footer-section", {
+            y: 100,
+            opacity: 0,
+            scale: 0.8,
+            rotationX: 45,
+            transformPerspective: 1000
+        }, {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            rotationX: 0,
+            duration: 1,
+            stagger: 0.2,
+            ease: config.ease.back
+        })
+        .fromTo(".footer-divider", {
+            scaleX: 0,
+            transformOrigin: "left center"
+        }, {
+            scaleX: 1,
+            duration: 1.5,
+            ease: "power2.out"
+        }, "-=0.8")
+        .fromTo(".bottom-content", {
+            y: 50,
+            opacity: 0
+        }, {
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            ease: config.ease.power
+        }, "-=0.5");
+
+    // Ondas cuánticas animadas
+    gsap.to(".footer-floating", {
+        y: 30,
+        rotation: 360,
+        scale: 1.2,
+        duration: 20,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+        stagger: {
+            amount: 5,
+            from: "random"
+        }
+    });
+
+    // ============================================
+    // EFECTOS HOVER AVANZADOS PARA FOOTER
+    // ============================================
+    document.querySelectorAll('.social-link').forEach((link, i) => {
+        link.addEventListener('mouseenter', function() {
+            gsap.to(this, {
+                scale: 1.3,
+                rotation: 360,
+                z: 50,
+                boxShadow: "0 0 30px var(--highlight-color)",
+                duration: 0.6,
+                ease: config.ease.elastic
+            });
+
+            // Crear ondas expansivas
+            const ripple = document.createElement('div');
+            ripple.style.cssText = `
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                border: 2px solid var(--highlight-color);
+                border-radius: 50%;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                pointer-events: none;
+            `;
+            this.appendChild(ripple);
+
+            gsap.to(ripple, {
+                scale: 3,
+                opacity: 0,
+                duration: 1,
+                ease: "power2.out",
+                onComplete: () => ripple.remove()
+            });
+        });
+        
+        link.addEventListener('mouseleave', function() {
+            gsap.to(this, {
+                scale: 1,
+                rotation: 0,
+                z: 0,
+                boxShadow: "0 0 0px var(--highlight-color)",
+                duration: 0.4,
+                ease: config.ease.power
+            });
+        });
+    });
+
+    document.querySelectorAll('.footer-links a').forEach((link, i) => {
+        link.addEventListener('mouseenter', function() {
+            gsap.to(this, {
+                x: 10,
+                color: "var(--highlight-color)",
+                textShadow: "0 0 10px var(--highlight-color)",
+                duration: 0.3,
+                ease: config.ease.back
+            });
+
+            // Efecto de píxeles
+            createPixelEffect(this);
+        });
+        
+        link.addEventListener('mouseleave', function() {
+            gsap.to(this, {
+                x: 0,
+                color: "inherit",
+                textShadow: "none",
+                duration: 0.3,
+                ease: config.ease.power
+            });
+        });
+    });
+
+    function createPixelEffect(element) {
+        const pixels = 8;
+        for (let i = 0; i < pixels; i++) {
+            const pixel = document.createElement('span');
+            pixel.style.cssText = `
+                position: absolute;
+                width: 4px;
+                height: 4px;
+                background: var(--highlight-color);
+                left: ${Math.random() * 100}%;
+                top: ${Math.random() * 100}%;
+                opacity: 0;
+            `;
+            element.appendChild(pixel);
+
+            gsap.to(pixel, {
+                opacity: 1,
+                scale: 2,
+                duration: 0.2,
+                delay: i * 0.02,
+                yoyo: true,
+                repeat: 1,
+                onComplete: () => pixel.remove()
+            });
+        }
+    }
+
+    // ============================================
+    // HEADER SCROLL CON DISTORSIÓN
+    // ============================================
+    ScrollTrigger.create({
+        start: "top -100",
+        end: 99999,
+        onEnter: () => {
+            gsap.to("#header", {
+                backdropFilter: "blur(10px)",
+                duration: 0.5,
+                ease: config.ease.power
+            });
+        },
+        onLeaveBack: () => {
+            gsap.to("#header", {
+                backdropFilter: "blur(0px)",
+                boxShadow: "none",
+                duration: 0.5,
+                ease: config.ease.power
+            });
+        }
+    });
+
+    // ============================================
+    // EFECTO DE ESCRITURA CON GLITCH
+    // ============================================
+    function glitchText(element, text, duration = 2) {
+        const chars = "!<>-_\\/[]{}—=+*^?#________";
+        let iteration = 0;
+        const speed = duration * 1000 / text.length;
+
+        const interval = setInterval(() => {
+            element.textContent = text
+                .split("")
+                .map((char, index) => {
+                    if (index < iteration) {
+                        return text[index];
+                    }
+                    return chars[Math.floor(Math.random() * chars.length)];
+                })
+                .join("");
+
+            if (iteration >= text.length) {
+                clearInterval(interval);
+            }
+
+            iteration += 1 / 3;
+        }, speed);
+    }
+
+    // Aplicar glitch al título cuando sea visible
+    ScrollTrigger.create({
+        trigger: "#info h2",
+        start: "top 80%",
+        once: true,
+        onEnter: () => {
+            const title = document.querySelector("#info h2");
+            if (title) {
+                glitchText(title, title.textContent, 1.5);
+            }
+        }
+    });
+
+    // ============================================
+    // ELEMENTOS FLOTANTES EN BACKGROUND
+    // ============================================
+    for (let i = 0; i < 15; i++) {
+        const float = document.createElement('div');
+        float.className = 'floating-bg';
+        float.style.cssText = `
+            position: fixed;
+            width: ${Math.random() * 100 + 50}px;
+            height: ${Math.random() * 100 + 50}px;
+            border: 2px solid var(--highlight-color);
+            border-radius: ${Math.random() > 0.5 ? '50%' : '0%'};
+            left: ${Math.random() * 100}%;
+            top: ${Math.random() * 100}%;
+            opacity: 0.1;
+            pointer-events: none;
+            z-index: 0;
+        `;
+        document.body.appendChild(float);
+
+        gsap.to(float, {
+            y: `random(-200, 200)`,
+            x: `random(-200, 200)`,
+            rotation: `random(0, 360)`,
+            scale: `random(0.5, 1.5)`,
+            duration: `random(15, 25)`,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+            delay: Math.random() * 5
+        });
+    }
+
+    // ============================================
+    // EFECTO SCAN PERIÓDICO EN TODA LA PÁGINA
+    // ============================================
+    function createFullPageScan() {
+        const scanLine = document.createElement('div');
+        scanLine.style.cssText = `
+            position: fixed;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--highlight-color), transparent);
+            box-shadow: 0 0 20px var(--highlight-color);
+            top: 0;
+            left: 0;
+            z-index: 9998;
+            opacity: 0.5;
+        `;
+        document.body.appendChild(scanLine);
+
+        gsap.to(scanLine, {
+            top: '100%',
+            duration: 3,
+            ease: "none",
+            onComplete: () => {
+                scanLine.remove();
+                setTimeout(createFullPageScan, 15000); // Repetir cada 15 segundos
+            }
+        });
+    }
+
+    // Iniciar scan después de 5 segundos
+    setTimeout(createFullPageScan, 5000);
+
+    // ============================================
+    // REVELAR ELEMENTOS CON EFECTO DECODE
+    // ============================================
+    gsap.utils.toArray('.reveal-on-scroll').forEach(element => {
+        ScrollTrigger.create({
+            trigger: element,
+            start: "top 85%",
+            once: true,
+            onEnter: () => {
+                gsap.fromTo(element, 
+                    { 
+                        y: 80,
+                        opacity: 0,
+                        filter: "blur(10px) brightness(0)",
+                        scale: 0.8
+                    },
+                    {
+                        y: 0,
+                        opacity: 1,
+                        filter: "blur(0px) brightness(1)",
+                        scale: 1,
+                        duration: 1.2,
+                        ease: config.ease.back,
+                        onStart: () => {
+                            // Efecto de decodificación
+                            if (element.textContent) {
+                                const originalText = element.textContent;
+                                glitchText(element, originalText, 1);
+                            }
+                        }
+                    }
+                );
+            }
+        });
+    });
+
+    // ============================================
+    // GRID DIGITAL DE FONDO
+    // ============================================
+    function createDigitalGrid() {
+        const grid = document.createElement('div');
+        grid.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0;
+        `;
+        document.body.prepend(grid);
+
+        gsap.to(grid, {
+            opacity: 1,
+            duration: 2,
+            ease: "power2.out"
+        });
+
+        // Animación de perspectiva en el grid
+        gsap.to(grid, {
+            backgroundPosition: "100px 100px",
+            duration: 20,
+            repeat: -1,
+            ease: "none"
+        });
+    }
+
+    createDigitalGrid();
+
+    // ============================================
+    // EFECTO DE INTERFERENCIA EN SCROLL
+    // ============================================
+    let scrollTimeout;
+    window.addEventListener('scroll', () => {
+        clearTimeout(scrollTimeout);
+        
+        // Crear interferencia visual
+        const interference = document.createElement('div');
+        interference.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 255, 255, 0.03) 2px,
+                rgba(0, 255, 255, 0.03) 4px
+            );
+            pointer-events: none;
+            z-index: 9997;
+            opacity: 0;
+        `;
+        document.body.appendChild(interference);
+
+        gsap.to(interference, {
+            opacity: 0.3,
+            duration: 0.1,
+            yoyo: true,
+            repeat: 1,
+            onComplete: () => interference.remove()
+        });
+
+        scrollTimeout = setTimeout(() => {
+            // Efecto final
+        }, 150);
+    });
+
+    // ============================================
+    // PARALLAX PROFUNDO EN SECCIONES
+    // ============================================
+    gsap.utils.toArray('section').forEach((section, i) => {
+        const depth = i % 3;
+        
+        gsap.to(section, {
+            y: depth * -50,
+            ease: "none",
+            scrollTrigger: {
+                trigger: section,
+                start: "top bottom",
+                end: "bottom top",
+                scrub: 1
+            }
+        });
+    });
+
+    // ============================================
+    // EFECTO DE CARGA CUÁNTICA EN IMÁGENES
+    // ============================================
+    gsap.utils.toArray('img').forEach(img => {
+        ScrollTrigger.create({
+            trigger: img,
+            start: "top 90%",
+            once: true,
+            onEnter: () => {
+                gsap.fromTo(img,
+                    {
+                        opacity: 0,
+                        filter: "blur(20px) brightness(2)",
+                        scale: 1.2
+                    },
+                    {
+                        opacity: 1,
+                        filter: "revert-layer",
+                        scale: 1,
+                        duration: 1.5,
+                        ease: config.ease.power
+                    }
+                );
+
+                // Efecto de píxeles cargando
+                const pixelOverlay = document.createElement('div');
+                pixelOverlay.style.cssText = `
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: repeating-linear-gradient(
+                        0deg,
+                        var(--highlight-color) 0px,
+                        transparent 2px,
+                        transparent 4px,
+                        var(--highlight-color) 4px
+                    );
+                    opacity: 0.5;
+                `;
+                img.parentElement?.appendChild(pixelOverlay);
+
+                gsap.to(pixelOverlay, {
+                    opacity: 0,
+                    duration: 1,
+                    delay: 0.5,
+                    onComplete: () => pixelOverlay.remove()
+                });
+            }
+        });
+    });
+
+    // ============================================
+    // CONSOLA DE DEBUG HOLOGRÁFICA (Easter Egg)
+    // ============================================
+    let konami = [];
+    const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+
+    document.addEventListener('keydown', (e) => {
+        konami.push(e.key);
+        konami = konami.slice(-10);
+
+        if (konami.join('') === konamiCode.join('')) {
+            activateHolographicMode();
+        }
+    });
+
+    function activateHolographicMode() {
+        const overlay = document.createElement('div');
+        overlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: monospace;
+            font-size: 24px;
+            color: var(--highlight-color);
+            text-shadow: 0 0 20px var(--highlight-color);
+        `;
+        overlay.textContent = 'HOLOGRAPHIC MODE ACTIVATED';
+        document.body.appendChild(overlay);
+
+        gsap.fromTo(overlay,
+            { opacity: 0, scale: 0 },
+            { 
+                opacity: 1, 
+                scale: 1, 
+                duration: 1, 
+                ease: config.ease.elastic,
+                onComplete: () => {
+                    setTimeout(() => {
+                        gsap.to(overlay, {
+                            opacity: 0,
+                            scale: 0,
+                            duration: 0.5,
+                            onComplete: () => overlay.remove()
+                        });
+                    }, 2000);
+                }
+            }
+        );
+
+        // Activar efectos extremos temporalmente
+        document.body.style.filter = 'hue-rotate(180deg)';
+        setTimeout(() => {
+            document.body.style.filter = 'none';
+        }, 5000);
+    }
+
+    // ============================================
+    // OPTIMIZACIÓN DE RENDIMIENTO
+    // ============================================
+    
+    // Pausar animaciones cuando la pestaña no está visible
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            gsap.globalTimeline.pause();
+        } else {
+            gsap.globalTimeline.resume();
+        }
+    });
+
+    // Reducir animaciones en dispositivos de bajo rendimiento
+    const prefersReducedMotion = window.innerWidth < 768 ? window.matchMedia("(prefers-reduced-motion: reduce)") : { matches: false };
+    
+    if (prefersReducedMotion.matches) {
+        gsap.globalTimeline.timeScale(0.5); // Reduce velocidad de animaciones
+        ScrollTrigger.config({ ignoreMobileResize: true });
+    }
+
+
+</script>
