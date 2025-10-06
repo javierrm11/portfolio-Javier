@@ -61,7 +61,7 @@ import Contacto from './Contacto.astro';
     import { TextPlugin } from "gsap/TextPlugin";
 
     gsap.registerPlugin(ScrollTrigger, TextPlugin);
-
+    const isMobile = window.innerWidth <= 768;
     // ============================================
     // CONFIGURACIÓN GLOBAL
     // ============================================
@@ -257,7 +257,9 @@ import Contacto from './Contacto.astro';
     // ============================================
     document.addEventListener('DOMContentLoaded', function() {
         // Inicializar sistemas
-        new ParticleSystem();
+        if (!isMobile){
+            new ParticleSystem();
+        }
         new HolographicCursor();
 
         // Logo de carga futurista
@@ -1536,13 +1538,6 @@ import Contacto from './Contacto.astro';
         }
     });
 
-    // Reducir animaciones en dispositivos de bajo rendimiento
-    const prefersReducedMotion = window.innerWidth < 768 ? true : window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    
-    if (prefersReducedMotion) {
-        gsap.globalTimeline.timeScale(5); // Reduce velocidad de animaciones
-        ScrollTrigger.config({ ignoreMobileResize: true });
-    }
 
 
 </script>
