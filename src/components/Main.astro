@@ -574,6 +574,7 @@ import Contacto from './Contacto.astro';
     // ============================================
     // EXPERIENCIA CON LÍNEA DE TIEMPO 3D
     // ============================================
+    if(!isMobile){
     gsap.timeline({
         scrollTrigger: {
             trigger: "#experiencia",
@@ -626,6 +627,17 @@ import Contacto from './Contacto.astro';
         },
         "-=0.5"
     );
+    } else{
+        // uno sencillo
+        gsap.timeline({
+            scrollTrigger: {
+                trigger: "#experiencia",
+                start: "top 80%",
+                end: "bottom 20%",
+                toggleActions: "play none none reverse"
+            }
+        })
+    }
 
     // Línea de tiempo animada con pulsos de energía
     gsap.timeline({
