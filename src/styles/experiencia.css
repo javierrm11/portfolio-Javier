@@ -1,293 +1,263 @@
-/* experience */
 #experiencia {
-  min-height: 100dvh;
-  padding: 4rem 1rem;
+  padding: var(--section-padding-y) clamp(1rem, 4vw, 3rem);
   position: relative;
-  overflow: hidden;
 }
 
 .experience-header {
   text-align: center;
-  margin-bottom: 4rem;
-  position: relative;
+  margin-bottom: clamp(3rem, 6vw, 5rem);
 }
 
-#experiencia h2 {
+.experience-header h2 {
   font-size: clamp(2.5rem, 5vw, 4rem);
-  background: var(--gradient-1);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 1rem;
-  font-weight: 700;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.75rem;
 }
 
-.header-decoration {
-  width: 100px;
-  height: 4px;
-  background: var(--gradient-1);
-  margin: 0 auto;
-  border-radius: 2px;
-  filter: var(--neon-glow);
+.experience-header .section-subtitle {
+  font-size: clamp(1rem, 2vw, 1.125rem);
+  color: var(--text-secondary);
 }
 
+/* Timeline */
 .experience-timeline {
+  max-width: 860px;
+  margin-inline: auto;
   position: relative;
-  max-width: 1200px;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-left: 1.5rem;
 }
 
 .timeline-line {
   position: absolute;
-  left: 50%;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: var(--gradient-1);
-  transform: translateX(-50%);
-  opacity: 0.3;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 1px;
+  background: linear-gradient(to bottom, var(--accent-from), var(--accent-to));
+  opacity: 0.25;
+  transform-origin: top center;
 }
 
+/* Job */
 .job {
-  margin-bottom: 4rem;
   position: relative;
-}
-
-.job-card {
-  display: flex;
-  background: var(--secondary-bg);
-  border: 1px solid var(--primary-bg);
-  border-radius: 20px;
-  padding: 2rem;
-  backdrop-filter: blur(10px);
-  position: relative;
-  transition: all 0.3s ease;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-}
-
-.job-card:hover {
-  transform: translateY(-5px);
-  border-color: var(--accent-color);
-  box-shadow: 
-    0 12px 40px rgba(124, 58, 237, 0.2),
-    var(--neon-glow);
-}
-
-.job-content {
-  flex: 2;
-  padding-right: 2rem;
-}
-
-.job-visual {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-
-.job-header {
-  margin-bottom: 1.5rem;
-}
-
-.job-header h3 {
-  font-size: clamp(1.5rem, 3vw, 2rem);
-  color: var(--text-color);
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-}
-
-.date-badge {
-  background: var(--gradient-1);
-  color: white;
-  padding: 0.4rem 1rem;
-  border-radius: 20px;
-  font-size: clamp(0.8rem, 2vw, 1rem);
-  font-weight: 500;
-  display: inline-block;
-}
-
-.job-description {
-  font-size: clamp(1rem, 2.5vw, 1.2rem);
-  line-height: 1.6;
-  color: var(--text-color);
-  margin-bottom: 1.5rem;
-}
-
-.tech-highlight {
-  color: var(--highlight-color);
-  font-weight: 600;
-}
-
-.tech-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.tech-tag {
-  background: rgba(6, 182, 212, 0.1);
-  border: 1px solid rgba(6, 182, 212, 0.3);
-  color: var(--highlight-color);
-  padding: 0.3rem 0.8rem;
-  border-radius: 15px;
-  font-size: clamp(0.7rem, 2vw, 0.9rem);
-  font-weight: 500;
-  transition: all 0.3s ease;
-}
-
-.tech-tag:hover {
-  background: rgba(6, 182, 212, 0.2);
-  transform: translateY(-2px);
-}
-
-.logo-container {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.logo-glow {
-  position: absolute;
-  width: 120%;
-  height: 120%;
-  background: var(--gradient-1);
-  border-radius: 20px;
-  filter: blur(20px);
-  opacity: 0.3;
-  z-index: 1;
-}
-
-.company-logo {
-  width: 120px;
-  height: 120px;
-  border-radius: 15px;
-  object-fit: cover;
-  position: relative;
-  z-index: 2;
-  border: 2px solid rgba(124, 58, 237, 0.3);
-  transition: all 0.3s ease;
-}
-
-.job-card:hover .company-logo {
-  border-color: var(--accent-color);
-  transform: scale(1.05);
 }
 
 .job-indicator {
+  position: absolute;
+  left: -1.875rem;
+  top: 1.75rem;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--gradient-accent);
+  border: 2px solid var(--bg-primary);
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.2);
+  z-index: 2;
+}
+
+/* Job card */
+.job-card {
+  background: var(--glass-bg);
+  border: var(--glass-border);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  border-radius: var(--radius-lg);
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  transition: transform var(--transition-base), border-color var(--transition-base), box-shadow var(--transition-base);
+}
+
+.job-card:hover {
+  transform: var(--hover-lift);
+  border-color: rgba(0, 102, 204, 0.3);
+  box-shadow: var(--hover-glow);
+}
+
+/* Job header */
+.job-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.625rem;
+}
+
+.job-header h3 {
+  font-size: clamp(1.125rem, 2.5vw, 1.375rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.date-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--accent-from);
+  background: rgba(0, 102, 204, 0.08);
+  border: 1px solid rgba(0, 102, 204, 0.2);
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+
+/* Company */
+.job-company {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.job-company-logo {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  object-fit: contain;
+  filter: grayscale(1) brightness(0.7);
+}
+
+/* Achievement bullets */
+.job-achievements {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.job-achievements li {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  padding-left: 1rem;
   position: relative;
-  width: 20px;
-  height: 20px;
+  line-height: 1.6;
 }
 
-.indicator-dot {
-  width: 12px;
-  height: 12px;
-  background: var(--gradient-1);
-  border-radius: 50%;
+.job-achievements li::before {
+  content: '';
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 3;
-}
-
-.indicator-pulse {
-  width: 20px;
-  height: 20px;
-  border: 2px solid var(--accent-color);
+  left: 0;
+  top: 0.55em;
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  animation: pulse 2s infinite;
+  background: var(--accent-from);
 }
 
-.reverse .date-badge {
-  background: var(--gradient-2);
+/* Tech tags */
+.tech-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
 }
 
-.reverse .tech-tag {
-  background: rgba(245, 158, 11, 0.1);
-  border-color: rgba(245, 158, 11, 0.3);
-  color: #f59e0b;
+.tech-tag {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: var(--bg-surface);
+  border: var(--glass-border);
+  border-radius: var(--radius-full);
+  padding: 0.25rem 0.65rem;
+  transition: color var(--transition-base), border-color var(--transition-base);
 }
 
-.reverse .logo-glow {
-  background: var(--gradient-2);
+.tech-tag:hover {
+  color: var(--text-primary);
+  border-color: rgba(255, 255, 255, 0.18);
 }
 
-.reverse .indicator-dot {
-  background: var(--gradient-2);
+/* Education block */
+.education-block {
+  max-width: 860px;
+  margin-inline: auto;
+  margin-top: 4rem;
 }
 
-.reverse .indicator-pulse {
-  border-color: #f59e0b;
+.education-block h3 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.5rem;
 }
 
-@keyframes pulse {
-  0% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 1;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(2);
-    opacity: 0;
-  }
+.education-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  #experiencia {
-    padding: 2rem 1rem;
-  }
-
-
-
-  .job-card {
-    flex-direction: column;
-    padding: 1.5rem;
-  }
-
-  .job-content {
-    padding-right: 0;
-    margin-bottom: 1.5rem;
-  }
-
-
-  .company-logo {
-    width: 200px;
-    height: 200px;
-  }
-
-  .job-indicator {
-    display: none;
-  }
+.education-card {
+  background: var(--glass-bg);
+  border: var(--glass-border);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  border-radius: var(--radius-md);
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  transition: transform var(--transition-base), border-color var(--transition-base);
 }
 
-@media (min-width: 1200px) {
-  #experiencia {
-    padding: 6rem 2rem;
-  }
+.education-card:hover {
+  transform: var(--hover-lift);
+  border-color: rgba(0, 102, 204, 0.25);
+}
 
-  .job-card {
-    padding: 3rem;
-  }
+.education-info h4 {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
 
-  .job:nth-child(odd) .job-card {
-    flex-direction: row;
-  }
+.education-info p {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+}
 
-  .job:nth-child(even) .job-card {
-    flex-direction: row-reverse;
-  }
+.education-date {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--accent-from);
+  white-space: nowrap;
+  background: rgba(0, 102, 204, 0.08);
+  border: 1px solid rgba(0, 102, 204, 0.2);
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-full);
+  align-self: flex-start;
+}
 
-  .job:nth-child(even) .job-content {
-    padding-right: 0;
-    padding-left: 2rem;
+/* Certification badge */
+.cert-card {
+  background: rgba(16, 185, 129, 0.04);
+  border: 1px solid rgba(16, 185, 129, 0.15);
+}
+
+.cert-card .education-info h4 {
+  color: var(--accent-ai);
+}
+
+.cert-card .education-date {
+  color: var(--accent-ai);
+  background: rgba(16, 185, 129, 0.08);
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+@media (min-width: 640px) {
+  .education-grid {
+    grid-template-columns: 1fr 1fr;
   }
 }
