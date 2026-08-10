@@ -1,87 +1,47 @@
 ---
 import About from './About.astro';
-import Experiencia from './Experiencia.astro';
 import Proyectos from './Proyectos.astro';
-import Skills from './Skills.astro';
 import Contacto from './Contacto.astro';
 ---
-<main>
-    <article id="about">
-        <div class="hero-inner">
-            <div class="hero-badge">
-                <span class="hero-badge-dot"></span>
-                Disponible para nuevas oportunidades
-            </div>
-
+<!-- Caja rígida del hero (texto): se desliza hacia arriba y sale de
+     pantalla con el scroll, revelando lo que hay debajo. -->
+<div id="hero-card" class="hero-card">
+    <div class="hero-inner">
+        <div class="hero-text">
             <div id="info">
-                <h2>Desarrollador Web<br><span class="accent">Full Stack</span></h2>
-                <p>Construyo aplicaciones web modernas integrando IA para automatizar flujos de trabajo. Especializado en React, Next.js y Supabase.</p>
-            </div>
-
-            <div class="hero-metrics">
-                <div class="hero-metric">
-                    <div class="hero-metric-value">80%</div>
-                    <div class="hero-metric-label">Reducción tiempo con IA</div>
-                </div>
-                <div class="hero-metric">
-                    <div class="hero-metric-value">+35%</div>
-                    <div class="hero-metric-label">Tráfico orgánico</div>
-                </div>
-                <div class="hero-metric">
-                    <div class="hero-metric-value">3+</div>
-                    <div class="hero-metric-label">Proyectos en producción</div>
-                </div>
-            </div>
-
-            <div class="hero-actions">
-                <div id="curriculum">
-                    <a href="/Javier_RuizMolero_Curriculum.pdf" download>
-                        Descargar CV
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="7 10 12 15 17 10"></polyline>
-                            <line x1="12" y1="15" x2="12" y2="3"></line>
-                        </svg>
-                    </a>
-                </div>
-
-                <section id="social-media">
-                    <article>
-                        <a href="https://github.com/javierrm11" aria-label="GitHub" target="_blank" rel="noopener noreferrer">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
-                            </svg>
-                        </a>
-                    </article>
-                    <article>
-                        <a href="https://www.linkedin.com/in/javierrm11" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-                                <rect x="2" y="9" width="4" height="12"></rect>
-                                <circle cx="4" cy="4" r="2"></circle>
-                            </svg>
-                        </a>
-                    </article>
-                    <article>
-                        <a href="https://www.instagram.com/javiermdevweb/" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                            </svg>
-                        </a>
-                    </article>
-                </section>
+                <h2>Javier Ruiz Molero</h2>
+                <span class="hero-role-badge">Full Stack + IA</span>
             </div>
         </div>
-    </article>
+    </div>
+</div>
+
+<!-- Escena 3D en dos capas fijas con la misma cámara:
+     #hero-visual (escritorio) se desliza en sincronía con #hero-card;
+     #hero-character (solo el personaje) NO se mueve con el scroll, así el
+     personaje sigue visible y en el mismo sitio cuando la caja se va. -->
+<div id="hero-visual" class="hero-visual">
+    <canvas id="hero-canvas"></canvas>
+    <div class="hero-visual-loader"></div>
+</div>
+<div id="hero-character" class="hero-character">
+    <canvas id="hero-character-canvas"></canvas>
+</div>
+
+<main>
+    <!-- Espaciador: solo aporta la distancia de scroll para que la tarjeta
+         del hero termine de deslizarse antes de que aparezca About. -->
+    <article id="about"></article>
 
     <About />
-    <Experiencia />
     <Proyectos />
-    <Skills />
     <Contacto />
 </main>
+
+<script>
+    import "../scripts/hero-scene";
+    import "../scripts/hero-character";
+</script>
 
 <script>
     import { gsap } from "gsap";
@@ -101,12 +61,21 @@ import Contacto from './Contacto.astro';
     const heroTl = gsap.timeline({ defaults: { ease: ease.out } });
     heroTl
         .from("#header",               { y: -60, opacity: 0, duration: 0.8 })
-        .from(".hero-badge",           { y: 16,  opacity: 0, duration: 0.5 }, "-=0.3")
         .from("#info h2",              { y: 32,  opacity: 0, duration: 0.7 }, "-=0.3")
-        .from("#info p",               { y: 24,  opacity: 0, duration: 0.6 }, "-=0.4")
-        .from(".hero-metric",          { y: 16,  opacity: 0, duration: 0.5, stagger: STAGGER }, "-=0.4")
-        .from(".hero-actions",         { y: 12,  opacity: 0, duration: 0.5 }, "-=0.3")
+        .from(".hero-role-badge",      { y: 16,  opacity: 0, duration: 0.5 }, "-=0.4")
         .from(".scroll-indicator",     { opacity: 0, duration: 0.5 }, "-=0.1");
+
+    // ── La caja del hero sale de pantalla hacia arriba-derecha con el scroll ──
+    // (#hero-visual va sincronizado: son dos capas independientes que se
+    // mueven igual, ver nota de z-index en main.css)
+    gsap.to(["#hero-card", "#hero-visual"], {
+        yPercent: -100,
+        xPercent: 25,
+        rotation: 5,
+        transformOrigin: "center center",
+        ease: "none",
+        scrollTrigger: { trigger: "#about", start: "top top", end: "bottom top", scrub: true }
+    });
 
     // ── Scroll reveal utility ─────────────────────────────────────
     function revealOn(trigger: string, targets: string, stagger = STAGGER) {
@@ -120,41 +89,32 @@ import Contacto from './Contacto.astro';
         });
     }
 
-    // ── About ─────────────────────────────────────────────────────
-    revealOn("#about-me", "#about-me .about-content", 0);
-    revealOn("#about-me", "#about-me .image-container", 0);
-    revealOn("#about-me", ".tech-pill", 0.04);
-
-    // ── Experience ────────────────────────────────────────────────
-    ScrollTrigger.create({
-        trigger: ".experience-timeline",
-        start: "top 75%",
-        onEnter: () => gsap.fromTo(".timeline-line",
-            { scaleY: 0, transformOrigin: "top center" },
-            { scaleY: 1, duration: 1.5, ease: ease.inOut })
-    });
-
-    gsap.utils.toArray<HTMLElement>(".job").forEach((job) => {
-        gsap.from(job, {
-            y: 32, opacity: 0, duration: DURATION, ease: ease.out,
-            scrollTrigger: { trigger: job, start: "top 85%", toggleActions: "play none none none" }
-        });
-        const dot = job.querySelector(".job-indicator");
-        if (dot) {
-            gsap.from(dot, {
-                scale: 0, opacity: 0, duration: 0.4, ease: ease.back,
-                scrollTrigger: { trigger: job, start: "top 85%", toggleActions: "play none none none" }
-            });
-        }
-    });
+    // ── About: callouts anclados al personaje ───────────────────────
+    // La opacidad de cada callout (punto, línea, etiqueta) NO se anima
+    // aquí: hero-character.ts la escribe cada frame atada directamente al
+    // contador de "% transformado" (uReveal) — la 1ª etiqueta entra al 10%,
+    // la 2ª al 20%, etc. Al ser el mismo valor que ya va y vuelve con el
+    // scroll (scrubbed), el orden de aparición/desaparición es automático y
+    // exacto en ambas direcciones, sin tween de scroll aparte aquí.
+    // #about-callouts NO se desvanece con opacity: se suelta a "absolute"
+    // exactamente igual y en el mismo momento que #hero-character (más
+    // abajo) — así etiquetas, contador, base y personaje se van juntos,
+    // desplazándose con la página como cualquier contenido normal, en vez
+    // de que las etiquetas hagan un fade aparte mientras la base/personaje
+    // simplemente se quedan quietos y luego se deslizan.
 
     // ── Projects ──────────────────────────────────────────────────
     revealOn("#proyectos", ".projects-header", 0);
+
+    // Entrada escalonada: una sola animación con stagger, disparada al
+    // entrar la rejilla completa (en vez de un trigger independiente por
+    // tarjeta, que con el bento asimétrico dispararían casi a la vez).
+    gsap.from(".project-card", {
+        y: 40, opacity: 0, duration: DURATION, stagger: 0.15, ease: ease.out,
+        scrollTrigger: { trigger: ".projects-grid", start: "top 85%", toggleActions: "play none none none" }
+    });
+
     gsap.utils.toArray<HTMLElement>(".project-card").forEach((card, i) => {
-        gsap.from(card, {
-            y: 32, opacity: 0, duration: DURATION, ease: ease.out,
-            scrollTrigger: { trigger: card, start: "top 88%", toggleActions: "play none none none" }
-        });
         gsap.to(card, {
             y: i % 2 === 0 ? -16 : 16,
             ease: "none",
@@ -162,23 +122,48 @@ import Contacto from './Contacto.astro';
         });
     });
 
-    // ── Skills ────────────────────────────────────────────────────
-    revealOn("#skills", ".skills-header", 0);
-    gsap.utils.toArray<HTMLElement>(".skill-category").forEach((cat, i) => {
-        gsap.from(cat, {
-            y: 28, opacity: 0, duration: DURATION, delay: i * 0.06, ease: ease.out,
-            scrollTrigger: { trigger: cat, start: "top 88%", toggleActions: "play none none none" }
-        });
-    });
-
     // ── Contact ───────────────────────────────────────────────────
+    // Coreografía de entrada: el móvil aparece CENTRADO en pantalla (grande,
+    // como un "hero" momentáneo) y, mientras la burbuja de "Nuevo mensaje"
+    // va emergiendo, el móvil se desliza hacia su columna del grid — los
+    // dos a la vez, terminando en el layout final de siempre (móvil a la
+    // izquierda, burbuja a la derecha).
     revealOn("#contact", ".contact-header", 0);
-    gsap.utils.toArray<HTMLElement>(".contact-card, .contact-form-container").forEach((el, i) => {
-        gsap.from(el, {
-            y: 28, opacity: 0, duration: DURATION, delay: i * 0.07, ease: ease.out,
-            scrollTrigger: { trigger: el, start: "top 88%", toggleActions: "play none none none" }
+
+    const phoneWrap = document.querySelector<HTMLElement>(".phone-wrap");
+    const formBubble = document.querySelector<HTMLElement>(".contact-form-container");
+
+    if (phoneWrap && formBubble) {
+        // Cuánto hay que desplazar el móvil desde su sitio final (columna
+        // izquierda del grid) para que quede centrado en el VIEWPORT, no
+        // solo en su columna — se mide contra su posición en reposo, así
+        // que hay que calcularlo ANTES de que el timeline lo mueva.
+        const centerOffsetX = () => {
+            const rect = phoneWrap.getBoundingClientRect();
+            const phoneCenterX = rect.left + rect.width / 2;
+            return window.innerWidth / 2 - phoneCenterX;
+        };
+
+        gsap.set(phoneWrap, { x: centerOffsetX, scale: 1.12 });
+        gsap.set(formBubble, { opacity: 0, scale: 0.5, x: -60, transformOrigin: "left center" });
+
+        const contactEntranceTl = gsap.timeline({
+            scrollTrigger: { trigger: "#contact", start: "top 78%", toggleActions: "play none none reverse" }
         });
-    });
+        contactEntranceTl
+            .to(phoneWrap, { x: 0, scale: 1, duration: 1.5, ease: "power3.inOut" })
+            .to(formBubble, { opacity: 1, scale: 1, x: 0, duration: 1.4, ease: "power3.out" }, 0.55);
+
+        // Recalcular el offset de centrado si cambia el tamaño de ventana,
+        // pero solo mientras el timeline no ha arrancado (progress 0) — si
+        // ya se movió, tocar la posición de salida a medio camino se vería
+        // como un salto.
+        window.addEventListener("resize", () => {
+            if (contactEntranceTl.progress() === 0) {
+                gsap.set(phoneWrap, { x: centerOffsetX });
+            }
+        });
+    }
 
     // ── Footer ────────────────────────────────────────────────────
     gsap.from(".footer-section", {
@@ -192,6 +177,68 @@ import Contacto from './Contacto.astro';
         end: 99999,
         onEnter:     () => document.getElementById("header")?.classList.add("scrolled"),
         onLeaveBack: () => document.getElementById("header")?.classList.remove("scrolled")
+    });
+
+    // ── Soltar al personaje (y sus etiquetas) antes de Proyectos ────
+    // #hero-character y #about-callouts van "position: fixed" (pegados a
+    // la pantalla) durante todo Hero + About para que la secuencia de
+    // scroll funcione. Pero si se quedan fijos para siempre, se superponen
+    // al título de Proyectos. Justo antes de que empiece a aparecer, ambos
+    // pasan a "absolute" en su posición actual: a partir de ahí se
+    // desplazan con la página como cualquier otro elemento y desaparecen
+    // por arriba antes de llegar a Proyectos — juntos, sin que unos hagan
+    // fade y otros se limiten a deslizarse.
+    function unpinFixedLayer(id: string, unpinnedFlags: Record<string, boolean>) {
+        const el = document.getElementById(id);
+        if (!el || unpinnedFlags[id]) return;
+        const rect = el.getBoundingClientRect();
+        el.style.position = "absolute";
+        // "position: absolute" no es relativo a la PÁGINA sino al ANCESTRO
+        // posicionado más cercano (offsetParent) — para #hero-character eso
+        // es <body> (sin ancestros posicionados de por medio, equivale a
+        // page-absolute, rect.top + scrollY de toda la vida), pero
+        // #about-callouts vive dentro de #about-me, que tiene
+        // "position: relative": su offsetParent pasa a ser #about-me, no
+        // <body>. Sumar scrollY a ciegas lo colocaba a ~1755px (el top de
+        // #about-me) de más, muy por debajo del viewport. Restar el propio
+        // rect del offsetParent (medido en el mismo instante, ambos
+        // viewport-relative) da el offset correcto sea cual sea el
+        // ancestro, y de propina ya no hace falta sumar scrollY a mano.
+        const parentRect = (el.offsetParent as HTMLElement | null)?.getBoundingClientRect();
+        const parentTop = parentRect?.top ?? -window.scrollY;
+        const parentLeft = parentRect?.left ?? -window.scrollX;
+        el.style.top = `${rect.top - parentTop}px`;
+        el.style.left = `${rect.left - parentLeft}px`;
+        el.style.width = `${rect.width}px`;
+        el.style.height = `${rect.height}px`;
+        el.style.right = "auto";
+        el.style.bottom = "auto";
+        unpinnedFlags[id] = true;
+    }
+    function repinFixedLayer(id: string, unpinnedFlags: Record<string, boolean>) {
+        const el = document.getElementById(id);
+        if (!el || !unpinnedFlags[id]) return;
+        el.style.position = "";
+        el.style.top = "";
+        el.style.left = "";
+        el.style.width = "";
+        el.style.height = "";
+        el.style.right = "";
+        el.style.bottom = "";
+        unpinnedFlags[id] = false;
+    }
+    const unpinnedFlags: Record<string, boolean> = {};
+    ScrollTrigger.create({
+        trigger: "#proyectos",
+        start: "top bottom",
+        onEnter: () => {
+            unpinFixedLayer("hero-character", unpinnedFlags);
+            unpinFixedLayer("about-callouts", unpinnedFlags);
+        },
+        onLeaveBack: () => {
+            repinFixedLayer("hero-character", unpinnedFlags);
+            repinFixedLayer("about-callouts", unpinnedFlags);
+        }
     });
 
     // ── Pause when tab hidden ─────────────────────────────────────

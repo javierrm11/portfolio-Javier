@@ -1,172 +1,189 @@
 #about-me {
-  padding: var(--section-padding-y) clamp(1rem, 4vw, 3rem);
+  min-height: 500dvh;
   position: relative;
+
 }
 
-.about-container {
-  max-width: var(--container-max);
-  margin-inline: auto;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 3rem;
-  align-items: center;
-}
-
-/* ── Text column ────────────────────────────────────────────── */
-#about-me h2 {
-  font-size: clamp(2rem, 4.5vw, 3.25rem);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 1.15;
-  color: var(--text-primary);
-  margin-bottom: 1.5rem;
-}
-
-.intro-text {
-  font-size: clamp(0.9375rem, 1.8vw, 1.0625rem);
-  line-height: 1.75;
-  color: var(--text-secondary);
-  margin-bottom: 1rem;
-}
-
-.description-text {
-  font-size: 0.9375rem;
-  line-height: 1.75;
-  color: var(--text-secondary);
-  margin-bottom: 0;
-}
-
-/* ── Action buttons ─────────────────────────────────────────── */
-.about-actions {
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  margin-top: 2rem;
-}
-
-.btn-primary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--accent-from);
-  color: #fff;
-  font-weight: 600;
-  font-size: 0.875rem;
-  padding: 0.75rem 1.75rem;
-  border-radius: var(--radius-sm);
-  text-decoration: none;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  transition: opacity var(--transition-base), transform var(--transition-base), box-shadow var(--transition-base);
-}
-
-.btn-primary:hover {
-  opacity: 0.88;
-  transform: translateY(-1px);
-  box-shadow: 0 8px 24px rgba(0, 102, 204, 0.45);
-}
-
-.btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--text-primary);
-  font-weight: 600;
-  font-size: 0.875rem;
-  padding: 0.75rem 1.75rem;
-  border-radius: var(--radius-sm);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  text-decoration: none;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  transition: background var(--transition-base), border-color var(--transition-base), transform var(--transition-base);
-}
-
-.btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.22);
-  transform: translateY(-1px);
-}
-
-/* ── Image column ───────────────────────────────────────────── */
-.image-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.image-wrapper {
-  position: relative;
-  display: inline-block;
-  border-radius: var(--radius-lg);
-  background: #06101e;
-  padding: 0;
-  overflow: visible;
-}
-
-/* Vertical glow bars */
-.image-wrapper::before,
-.image-wrapper::after {
-  content: '';
-  position: absolute;
-  top: 8%;
-  height: 76%;
-  width: 3px;
-  border-radius: 3px;
-  z-index: 2;
+/* Capa de etiquetas ancladas al cuerpo del personaje. Fixed + inset:0, como
+   .hero-character, para compartir el mismo sistema de coordenadas de
+   pantalla que usa hero-character.ts al proyectar cada hueso. z-index por
+   encima del personaje (6) para que las etiquetas se vean sobre él. */
+#about-callouts {
+  position: fixed;
+  inset: 0;
+  z-index: 7;
   pointer-events: none;
 }
 
-.image-wrapper::before {
-  left: -14px;
-  background: linear-gradient(to bottom,
-    transparent 0%,
-    rgba(0, 120, 255, 0.85) 20%,
-    rgba(0, 150, 255, 0.95) 50%,
-    rgba(0, 120, 255, 0.85) 80%,
-    transparent 100%
-  );
-  box-shadow: 0 0 14px rgba(0, 130, 255, 0.7), 0 0 28px rgba(0, 130, 255, 0.3);
+/* Punto de anclaje: hero-character.ts mueve este elemento cada frame con
+   transform: translate(Xpx, Ypx) a la posición en pantalla del hueso. Sin
+   tamaño propio (width/height: 0) para que sea un origen de coordenadas
+   limpio del que cuelgan el punto, la línea y la etiqueta. */
+/* Sin opacity aquí a propósito: hero-character.ts escribe su transform en
+   cada frame (proyección del hueso), y GSAP anima la opacidad/entrada de
+   los HIJOS (punto, línea, etiqueta) — si el contenedor también tuviera
+   una transición/opacity propia gestionada por GSAP, competiría por la
+   misma propiedad con la escritura por frame y una de las dos "ganaría"
+   de forma inconsistente. */
+.about-callout {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  will-change: transform;
 }
 
-.image-wrapper::after {
-  right: -14px;
-  background: linear-gradient(to bottom,
-    transparent 0%,
-    rgba(30, 160, 255, 0.8) 20%,
-    rgba(80, 190, 255, 0.9) 50%,
-    rgba(30, 160, 255, 0.8) 80%,
-    transparent 100%
-  );
-  box-shadow: 0 0 14px rgba(60, 170, 255, 0.65), 0 0 28px rgba(60, 170, 255, 0.25);
+.callout-dot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4fc3ff;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 4px rgba(79, 195, 255, 0.22), 0 0 10px rgba(79, 195, 255, 0.8);
+  opacity: 0;
 }
 
-#about-me img {
-  width: 100%;
-  height: auto;
-  border-radius: var(--radius-lg);
-  object-fit: cover;
+.callout-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 1px;
+  background: linear-gradient(90deg, #4fc3ff, transparent);
+  transform-origin: 0 50%;
+  opacity: 0;
+}
+
+.callout-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  min-width: 170px;
+  max-width: 220px;
+  padding: 0.7rem 0.9rem;
+  border-radius: var(--radius-md);
+  background: rgba(10, 40, 66, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow), 0 0 20px rgba(79, 195, 255, 0.12);
+  opacity: 0;
+}
+
+.callout-eyebrow {
   display: block;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
-  transition: transform var(--transition-slow);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6ecbff;
+  margin-bottom: 0.3rem;
 }
 
-#about-me img:hover {
-  transform: translateY(-4px);
+.callout-label p {
+  font-size: 0.82rem;
+  color: var(--text-primary);
+  line-height: 1.4;
 }
 
-/* ── Responsive ─────────────────────────────────────────────── */
-@media (min-width: 900px) {
-  .about-container {
-    grid-template-columns: 1fr 1.1fr;
-    gap: 5rem;
-    align-items: center;
-  }
+/* Geometría de cada callout: offset fijo (dx, dy en px) del punto de
+   anclaje a la etiqueta. La línea usa el mismo vector como ancho + ángulo
+   (atan2), y la etiqueta se ancla por el borde más cercano al punto. */
+.about-callout[data-anchor="head"] .callout-line {
+  width: 175px;
+  transform: rotate(-166.8deg);
+}
+.about-callout[data-anchor="head"] .callout-label {
+  transform: translate(-170px, -40px) translate(-100%, -50%);
 }
 
-@media (min-width: 1200px) {
-  #about-me {
-    padding-block: calc(var(--section-padding-y) * 1.2);
-  }
+/* Codo izquierdo EN PANTALLA (hueso ForearmR_67 — el rig usa L/R
+   anatómico del personaje, espejado al mirar de frente, ver
+   CALLOUT_ANCHORS en hero-character.ts). Etiqueta empujada un poco más
+   hacia ese mismo lado (no cruzando al lado contrario), evita que la
+   línea atraviese el cuerpo. */
+.about-callout[data-anchor="elbow-left"] .callout-line {
+  width: 194px;
+  transform: rotate(-168.1deg);
+}
+.about-callout[data-anchor="elbow-left"] .callout-label {
+  transform: translate(-190px, -40px) translate(-100%, -50%);
+}
+
+.about-callout[data-anchor="elbow-right"] .callout-line {
+  width: 194px;
+  transform: rotate(-11.9deg);
+}
+.about-callout[data-anchor="elbow-right"] .callout-label {
+  transform: translate(190px, -40px) translate(0, -50%);
+}
+
+.about-callout[data-anchor="leg-left"] .callout-line {
+  width: 246px;
+  transform: rotate(153.4deg);
+}
+.about-callout[data-anchor="leg-left"] .callout-label {
+  transform: translate(-220px, 110px) translate(-100%, -50%);
+}
+
+.about-callout[data-anchor="leg-right"] .callout-line {
+  width: 246px;
+  transform: rotate(26.6deg);
+}
+.about-callout[data-anchor="leg-right"] .callout-label {
+  transform: translate(220px, 110px) translate(0, -50%);
+}
+
+.about-callout[data-anchor="hip"] .callout-line {
+  width: 173px;
+  transform: rotate(10deg);
+}
+.about-callout[data-anchor="hip"] .callout-label {
+  transform: translate(170px, 30px) translate(0, -50%);
+}
+
+/* Contador de "% transformado", bajo la base holográfica de los pies.
+   Igual que .about-callout: hero-character.ts escribe su transform cada
+   frame (proyección de un punto a los pies), width/height:0 como origen de
+   coordenadas limpio; la opacidad la controla también hero-character.ts
+   (ligada a uReveal, no al scroll-stagger de los demás callouts). */
+.about-counter {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  will-change: transform, opacity;
+  text-align: center;
+}
+
+.about-counter .counter-value {
+  display: block;
+  transform: translate(-50%, 0);
+  min-width: 90px;
+  padding: 0.3rem 0.9rem;
+  border-radius: var(--radius-sm);
+  background: rgba(4, 20, 26, 0.75);
+  border: 1px solid rgba(0, 212, 255, 0.5);
+  box-shadow: 0 0 16px rgba(0, 212, 255, 0.35);
+  font-family: 'Courier New', ui-monospace, monospace;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #00d4ff;
+  text-shadow: 0 0 8px rgba(0, 212, 255, 0.7);
+}
+
+.about-counter .counter-label {
+  display: block;
+  transform: translate(-50%, 0);
+  margin-top: 0.35rem;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(0, 212, 255, 0.75);
 }

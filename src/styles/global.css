@@ -29,12 +29,33 @@
   --radius-full: 9999px;
 
   --section-padding-y: clamp(5rem, 10vw, 8rem);
-  --container-max: 1200px;
+  --container-max: 1400px;
 
   --transition-base: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* Rejilla de circuito reutilizada en todo fondo azul opaco del sitio
+     (body, hero-card, Proyectos, Contacto) para que los cuadrados no
+     desaparezcan solo porque una sección pinta su propio gradiente encima. */
+  --grid-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Cpath d='M56 0H0V56' fill='none' stroke='rgba(255,255,255,0.09)' stroke-width='1'/%3E%3Ccircle cx='0' cy='0' r='2' fill='rgba(255,255,255,0.45)'/%3E%3C/svg%3E");
+}
+
+/* Aplicar junto a cualquier `background-image` propio de la sección:
+   .bg-grid { background-image: <gradiente-de-la-sección>, var(--grid-pattern); }
+   Mismo drift que el body, para que el patrón no "salte" al cruzar de una
+   sección a otra. */
+.bg-grid {
+  background-size: cover, 56px 56px;
+  background-position: 0 0, 0 0;
+  animation: body-grid-drift 12s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-grid {
+    animation: none;
+  }
 }
 
 *, *::before, *::after {
@@ -51,11 +72,44 @@ html {
 
 body {
   font-family: var(--font-sans);
-  background-color: var(--bg-primary);
+  /* Azul "normal" (ni negro ni navy extremo), mismo par de tonos que ya
+     usan Hero y Proyectos (radial-gradient #1c6f95 → #0a3350 en
+     main.css/proyectos.css) para que el fondo del body no desentone al
+     alternar con esas secciones. Textura de rejilla + nodos (SVG inline,
+     mismo patrón que .noise-overlay más abajo) para dar sensación de
+     "red/circuito" en vez de un azul plano — hace pareja con el efecto de
+     circuitos del personaje en la sección Sobre mí. */
+  background-color: #0a3350;
+  background-image:
+    linear-gradient(165deg, #1c6f95 0%, #0a3350 65%),
+    var(--grid-pattern);
+  background-size: cover, 56px 56px;
+  background-attachment: fixed, fixed;
+  background-position: 0 0, 0 0;
+  /* Misma rejilla a la deriva que la pantalla de carga (page-loader.css):
+     el gradiente (capa 1) se queda quieto, solo se anima la posición de la
+     capa 2 (la rejilla), un ciclo por celda para que el bucle sea invisible. */
+  animation: body-grid-drift 12s linear infinite;
   color: var(--text-primary);
   line-height: 1.6;
   overflow-x: hidden;
   min-height: 100vh;
+}
+
+@keyframes body-grid-drift {
+  to { background-position: 0 0, 56px 56px; }
+}
+
+/* Misma deriva pero para fondos con la rejilla como ÚNICA capa
+   (background-image sin gradiente debajo, p.ej. #contact). */
+@keyframes grid-drift-solo {
+  to { background-position: 56px 56px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body {
+    animation: none;
+  }
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -121,6 +175,40 @@ h1, h2, h3, h4, h5, h6 {
   75%       { transform: translate(-60px, 30px) scale(1.03); }
 }
 
+/* Barrido horizontal sutil, mismo efecto que .page-loader-scanline en
+   loader.css — continúa la sensación de "escena viva" tras la carga. */
+.scanline-overlay {
+  position: fixed;
+  inset: 0;
+  left: 0;
+  right: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.scanline-overlay::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 140px;
+  background: linear-gradient(180deg, transparent, rgba(0, 212, 255, 0.07), transparent);
+  animation: page-scanline-sweep 5.5s ease-in-out infinite;
+}
+
+@keyframes page-scanline-sweep {
+  0%   { transform: translateY(-20vh); }
+  100% { transform: translateY(120vh); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scanline-overlay::before {
+    animation: none;
+    opacity: 0;
+  }
+}
+
 .noise-overlay {
   position: fixed;
   inset: 0;
@@ -130,6 +218,48 @@ h1, h2, h3, h4, h5, h6 {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
   background-repeat: repeat;
   background-size: 128px 128px;
+}
+
+/* Paralaje de capas de circuito: 3 capas del mismo patrón de trazas PCB a
+   distinta escala/opacidad (más lejos = más pequeño y tenue), cada una
+   desplazada verticalmente por circuit-parallax.ts a una velocidad
+   distinta según el scroll — da sensación de profundidad real sin
+   three.js, solo transform (barato). El contenedor es más alto que el
+   viewport (inset negativo) para que el desplazamiento no deje huecos.  */
+.circuit-parallax {
+  position: fixed;
+  inset: -20% 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.circuit-layer {
+  position: absolute;
+  inset: 0;
+  background-repeat: repeat;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cpath d='M14 14 H70 V70 H126' fill='none' stroke='%237cc8ff' stroke-width='1.4'/%3E%3Cpath d='M126 14 V56 H84' fill='none' stroke='%237cc8ff' stroke-width='1.4'/%3E%3Cpath d='M14 98 H42 V126' fill='none' stroke='%237cc8ff' stroke-width='1.4'/%3E%3Ccircle cx='14' cy='14' r='2.4' fill='%237cc8ff'/%3E%3Ccircle cx='70' cy='70' r='2.4' fill='%237cc8ff'/%3E%3Ccircle cx='126' cy='14' r='2' fill='%237cc8ff'/%3E%3Ccircle cx='84' cy='56' r='2' fill='%237cc8ff'/%3E%3Ccircle cx='14' cy='98' r='2' fill='%237cc8ff'/%3E%3Ccircle cx='42' cy='126' r='2' fill='%237cc8ff'/%3E%3C/svg%3E");
+  will-change: transform;
+}
+
+.circuit-layer-1 {
+  background-size: 340px 340px;
+  opacity: 0.05;
+}
+
+.circuit-layer-2 {
+  background-size: 210px 210px;
+  opacity: 0.08;
+}
+
+.circuit-layer-3 {
+  background-size: 130px 130px;
+  opacity: 0.12;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .circuit-layer {
+    transform: none !important;
+  }
 }
 
 /* Gradient text utility */
@@ -169,4 +299,15 @@ h1, h2, h3, h4, h5, h6 {
 .reveal {
   opacity: 0;
   transform: translateY(32px);
+}
+
+/* Cursor de circuito (circuit-cursor.ts): oculta el cursor nativo SOLO en
+   dispositivos con ratón real (mismo criterio que el script, así los dos
+   coinciden) — en táctil no se toca nada. !important porque muchos
+   elementos interactivos ya traen su propio "cursor: pointer" explícito
+   que si no ganaría a cualquier regla heredada normal. */
+@media (hover: hover) and (pointer: fine) {
+  *, *::before, *::after {
+    cursor: none !important;
+  }
 }

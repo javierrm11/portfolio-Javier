@@ -2,208 +2,194 @@ main {
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  
 }
 
 /* ── Hero section ─────────────────────────────────────────── */
+/* #about is just a scroll spacer now — its height is the distance the
+   #hero-card needs to fully slide up and off-screen, AND the distance over
+   which la secuencia del personaje (girar → levantarse → centrar, ver
+   hero-character.ts) se reproduce. Más alto = hay que hacer más scroll para
+   la misma animación = se percibe más lenta. */
 #about {
-  min-height: 100dvh;
+  min-height: 260dvh;
+  
+}
+
+/* Rigid "card": text + 3D canvas, fixed to the viewport so it can slide
+   away as one unit (see the gsap.to(#hero-card, ...) scroll animation in
+   Main.astro). z-index: -1 keeps it behind normal in-flow content, so
+   later sections with an opaque background naturally cover it. */
+.hero-card {
+  position: fixed;
+  /* Más ancha y alta que la ventana: al escalar/inclinar la tarjeta en 3D
+     los bordes se meten ligeramente hacia dentro, así que se deja margen
+     de sobra arriba para que no asome una línea del fondo nada más
+     empezar el scroll. Abajo se queda casi a 0 para que la esquina
+     redondeada aparezca pronto al deslizarse. */
+  top: -12%;
+  right: -5%;
+  bottom: -1%;
+  left: -5%;
+  z-index: -1;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  padding: calc(var(--section-padding-y) + 5rem) clamp(1.25rem, 5vw, 3rem) var(--section-padding-y);
-  position: relative;
-  background-image: url('/imagen_fondo.png');
-  background-size: cover;
-  background-position: center top;
-  background-repeat: no-repeat;
-}
-
-#about::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(5, 5, 5, 0.55) 0%,
-    rgba(5, 5, 5, 0.45) 50%,
-    rgba(5, 5, 5, 0.85) 100%
-  );
-  pointer-events: none;
-  z-index: 0;
-}
-
-#about > * {
-  position: relative;
-  z-index: 1;
+  overflow: hidden;
+  /* Solo las esquinas inferiores: a scroll 0 la tarjeta ocupa toda la
+     pantalla (no se ve ningún radio); solo se aprecia al deslizarse. */
+  border-radius: 0 0 80px 80px;
+  background-image:
+    radial-gradient(ellipse at 50% 40%, #1c6f95 0%, #0a3350 100%),
+    var(--grid-pattern);
+  background-size: cover, 56px 56px;
+  background-position: 0 0, 0 0;
+  animation: body-grid-drift 12s linear infinite;
+  /* Cristal: borde con brillo sutil + sombra grande para vender la
+     profundidad al despegarse de la pantalla. */
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 60px 120px -20px rgba(0, 0, 0, 0.65);
+  will-change: transform;
 }
 
 .hero-inner {
+  position: relative;
+  z-index: 1;
   width: 100%;
-  max-width: 780px;
+  max-width: var(--container-max);
   margin-inline: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 0;
 }
 
-/* Available badge */
-.hero-badge {
-  display: inline-flex;
+.hero-text {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  background: rgba(16, 185, 129, 0.08);
-  border: 1px solid rgba(16, 185, 129, 0.2);
-  border-radius: var(--radius-full);
-  padding: 0.375rem 1rem;
-  font-size: 0.8125rem;
-  font-weight: 500;
-  color: var(--accent-ai);
-  margin-bottom: 2rem;
-  letter-spacing: 0.02em;
+  text-align: center;
 }
 
-.hero-badge-dot {
-  width: 6px;
-  height: 6px;
-  background: var(--accent-ai);
+/* Mobile: título arriba, escena 3D debajo sin solaparse */
+@media (max-width: 999px) {
+  .hero-card {
+    justify-content: flex-start;
+  }
+
+  .hero-inner {
+    padding-top: 7rem;
+  }
+}
+
+@media (min-width: 1000px) {
+  .hero-inner {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .hero-text {
+    align-items: flex-start;
+    text-align: left;
+    max-width: 45%;
+  }
+}
+
+/* Capa independiente de .hero-card (no es su hijo): así no queda atrapada
+   en su z-index:-1 y el personaje puede quedar por encima de las secciones
+   siguientes al girar/deslizarse, en vez de cortarse contra su fondo.
+   Mismos insets que .hero-card para ocupar exactamente el mismo sitio. */
+.hero-visual {
+  position: fixed;
+  top: -12%;
+  right: -5%;
+  /* Sobresale mucho por debajo: es lienzo extra donde pintar los pies y la
+     silla cuando el personaje se separa del escritorio (WebGL no puede
+     dibujar fuera del canvas y se cortaba justo en el borde). El encuadre
+     de cámara ignora este exceso (setViewOffset en hero-scene.ts). */
+  bottom: -35%;
+  left: -5%;
+  z-index: 5;
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* Capa fija con SOLO el personaje: mismos insets que .hero-visual pero sin
+   animar con el scroll (no está en el tween de Main.astro) y por encima,
+   para que el personaje siga visible en su sitio cuando la caja se va. */
+.hero-character {
+  position: fixed;
+  top: -12%;
+  right: -5%;
+  bottom: -35%;
+  left: -5%;
+  z-index: 6;
+  pointer-events: none;
+}
+
+.hero-visual canvas,
+.hero-character canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.hero-visual.is-loaded canvas,
+.hero-character.is-loaded canvas {
+  opacity: 1;
+}
+
+.hero-visual-loader {
+  position: absolute;
+  inset: 0;
+  /* Compensa el exceso inferior del canvas para que el spinner quede
+     centrado respecto a la ventana, no respecto al canvas alargado. */
+  bottom: 23%;
+  margin: auto;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  animation: badge-pulse 2s ease-in-out infinite;
-  flex-shrink: 0;
+  border: 3px solid rgba(5, 5, 5, 0.1);
+  border-top-color: var(--accent-from);
+  animation: hero-visual-spin 0.8s linear infinite;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
 }
 
-@keyframes badge-pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%       { opacity: 0.4; transform: scale(0.75); }
+.hero-visual.is-loaded .hero-visual-loader {
+  opacity: 0;
+}
+
+@keyframes hero-visual-spin {
+  to { transform: rotate(360deg); }
 }
 
 /* Hero headline */
 #info {
   width: 100%;
-  margin-bottom: 1.75rem;
 }
 
 #info h2 {
-  font-size: clamp(3rem, 9vw, 5.5rem);
+  font-size: clamp(2.75rem, 7vw, 5rem);
   font-weight: 800;
   letter-spacing: -0.04em;
-  line-height: 1.0;
-  margin-bottom: 1.25rem;
+  line-height: 1.05;
+  margin-bottom: 0.9rem;
   color: var(--text-primary);
 }
 
-#info h2 .accent {
-  background: var(--gradient-accent);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-#info p {
-  font-size: clamp(1rem, 2.5vw, 1.2rem);
-  color: var(--text-secondary);
-  max-width: 520px;
-  margin-inline: auto;
-  line-height: 1.7;
-  font-weight: 400;
-}
-
-/* Key metrics */
-.hero-metrics {
-  display: flex;
-  gap: clamp(1.5rem, 4vw, 3rem);
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-bottom: 2.5rem;
-  padding-top: 0.25rem;
-}
-
-.hero-metric {
-  text-align: center;
-}
-
-.hero-metric-value {
-  font-size: clamp(1.5rem, 3vw, 2rem);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  background: var(--gradient-accent);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  line-height: 1;
-  margin-bottom: 0.3rem;
-}
-
-.hero-metric-label {
-  font-size: 0.8125rem;
-  color: var(--text-secondary);
-  font-weight: 500;
-}
-
-/* Actions row: CV button + social icons */
-.hero-actions {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-/* CV download button */
-#curriculum {
-  position: static;
-  transform: none;
-}
-
-#curriculum a {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: var(--gradient-accent);
-  color: white;
-  font-weight: 600;
+.hero-role-badge {
+  display: inline-block;
+  background: #fff;
+  color: var(--accent-from);
+  font-weight: 700;
   font-size: 0.9375rem;
-  padding: 0.75rem 1.75rem;
-  border-radius: var(--radius-full);
-  text-decoration: none;
-  transition: opacity var(--transition-base), transform var(--transition-base), box-shadow var(--transition-base);
-  letter-spacing: 0.01em;
-  white-space: nowrap;
-}
-
-#curriculum a:hover {
-  opacity: 0.9;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 102, 204, 0.35);
-}
-
-/* Social links */
-#social-media {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-#social-media article a {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
+  letter-spacing: 0.02em;
+  padding: 0.4rem 1rem;
   border-radius: var(--radius-sm);
-  background: var(--bg-surface);
-  border: var(--glass-border);
-  color: var(--text-secondary);
-  text-decoration: none;
-  transition: color var(--transition-base), background var(--transition-base), border-color var(--transition-base);
-}
-
-#social-media article a:hover {
-  color: var(--text-primary);
-  background: var(--bg-surface-hover);
-  border-color: rgba(255, 255, 255, 0.15);
+  transform: rotate(-2deg);
 }
 
 /* Scroll indicator */

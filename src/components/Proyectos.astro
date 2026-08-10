@@ -3,107 +3,77 @@
 ---
 <section id="proyectos">
     <div class="projects-header">
-        <span class="section-eyebrow">Trabajos</span>
-        <h2>Proyectos Destacados</h2>
-        <p class="projects-subtitle">Aplicaciones reales en producción</p>
+        <h2>Proyectos</h2>
+        <span class="projects-badge">Destacados</span>
     </div>
 
-    <section class="projects-grid">
-        <!-- canalplad.es -->
-        <article class="project-card">
-            <div class="project-image">
-                <div class="image-overlay"></div>
-                <img src="/canalplad.webp" alt="canalplad.es" />
-                <div class="project-links">
-                    <a href="https://canalplad.es" target="_blank" rel="noopener noreferrer" class="project-link">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                            <polyline points="15 3 21 3 21 9"></polyline>
-                            <line x1="10" y1="14" x2="21" y2="3"></line>
-                        </svg>
-                        Ver Live
-                    </a>
-                </div>
-            </div>
-            <div class="project-content">
-                <div class="project-header">
-                    <h3>canalplad.es</h3>
-                    <div class="project-badge">SEO</div>
-                </div>
-                <p class="project-description">
-                    Sitio web corporativo con Next.js y SEO técnico optimizado. Incremento del 35% en tráfico orgánico.
-                </p>
-                <div class="project-tech">
-                    <span class="tech-tag">Next.js</span>
-                    <span class="tech-tag">SEO técnico</span>
-                    <span class="tech-tag">Vercel</span>
-                    <span class="tech-tag">TypeScript</span>
-                </div>
-            </div>
-        </article>
+    <div class="projects-scene">
+        <div class="laptop-wrap">
+            <div class="laptop">
+                <div class="laptop-screen">
+                    <div class="browser-ui">
+                        <div class="browser-tabs">
+                            <button class="browser-tab is-active" data-target="prezu" data-url="https://prezu.es">
+                                <span class="tab-dot"></span>prezu.es
+                            </button>
+                            <button class="browser-tab" data-target="citas" data-url="https://panel-admin-peluqueria.vercel.app">
+                                <span class="tab-dot"></span>citaswhassap
+                            </button>
+                            <button class="browser-tab" data-target="canal" data-url="https://canalonescanalplad.es">
+                                <span class="tab-dot"></span>canalonescanalplad.es
+                            </button>
+                            <button class="browser-tab" data-target="api" data-url="https://apivuelos.es/Mapa">
+                                <span class="tab-dot"></span>apivuelos.es
+                            </button>
+                        </div>
 
-        <!-- apivuelos.es -->
-        <article class="project-card">
-            <div class="project-image">
-                <div class="image-overlay"></div>
-                <img src="/apivuelos.png" alt="apivuelos.es" />
-                <div class="project-links">
-                    <a href="https://apivuelos.es" target="_blank" rel="noopener noreferrer" class="project-link">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                            <polyline points="15 3 21 3 21 9"></polyline>
-                            <line x1="10" y1="14" x2="21" y2="3"></line>
-                        </svg>
-                        Ver Live
-                    </a>
-                </div>
-            </div>
-            <div class="project-content">
-                <div class="project-header">
-                    <h3>apivuelos.es</h3>
-                    <div class="project-badge">Real-time</div>
-                </div>
-                <p class="project-description">
-                    Seguimiento de vuelos en tiempo real con mapa interactivo, estadísticas y APIs externas.
-                </p>
-                <div class="project-tech">
-                    <span class="tech-tag">Next.js</span>
-                    <span class="tech-tag">APIs externas</span>
-                    <span class="tech-tag">Leaflet</span>
-                    <span class="tech-tag">Chart.js</span>
-                </div>
-            </div>
-        </article>
+                        <div class="browser-address">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#4b5563" stroke-width="2">
+                                <rect x="5" y="11" width="14" height="9" rx="2"></rect>
+                                <path d="M8 11V7a4 4 0 0 1 8 0v4"></path>
+                            </svg>
+                            <span class="browser-address-url">https://prezu.es</span>
+                        </div>
 
-        <!-- Plataforma Ocio Nocturno -->
-        <article class="project-card">
-            <div class="project-image">
-                <div class="image-overlay"></div>
-                <div style="width:100%;height:100%;background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(14,165,233,0.08));display:flex;align-items:center;justify-content:center;">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(99,102,241,0.5)" stroke-width="1.5">
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                        <circle cx="12" cy="10" r="3"></circle>
-                    </svg>
+                        <div class="browser-panels">
+                            <div class="browser-panel is-active" id="panel-prezu">
+                                <iframe data-src="https://prezu.es" title="prezu.es" loading="lazy"></iframe>
+                            </div>
+
+                            <div class="browser-panel" id="panel-citas">
+                                <div class="panel-locked">
+                                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="1.75">
+                                        <rect x="5" y="11" width="14" height="9" rx="2"></rect>
+                                        <path d="M8 11V7a4 4 0 0 1 8 0v4"></path>
+                                    </svg>
+                                    <p>Panel privado — requiere inicio de sesión.</p>
+                                    <a href="https://panel-admin-peluqueria.vercel.app" target="_blank" rel="noopener noreferrer">Abrir de todas formas ↗</a>
+                                </div>
+                            </div>
+
+                            <div class="browser-panel" id="panel-canal">
+                                <iframe data-src="https://canalonescanalplad.es" title="canalonescanalplad.es" loading="lazy"></iframe>
+                            </div>
+
+                            <div class="browser-panel" id="panel-api">
+                                <iframe data-src="https://apivuelos.es/Mapa" title="apivuelos.es" loading="lazy"></iframe>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="project-links">
-                    <span class="project-link" style="cursor:default;opacity:0.6;">En desarrollo</span>
+                <div class="laptop-base">
+                    <div class="laptop-notch"></div>
                 </div>
             </div>
-            <div class="project-content">
-                <div class="project-header">
-                    <h3>Ocio Nocturno</h3>
-                    <div class="project-badge">En curso</div>
-                </div>
-                <p class="project-description">
-                    Plataforma de directorio de locales, eventos y reservas orientada a geolocalización y experiencia móvil.
-                </p>
-                <div class="project-tech">
-                    <span class="tech-tag">Next.js</span>
-                    <span class="tech-tag">Node.js</span>
-                    <span class="tech-tag">PostgreSQL</span>
-                    <span class="tech-tag">Geolocalización</span>
-                </div>
-            </div>
-        </article>
-    </section>
+        </div>
+
+        <div class="projects-character">
+            <canvas id="projects-canvas"></canvas>
+        </div>
+    </div>
 </section>
+
+<script>
+    import "../scripts/laptop-reveal";
+    import "../scripts/projects-character";
+</script>

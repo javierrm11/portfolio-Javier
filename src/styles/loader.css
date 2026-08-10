@@ -1,0 +1,153 @@
+/* Pantalla de carga a pantalla completa mientras cargan los modelos 3D del
+   hero. Mismo lenguaje visual que el resto del sitio (azul + hologramas +
+   circuitos, ver about.css .about-counter y el shader de rayos X del
+   personaje) para que no se sienta como una pieza aparte pegada encima.
+   El JS (page-loader.ts) solo escribe el % y el stroke-dashoffset del
+   anillo; toda la animación ambiental vive aquí en CSS. */
+.page-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+  overflow: hidden;
+  background-color: #0a3350;
+  background-image: linear-gradient(165deg, #1c6f95 0%, #0a3350 65%);
+  transition: opacity 0.6s ease, filter 0.6s ease;
+}
+
+.page-loader.is-done {
+  opacity: 0;
+  filter: blur(6px);
+  pointer-events: none;
+}
+
+/* Rejilla de fondo a la deriva: refuerza la idea de "escena construyéndose". */
+.page-loader-grid {
+  position: absolute;
+  inset: -56px;
+  background-image: var(--grid-pattern);
+  background-size: 56px 56px;
+  animation: page-loader-drift 12s linear infinite;
+  opacity: 0.7;
+}
+
+@keyframes page-loader-drift {
+  to { transform: translate(56px, 56px); }
+}
+
+/* Barrido horizontal, como el efecto scan del shader del personaje. */
+.page-loader-scanline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 140px;
+  background: linear-gradient(180deg, transparent, rgba(0, 212, 255, 0.14), transparent);
+  animation: page-loader-scan 3.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes page-loader-scan {
+  0%   { transform: translateY(-20vh); }
+  100% { transform: translateY(120vh); }
+}
+
+.page-loader-core {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  display: grid;
+  place-items: center;
+}
+
+.page-loader-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.ring-track {
+  fill: none;
+  stroke: rgba(0, 212, 255, 0.14);
+  stroke-width: 2;
+}
+
+.ring-progress {
+  fill: none;
+  stroke: #00d4ff;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-dasharray: 326.7;
+  stroke-dashoffset: 326.7;
+  filter: drop-shadow(0 0 6px rgba(0, 212, 255, 0.75));
+  transition: stroke-dashoffset 0.1s linear;
+}
+
+.ring-bracket {
+  fill: none;
+  stroke: rgba(0, 212, 255, 0.55);
+  stroke-width: 1.5;
+  animation: page-loader-pulse 2.4s ease-in-out infinite;
+}
+
+.bracket-tr { animation-delay: 0.2s; }
+.bracket-br { animation-delay: 0.4s; }
+.bracket-bl { animation-delay: 0.6s; }
+
+@keyframes page-loader-pulse {
+  0%, 100% { opacity: 0.4; }
+  50%      { opacity: 1; }
+}
+
+.page-loader-mark {
+  font-family: 'Courier New', ui-monospace, monospace;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #eafcff;
+  text-shadow: 0 0 12px rgba(0, 212, 255, 0.85), 0 0 32px rgba(0, 212, 255, 0.4);
+  animation: page-loader-flicker 3.6s ease-in-out infinite;
+}
+
+@keyframes page-loader-flicker {
+  0%, 92%, 100% { opacity: 1; }
+  94%           { opacity: 0.55; }
+  96%           { opacity: 1; }
+  98%           { opacity: 0.7; }
+}
+
+.page-loader-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.page-loader-percent {
+  font-family: 'Courier New', ui-monospace, monospace;
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #00d4ff;
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.7);
+  min-width: 4ch;
+}
+
+.page-loader-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(234, 252, 255, 0.6);
+  transition: opacity 0.22s ease;
+}
+
+@media (max-width: 640px) {
+  .page-loader-core { width: 96px; height: 96px; }
+  .page-loader-mark { font-size: 1.3rem; }
+}

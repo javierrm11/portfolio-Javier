@@ -1,7 +1,12 @@
+/* Esquinas redondeadas SOLO abajo (las de arriba se quedan a 0): el footer
+   remata la página como una tarjeta que se curva en su borde inferior,
+   igual que el detalle de la referencia. */
 #footer {
   padding: 4rem 0 2rem;
   border-top: 1px solid var(--border-subtle);
+  background: rgba(4, 14, 24, 0.55);
   position: relative;
+  overflow: hidden;
 }
 
 .footer-container {
@@ -117,6 +122,10 @@
   margin-bottom: 1.5rem;
 }
 
+/* Tres columnas: texto | botón "volver arriba" centrado | crédito —
+   mismo reparto que la referencia (ahí en su lugar iba el selector de
+   idioma, que aquí no hace falta). En pantallas estrechas colapsa a un
+   layout apilado con el botón centrado en medio. */
 .bottom-content {
   display: flex;
   align-items: center;
@@ -130,6 +139,47 @@
   color: var(--text-secondary);
 }
 
+.bottom-credit {
+  order: 3;
+}
+
+@media (min-width: 640px) {
+  .bottom-content {
+    flex-wrap: nowrap;
+  }
+
+  .bottom-content p:first-child {
+    flex: 1;
+  }
+
+  .bottom-credit {
+    flex: 1;
+    text-align: right;
+  }
+}
+
+.back-to-top {
+  order: 2;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--bg-surface);
+  border: var(--glass-border);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background var(--transition-base), border-color var(--transition-base), transform var(--transition-base);
+}
+
+.back-to-top:hover {
+  background: var(--bg-surface-hover);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-3px);
+}
+
 /* Responsive */
 @media (min-width: 640px) {
   .footer-content {
@@ -139,7 +189,9 @@
 
 @media (min-width: 1024px) {
   .footer-content {
-    grid-template-columns: 2fr 1fr 1fr 1.5fr;
+    /* Solo quedan 2 columnas (logo/social + contacto) desde que se quitó
+       el nav de Navegación/Servicios. */
+    grid-template-columns: 1.4fr 1fr;
     gap: 4rem;
   }
 

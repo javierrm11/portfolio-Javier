@@ -7,10 +7,9 @@ import "../styles/header.css";
 import "../styles/main.css";
 import "../styles/footer.css";
 import "../styles/about.css";
-import "../styles/experiencia.css";
 import "../styles/proyectos.css";
-import "../styles/skills.css";
 import "../styles/contacto.css";
+import "../styles/loader.css";
 ---
 
 <html lang="es">
@@ -134,17 +133,46 @@ import "../styles/contacto.css";
   
 </head>
   <body>
+    <div id="page-loader" class="page-loader">
+      <div class="page-loader-grid"></div>
+      <div class="page-loader-scanline"></div>
+      <div class="page-loader-core">
+        <svg class="page-loader-ring" viewBox="0 0 120 120">
+          <circle class="ring-track" cx="60" cy="60" r="52" />
+          <circle class="ring-progress" cx="60" cy="60" r="52" />
+          <polyline class="ring-bracket bracket-tl" points="14,34 14,14 34,14" />
+          <polyline class="ring-bracket bracket-tr" points="86,14 106,14 106,34" />
+          <polyline class="ring-bracket bracket-br" points="106,86 106,106 86,106" />
+          <polyline class="ring-bracket bracket-bl" points="34,106 14,106 14,86" />
+        </svg>
+        <span class="page-loader-mark">JM</span>
+      </div>
+      <div class="page-loader-status">
+        <span class="page-loader-percent"><span id="page-loader-count">0</span>%</span>
+        <span id="page-loader-label" class="page-loader-label">Inicializando escena</span>
+      </div>
+    </div>
     <div class="aurora-bg">
       <div class="aurora-orb aurora-orb-1"></div>
       <div class="aurora-orb aurora-orb-2"></div>
       <div class="aurora-orb aurora-orb-3"></div>
     </div>
+    <div class="scanline-overlay"></div>
     <div class="noise-overlay"></div>
+    <div class="circuit-parallax">
+      <div class="circuit-layer circuit-layer-1"></div>
+      <div class="circuit-layer circuit-layer-2"></div>
+      <div class="circuit-layer circuit-layer-3"></div>
+    </div>
     <Header />
     <Main />
     <Footer />
   </body>
 </html>
+<script>
+  import "../scripts/circuit-cursor";
+  import "../scripts/circuit-parallax";
+</script>
 <script>
   // Menu toggle
   document.addEventListener("DOMContentLoaded", () => {

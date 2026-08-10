@@ -1,26 +1,72 @@
 ---
 // About.astro
+// El tramo de scroll en negro revela al personaje ya de pie y centrado
+// (hero-character.ts se encarga de esa secuencia). Aquí solo viven las
+// etiquetas "callout" que se anclan a puntos de su cuerpo — la posición la
+// calcula hero-character.ts cada frame proyectando el hueso correspondiente
+// a coordenadas de pantalla; aquí solo hay marcado estático + contenido.
 ---
 <section id="about-me">
-    <div class="about-container">
-        <div class="image-container">
-            <div class="image-wrapper">
-                <img src="/imagen_javier.png" alt="Javier Ruiz Molero" />
-            </div>
-        </div>
-
-        <article class="about-content">
-            <h2>Construyo experiencias digitales que importan.</h2>
-            <p class="intro-text">
-                Soy desarrollador web Full Stack de Córdoba, España. Mi enfoque combina la precisión técnica del desarrollo backend con la elegancia visual de interfaces modernas, especializado en React, Next.js y Supabase.
-            </p>
-            <p class="description-text">
-                He integrado APIs de inteligencia artificial en proyectos SaaS que redujeron tiempos de trabajo en un 80%. Me apasiona transformar ideas complejas en productos intuitivos y potentes.
-            </p>
-            <div class="about-actions">
-                <a href="#contact" class="btn-primary">Saber más</a>
-                <a href="#proyectos" class="btn-secondary">Ver proyectos</a>
-            </div>
-        </article>
+  <div id="about-callouts">
+    <div class="about-callout" data-anchor="head">
+      <span class="callout-dot"></span>
+      <span class="callout-line"></span>
+      <div class="callout-label">
+        <span class="callout-eyebrow">Sobre mí</span>
+        <p>Full-stack en transición hacia IA — construyo productos de extremo a extremo.</p>
+      </div>
     </div>
+
+    <div class="about-callout" data-anchor="elbow-left">
+      <span class="callout-dot"></span>
+      <span class="callout-line"></span>
+      <div class="callout-label">
+        <span class="callout-eyebrow">Experiencia</span>
+        <p>Weai · Signlab</p>
+      </div>
+    </div>
+
+    <div class="about-callout" data-anchor="elbow-right">
+      <span class="callout-dot"></span>
+      <span class="callout-line"></span>
+      <div class="callout-label">
+        <span class="callout-eyebrow">Estudios</span>
+        <p>DAW · Especialización en IA y Big Data</p>
+      </div>
+    </div>
+
+    <div class="about-callout" data-anchor="hip">
+      <span class="callout-dot"></span>
+      <span class="callout-line"></span>
+      <div class="callout-label">
+        <span class="callout-eyebrow">Herramientas</span>
+        <p>Git · Docker · Prompt Engineering</p>
+      </div>
+    </div>
+
+    <div class="about-callout" data-anchor="leg-left">
+      <span class="callout-dot"></span>
+      <span class="callout-line"></span>
+      <div class="callout-label">
+        <span class="callout-eyebrow">Frontend</span>
+        <p>React · Next.js · Astro · TypeScript</p>
+      </div>
+    </div>
+
+    <div class="about-callout" data-anchor="leg-right">
+      <span class="callout-dot"></span>
+      <span class="callout-line"></span>
+      <div class="callout-label">
+        <span class="callout-eyebrow">Backend</span>
+        <p>Node.js · Python · PostgreSQL</p>
+      </div>
+    </div>
+
+    <!-- Contador de "% transformado": hero-character.ts lo posiciona bajo
+         la base holográfica (proyección del punto a los pies) y actualiza
+         su texto con uReveal cada frame. -->
+    <div id="about-counter" class="about-counter">
+      <span class="counter-value">000</span>
+    </div>
+  </div>
 </section>
