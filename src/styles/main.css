@@ -102,6 +102,14 @@ main {
   }
 }
 
+/* Móvil: título y badge un poco más arriba que en tablet — la pantalla es
+   más corta y el bloque de texto se comía demasiado espacio de la escena. */
+@media (max-width: 600px) {
+  .hero-inner {
+    padding-top: 26dvh;
+  }
+}
+
 @media (min-width: 1000px) {
   .hero-inner {
     align-items: flex-start;

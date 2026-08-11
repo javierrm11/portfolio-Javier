@@ -787,7 +787,7 @@ if (canvas && wrapper) {
     // capas/canvas distintos que a scroll 0 tienen que solaparse píxel a
     // píxel (personaje aquí, escritorio allí).
     camera.lookAt(
-      isCompactLayout ? 0 : modelRadius * 0.32,
+      isCompactLayout ? (window.innerWidth < 600 ? modelRadius * 0.15 : 0) : modelRadius * 0.32,
       isCompactLayout ? modelRadius * 0.3 : -modelRadius * 0.28,
       0
     );
@@ -1117,7 +1117,7 @@ if (canvas && wrapper) {
       // la escena hacia abajo — mismo valor que hero-scene.ts, que ambas
       // capas deben coincidir píxel a píxel a scroll 0.
       lookBias.set(
-        isCompactLayout ? 0 : modelRadius * 0.32,
+        isCompactLayout ? (window.innerWidth < 600 ? -modelRadius * 0.12 : 0) : modelRadius * 0.32,
         isCompactLayout ? modelRadius * 0.3 : -modelRadius * 0.28,
         0
       );

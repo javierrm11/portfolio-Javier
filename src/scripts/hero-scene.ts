@@ -113,8 +113,12 @@ if (canvas && wrapper) {
     // horizontal; y sesgo vertical POSITIVO: mirar por encima del modelo lo
     // empuja hacia abajo en el encuadre, que es donde debe quedar la escena
     // en el Hero móvil (título en el tercio de arriba).
+    // En móvil, además, un pelín de sesgo horizontal NEGATIVO para desplazar
+    // la escena hacia la izquierda (comprobado por captura: con este viewDir
+    // el signo va al revés de lo que parece — positivo la mueve a la
+    // derecha, que es justo lo que hace el 0.32 de escritorio).
     baseLookAt.set(
-      isCompactLayout ? 0 : modelRadius * 0.32,
+      isCompactLayout ? (window.innerWidth < 600 ? -modelRadius * 0.12 : 0) : modelRadius * 0.32,
       isCompactLayout ? modelRadius * 0.3 : -modelRadius * 0.28,
       0
     );
