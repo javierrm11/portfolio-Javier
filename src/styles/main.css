@@ -56,7 +56,18 @@ main {
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: var(--container-max);
+  /* .hero-card sobresale 5vw por cada lado (left/right: -5%), así que
+     width:100% aquí son 110vw, no 100vw. Mientras 110vw > --container-max
+     da igual (el max-width manda y queda centrado sobre el viewport), pero
+     por debajo de ~1273px de ventana el bloque pasa a medir esos 110vw
+     completos y su borde izquierdo se sale de pantalla, cortando el
+     título. Se limita también al ancho REAL de la ventana menos el gutter
+     de siempre: en pantallas anchas no cambia nada y en las estrechas el
+     texto vuelve a quedar dentro. */
+  max-width: min(
+    var(--container-max),
+    calc(100vw - 2 * clamp(1rem, 4vw, 3rem))
+  );
   margin-inline: auto;
   display: flex;
   flex-direction: column;
@@ -71,14 +82,23 @@ main {
   text-align: center;
 }
 
-/* Mobile: título arriba, escena 3D debajo sin solaparse */
+/* Móvil/tablet: nombre a dos tercios de altura y la escena 3D pegada abajo
+   del todo, centrada horizontalmente — en escritorio el texto vive a la
+   izquierda y la escena se sesga a la derecha para dejarle sitio (ver
+   bias en hero-scene.ts/hero-character.ts), pero apiladas verticalmente
+   ese sesgo ya no tiene sentido: isCompactLayout en esos scripts anula el
+   sesgo horizontal del lookAt para que el escritorio/personaje queden
+   centrados bajo el nombre en vez de descentrados a la derecha. */
 @media (max-width: 999px) {
   .hero-card {
     justify-content: flex-start;
   }
 
+  /* .hero-card empieza en top:-12% (sobresale por arriba), así que este
+     padding se mide desde ahí: ~12dvh se comen ese desfase y el resto deja
+     el título en el tercio de arriba de la ventana. */
   .hero-inner {
-    padding-top: 7rem;
+    padding-top: 30dvh;
   }
 }
 
@@ -126,6 +146,16 @@ main {
   z-index: 6;
   pointer-events: none;
 }
+
+/* Nota: en móvil/tablet el canvas NO se recorta a la franja de abajo. Se
+   probó y el problema es que esta misma capa sirve para dos encuadres muy
+   distintos: el Hero (escena abajo, bajo el título) y Sobre mí (personaje
+   de pie, que debe quedar centrado). Con el canvas recortado, el personaje
+   se centra dentro de esa franja y en Sobre mí acaba pegado abajo, chocando
+   con el panel de etiquetas. Ocupando la pantalla entera, quien decide la
+   altura es el sesgo vertical de la cámara — que sí puede cambiar con el
+   scroll (lookBias → lookCenter, ver isCompactLayout en
+   hero-scene.ts/hero-character.ts). */
 
 .hero-visual canvas,
 .hero-character canvas {

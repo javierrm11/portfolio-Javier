@@ -144,6 +144,53 @@
   transform: translate(170px, 30px) translate(0, -50%);
 }
 
+/* ── Móvil/tablet: panel único bajo el personaje ──────────────────
+   Las etiquetas ancladas a huesos no caben en una pantalla estrecha (se
+   pisan entre ellas y tapan al personaje), así que aquí dejan de estar
+   ancladas: todas se apilan en el MISMO recuadro fijo bajo el personaje y
+   hero-character.ts solo muestra la que toca según el % de transformación
+   (ver isCompactLayout en el bucle de callouts). El punto y la línea
+   conectora sobran sin anclaje, se ocultan. */
+@media (max-width: 999px) {
+  .about-callout {
+    position: absolute;
+    top: auto;
+    left: clamp(1rem, 5vw, 2rem);
+    right: clamp(1rem, 5vw, 2rem);
+    bottom: clamp(1.5rem, 5vh, 3rem);
+    width: auto;
+    height: auto;
+  }
+
+  .callout-dot,
+  .callout-line {
+    display: none;
+  }
+
+  /* Mismo nivel de especificidad que las reglas por anchor de arriba
+     (.about-callout[data-anchor="x"] .callout-label) y posterior en el
+     archivo, así gana sin necesidad de !important: anula los offsets
+     px calculados para el anclaje a huesos. */
+  .about-callout[data-anchor] .callout-label {
+    position: static;
+    min-width: 0;
+    max-width: none;
+    padding: 1rem 1.15rem;
+    transform: none;
+    /* El cambio de una etiqueta a la siguiente lo escribe JS por frame;
+       la transición lo convierte en un fundido en vez de un corte seco. */
+    transition: opacity 0.35s ease;
+  }
+
+  .callout-eyebrow {
+    font-size: 0.75rem;
+  }
+
+  .callout-label p {
+    font-size: 0.95rem;
+  }
+}
+
 /* Contador de "% transformado", bajo la base holográfica de los pies.
    Igual que .about-callout: hero-character.ts escribe su transform cada
    frame (proyección de un punto a los pies), width/height:0 como origen de

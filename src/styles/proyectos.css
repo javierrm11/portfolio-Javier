@@ -44,24 +44,29 @@
 }
 
 .projects-character {
-  display: none;
+  position: absolute;
+  right: -22%;
+  bottom: -22%;
+  width: min(30vw, 420px);
+  aspect-ratio: 3 / 4;
+  pointer-events: none;
 }
 
-@media (min-width: 900px) {
-  .projects-character {
-    display: block;
-    position: absolute;
-    right: -22%;
-    bottom: -22%;
-    width: min(30vw, 420px);
-    aspect-ratio: 3 / 4;
-    pointer-events: none;
-  }
+#projects-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
 
-  #projects-canvas {
-    width: 100%;
-    height: 100%;
-    display: block;
+/* Sin personaje por debajo de 1200px: al lado del portátil no queda ancho
+   suficiente y acababa montándose encima o desbordando la pantalla. El
+   corte es el MISMO que el del header (header.css): así el sitio cambia de
+   "modo escritorio" a "modo compacto" de una vez, en vez de a trozos.
+   projects-character.ts usa este mismo umbral para no arrancar siquiera su
+   escena WebGL, así que tampoco se paga el coste de un canvas 3D de más. */
+@media (max-width: 1199px) {
+  .projects-character {
+    display: none;
   }
 }
 
@@ -73,8 +78,29 @@
 .laptop-wrap {
   max-width: 780px;
   width: 100%;
+  /* Necesario en cuanto el max-width es MENOR que el de .projects-scene
+     (móvil/tablet, más abajo): sin esto el bloque se alinea a la izquierda
+     de su contenedor en vez de quedarse centrado. */
+  margin-inline: auto;
   padding-top: clamp(1rem, 4vw, 2rem);
   perspective: 1800px;
+}
+
+/* Tablet: el portátil se queda más pequeño que en escritorio, si no ocupa
+   casi toda la pantalla. */
+@media (max-width: 999px) {
+  .laptop-wrap {
+    max-width: 600px;
+  }
+}
+
+/* Móvil: aún más pequeño. Por debajo de ~430px de ventana el ancho ya lo
+   limita el 100% del contenedor, así que este tope se nota en los móviles
+   grandes y en horizontal. */
+@media (max-width: 600px) {
+  .laptop-wrap {
+    max-width: 400px;
+  }
 }
 
 .laptop {
@@ -220,14 +246,66 @@
 }
 
 .browser-panel iframe {
-  /* La web real, escalada al 65% para que quepa más "página" dentro
-     del hueco pequeño de la pantalla del portátil. */
-  width: 154%;
-  height: 154%;
+  /* Escritorio: 1:1. El iframe mide justo lo que la pantalla del portátil
+     (~760px), así que cada web sirve el diseño responsive que le toca a esa
+     anchura y encaja exacta, sin recortes. */
+  width: 100%;
+  height: 100%;
   border: 0;
-  transform: scale(0.65);
   transform-origin: 0 0;
   background: #fff;
+}
+
+/* Móvil/tablet: aquí sí se escala. Con el portátil reducido, a 1:1 el
+   iframe mide ~340px y cabe muy poca "página" dentro del hueco. Al
+   escalarlo, el iframe cree que mide 154% (100/0.65) y luego se reduce a
+   ese 65%: entra un 54% más de contenido ocupando el mismo sitio visible.
+   OJO: width/height y el scale van emparejados — si cambias el scale, el
+   tamaño debe ser 100/scale % o el iframe deja de cubrir el panel (con
+   scale menor se ve el fondo por los lados). */
+@media (max-width: 899px) {
+  .browser-panel iframe {
+    width: 154%;
+    height: 154%;
+    transform: scale(0.65);
+  }
+}
+
+/* ── Móvil: hueco útil para la web ────────────────────────────────
+   Con el portátil a ~360px, la proporción 16/10.5 deja 217px de alto útil,
+   y la barra de pestañas (39px) + la de dirección (46px) se comían 85 de
+   esos 217: a la web real le quedaba una franja de 132px, en la que no se
+   veía prácticamente nada. Se ataca por los dos lados: pantalla más alta y
+   cromía más compacta. */
+@media (max-width: 600px) {
+  .laptop-screen {
+    aspect-ratio: 16 / 13;
+  }
+
+  .browser-tabs {
+    padding: 0.3rem 0.3rem 0;
+    gap: 1px;
+  }
+
+  .browser-tab {
+    font-size: 0.625rem;
+    padding: 0.3rem 0.55rem;
+    gap: 0.3rem;
+  }
+
+  .browser-tab .tab-dot {
+    width: 5px;
+    height: 5px;
+  }
+
+  .browser-address {
+    padding: 0.3rem 0.5rem;
+  }
+
+  .browser-address-url {
+    font-size: 0.6875rem;
+    padding: 0.2rem 0.6rem;
+  }
 }
 
 .panel-locked {

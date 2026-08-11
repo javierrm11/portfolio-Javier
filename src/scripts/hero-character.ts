@@ -750,6 +750,11 @@ if (canvas && wrapper) {
 
   const viewDir = new THREE.Vector3(-0.55, 0.5, -0.85).normalize();
   let modelRadius = 0;
+  // Mismo criterio que hero-scene.ts: en escritorio el texto va a la
+  // izquierda de la escena y la cámara mira un poco a la izquierda de
+  // centro para dejarle sitio; en móvil/tablet (≤999px) el texto va
+  // ENCIMA, no al lado, así que ese sesgo horizontal se anula.
+  let isCompactLayout = window.innerWidth < 1000;
 
   const basePosition = new THREE.Vector3();
   const orbitRightAxis = new THREE.Vector3()
@@ -767,18 +772,30 @@ if (canvas && wrapper) {
       camera.position.copy(viewDir).multiplyScalar(distance);
     } else {
       const hFov = 2 * Math.atan(Math.tan(vFov / 2) * camera.aspect);
-      const distance = (modelRadius / Math.sin(hFov / 2)) * 0.72;
+      // Mismos valores que hero-scene.ts (ver el porqué del corte en 600px
+      // allí): las dos capas DEBEN usar el mismo factor o el personaje
+      // saldría a otra escala que su escritorio.
+      const fit = isCompactLayout ? (window.innerWidth < 600 ? 0.5 : 0.78) : 0.72;
+      const distance = (modelRadius / Math.sin(hFov / 2)) * fit;
       camera.position.copy(viewDir).multiplyScalar(distance);
     }
     basePosition.copy(camera.position);
     // El lookAt se recalcula cada frame en animate() (depende de centerT),
     // pero se llama aquí también para tener un encuadre correcto ya en el
     // primer frame, antes de que el scroll haya actualizado nada.
-    camera.lookAt(modelRadius * 0.32, -modelRadius * 0.28, 0);
+    // Debe coincidir EXACTAMENTE con baseLookAt de hero-scene.ts: son dos
+    // capas/canvas distintos que a scroll 0 tienen que solaparse píxel a
+    // píxel (personaje aquí, escritorio allí).
+    camera.lookAt(
+      isCompactLayout ? 0 : modelRadius * 0.32,
+      isCompactLayout ? modelRadius * 0.3 : -modelRadius * 0.28,
+      0
+    );
   }
 
   function resize() {
     if (!canvas || !wrapper) return;
+    isCompactLayout = window.innerWidth < 1000;
     const { clientWidth, clientHeight } = wrapper;
     // Mismo truco que hero-scene.ts: el canvas sobresale por abajo y el
     // encuadre se calcula como si terminara en 113vh (setViewOffset).
@@ -1095,16 +1112,37 @@ if (canvas && wrapper) {
     // posición real del personaje — así queda centrado exacto sin importar
     // cómo giren/se muevan las demás fases, en vez de un valor fijo a ojo.
     if (modelRadius && character) {
-      lookBias.set(modelRadius * 0.32, -modelRadius * 0.28, 0);
+      // Punto de partida (Hero). En compacto: sin sesgo horizontal (el
+      // texto va encima, no al lado) y sesgo vertical positivo para empujar
+      // la escena hacia abajo — mismo valor que hero-scene.ts, que ambas
+      // capas deben coincidir píxel a píxel a scroll 0.
+      lookBias.set(
+        isCompactLayout ? 0 : modelRadius * 0.32,
+        isCompactLayout ? modelRadius * 0.3 : -modelRadius * 0.28,
+        0
+      );
+      // Punto de llegada (Sobre mí, personaje ya de pie).
       // characterCenterY es el centro vertical REAL de sus mallas (no un
       // valor a ojo), así el centrado vertical es exacto.
       // Ajustes finos a ojo sobre el centrado real: hacia la derecha en
       // pantalla (comprobado por captura: era al revés) y un poco más
       // arriba en el encuadre (characterCenterY solo, el centro real de las
-      // mallas, dejaba al personaje demasiado abajo/cortado).
+      // mallas, dejaba al personaje demasiado abajo/cortado). El +0.17 va
+      // TAMBIÉN en compacto: no es el hueco para el texto (de eso se ocupa
+      // lookBias) sino la corrección de centrado real — character.position
+      // es local al modelo, que a su vez está desplazado para centrar la
+      // escena entera, así que sin este término el personaje sale a la
+      // izquierda. En compacto solo se sube algo menos: aquí abajo está el
+      // panel de etiquetas y el personaje no debe montarse encima.
+      // Más negativo = personaje más arriba en pantalla. La tablet necesita
+      // más que el móvil: con su pantalla más alta el mismo valor lo dejaba
+      // demasiado bajo, casi tocando el panel de etiquetas.
+      const centerLift = isCompactLayout
+        ? (window.innerWidth < 600 ? 0.36 : 0.44)
+        : 0.36;
       lookCenter.set(
         character.position.x + modelRadius * 0.17,
-        characterCenterY - modelRadius * 0.36,
+        characterCenterY - modelRadius * centerLift,
         character.position.z
       );
       lookTarget.lerpVectors(lookBias, lookCenter, centerT);
@@ -1128,13 +1166,19 @@ if (canvas && wrapper) {
     // respecto al viewport, ya que #about-callouts es fixed+inset:0 (cubre
     // la ventana entera, no el wrapper).
     if (callouts.length && modelRadius) {
+      // En compacto (móvil/tablet) las etiquetas no se anclan a huesos: el
+      // CSS las apila todas en un mismo panel bajo el personaje y aquí solo
+      // se decide CUÁL se ve — la última cuyo umbral ya se ha alcanzado, de
+      // forma que se van relevando conforme sube el % de transformación.
+      let activeIdx = -1;
+      if (isCompactLayout) {
+        for (let i = 0; i < callouts.length; i++) {
+          const threshold = (i + 1) * REVEAL_STEP;
+          if (xRayUniforms.uReveal.value >= threshold - REVEAL_FADE_BAND) activeIdx = i;
+        }
+      }
       for (let i = 0; i < callouts.length; i++) {
         const c = callouts[i];
-        c.bone.getWorldPosition(calloutScreen);
-        calloutScreen.project(camera);
-        const x = (calloutScreen.x * 0.5 + 0.5) * wrapperRect.width + wrapperRect.left;
-        const y = (1 - (calloutScreen.y * 0.5 + 0.5)) * wrapperRect.height + wrapperRect.top;
-        c.el.style.transform = `translate(${x}px, ${y}px)`;
         // Umbral propio por etiqueta: la 1ª (Sobre mí) al 10% de uReveal, la
         // 2ª al 20%, etc. — mismo valor que mueve el contador "% transformado".
         const threshold = (i + 1) * REVEAL_STEP;
@@ -1144,6 +1188,26 @@ if (canvas && wrapper) {
           1
         );
         const op = smoothstep(t);
+
+        if (isCompactLayout) {
+          // Sin transform: la posición la fija el CSS (panel bajo el
+          // personaje). Se limpia el que pudiera haber quedado escrito
+          // desde el modo escritorio (al reducir la ventana), o el panel
+          // se quedaría desplazado en la última posición del hueso.
+          if (c.el.style.transform) c.el.style.transform = "";
+          // 1/0 seco: el fundido lo hace la transición CSS. Usar aquí la
+          // rampa `op` del umbral dejaba un hueco sin ninguna etiqueta
+          // visible justo al relevarse una con la siguiente (la entrante
+          // aún valía ~0 y la saliente ya estaba a 0).
+          c.label.style.opacity = i === activeIdx ? "1" : "0";
+          continue;
+        }
+
+        c.bone.getWorldPosition(calloutScreen);
+        calloutScreen.project(camera);
+        const x = (calloutScreen.x * 0.5 + 0.5) * wrapperRect.width + wrapperRect.left;
+        const y = (1 - (calloutScreen.y * 0.5 + 0.5)) * wrapperRect.height + wrapperRect.top;
+        c.el.style.transform = `translate(${x}px, ${y}px)`;
         c.dot.style.opacity = String(op);
         c.line.style.opacity = String(op);
         c.label.style.opacity = String(op);

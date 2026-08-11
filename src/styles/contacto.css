@@ -368,3 +368,68 @@ textarea.form-input {
     align-items: center;
   }
 }
+
+/* ── Móvil/tablet: sin marco de móvil ─────────────────────────────
+   Un mockup de móvil visto EN un móvil pierde la gracia y, sobre todo,
+   obligaba a meter la lista en un aspect-ratio 9/19.5 fijo con
+   overflow-y:auto: aparecía una barra de scroll DENTRO de la página (scroll
+   anidado), el cuarto item ("Redes Sociales") quedaba fuera de vista, y con
+   ~220px de ancho el email y el teléfono se partían por la mitad.
+   Aquí se desmonta el marco y los contactos pasan a ser tarjetas normales a
+   ancho completo: caben los cuatro, sin scroll interno y con el texto en
+   una línea. De 900px para arriba no cambia nada. */
+@media (max-width: 899px) {
+  .phone-wrap {
+    display: block;
+    perspective: none;
+  }
+
+  .phone {
+    width: 100%;
+    aspect-ratio: auto;
+    transform-style: flat;
+    /* phone-reveal.ts escribe rotateX/rotateY en línea cada frame para el
+       tilt con el ratón; sin marco no tiene sentido inclinar nada y en
+       táctil no hay ratón. Es la única forma de ganarle a un estilo inline. */
+    transform: none !important;
+  }
+
+  /* Bisel y notch: puro atrezo del marco. */
+  .phone::before,
+  .phone-notch {
+    display: none;
+  }
+
+  /* La "pantalla" deja de ser un dispositivo y pasa a ser un contenedor
+     transparente: el fondo y el redondeo los ponen ya las tarjetas. */
+  .phone-screen {
+    height: auto;
+    border-radius: 0;
+    overflow: visible;
+    background: none;
+    box-shadow: none;
+  }
+
+  .phone-app {
+    height: auto;
+    padding: 0;
+  }
+
+  /* La hora falsa y el título "Contactos" eran parte de la metáfora del
+     móvil; sin marco sobran y el <h2> "Contacto" de la sección ya titula. */
+  .phone-app-header {
+    display: none;
+  }
+
+  .phone-contact-list {
+    overflow: visible;
+    gap: 0.75rem;
+  }
+
+  /* Con el ancho completo ya no hace falta romper palabras a la fuerza:
+     `anywhere` era lo que partía "javierrumo2@gmail.com" en dos líneas. */
+  .phone-contact-text p {
+    font-size: 0.9rem;
+    overflow-wrap: break-word;
+  }
+}

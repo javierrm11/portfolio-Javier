@@ -68,6 +68,12 @@ if (canvas && wrapper) {
 
   const basePosition = new THREE.Vector3();
   const baseLookAt = new THREE.Vector3();
+  // En escritorio el texto vive a la izquierda de la escena, así que la
+  // cámara mira un poco a la izquierda de centro para dejarle sitio (ver
+  // fitCameraToModel). En móvil/tablet (≤999px, mismo corte que
+  // main.css) el texto va ENCIMA de la escena, no al lado — ese sesgo ya
+  // no tiene sentido y descentraría el escritorio bajo el nombre.
+  let isCompactLayout = window.innerWidth < 1000;
   // Eje "derecha" de la cámara en su pose neutra: eje de giro para el pitch
   // (arriba/abajo). Se calcula una sola vez sobre viewDir, no cada frame,
   // para que el giro sea estable y no realimente sobre sí mismo.
@@ -86,18 +92,38 @@ if (canvas && wrapper) {
       camera.position.copy(viewDir).multiplyScalar(distance);
     } else {
       const hFov = 2 * Math.atan(Math.tan(vFov / 2) * camera.aspect);
-      const distance = (modelRadius / Math.sin(hFov / 2)) * 0.72;
+      // Menor factor = cámara más cerca = escena más grande.
+      // El encuadre va por hFov, que depende del aspect: un móvil estrecho
+      // da un hFov pequeño → mucha distancia → escena diminuta, y por eso
+      // necesita acercarse. Una tablet tiene el aspect bastante más ancho,
+      // así que con ese mismo 0.5 la escena se sale de pantalla: necesita su
+      // propio factor. IMPORTANTE: hero-character.ts usa exactamente los
+      // mismos valores — son dos capas que deben coincidir píxel a píxel.
+      const fit = isCompactLayout ? (window.innerWidth < 600 ? 0.5 : 0.78) : 0.72;
+      const distance = (modelRadius / Math.sin(hFov / 2)) * fit;
       camera.position.copy(viewDir).multiplyScalar(distance);
     }
     basePosition.copy(camera.position);
-    // Mirar un poco a la izquierda del centro empuja visualmente al
-    // personaje hacia la derecha del encuadre, dejando aire junto al texto.
-    baseLookAt.set(modelRadius * 0.32, -modelRadius * 0.28, 0);
+    // Mirar un poco a la izquierda/abajo del centro empuja visualmente al
+    // personaje hacia la derecha y arriba del encuadre, dejando aire junto
+    // al texto — solo en escritorio (ver isCompactLayout más arriba). En
+    // compacto el canvas ya ocupa solo la franja de abajo, así que
+    // cualquier sesgo aquí sacaría al modelo de esa franja: se centra.
+    // En compacto no hay texto al lado (va encima), así que sin sesgo
+    // horizontal; y sesgo vertical POSITIVO: mirar por encima del modelo lo
+    // empuja hacia abajo en el encuadre, que es donde debe quedar la escena
+    // en el Hero móvil (título en el tercio de arriba).
+    baseLookAt.set(
+      isCompactLayout ? 0 : modelRadius * 0.32,
+      isCompactLayout ? modelRadius * 0.3 : -modelRadius * 0.28,
+      0
+    );
     camera.lookAt(baseLookAt);
   }
 
   function resize() {
     if (!canvas || !wrapper) return;
+    isCompactLayout = window.innerWidth < 1000;
     const { clientWidth, clientHeight } = wrapper;
     // El canvas sobresale por debajo de la ventana (bottom:-35% en
     // .hero-visual) solo como lienzo extra para los pies/silla. El encuadre

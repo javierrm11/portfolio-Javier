@@ -8,7 +8,12 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 const canvas = document.getElementById("projects-canvas") as HTMLCanvasElement | null;
 const wrapper = document.querySelector<HTMLElement>(".projects-character");
 
-if (canvas && wrapper) {
+// Por debajo de 1200px este personaje no se muestra (proyectos.css lo
+// oculta, mismo corte que el header): sin esta guarda se seguiría
+// descargando el .glb entero y creando un contexto WebGL de más para
+// renderizar algo invisible — justo en los dispositivos con menos margen
+// de rendimiento. El umbral coincide con el del CSS a propósito.
+if (canvas && wrapper && window.innerWidth >= 1200) {
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });

@@ -60,7 +60,11 @@ import Contacto from './Contacto.astro';
     // ── Hero entrance ──────────────────────────────────────────────
     const heroTl = gsap.timeline({ defaults: { ease: ease.out } });
     heroTl
-        .from("#header",               { y: -60, opacity: 0, duration: 0.8 })
+        // .header-inner, NO #header: el transform que deja esta animación
+        // convertiría al header en bloque contenedor de sus descendientes
+        // fixed, y el overlay del menú móvil (#main-nav, hermano de
+        // .header-inner) quedaría recortado a la franja del header.
+        .from(".header-inner",         { y: -60, opacity: 0, duration: 0.8 })
         .from("#info h2",              { y: 32,  opacity: 0, duration: 0.7 }, "-=0.3")
         .from(".hero-role-badge",      { y: 16,  opacity: 0, duration: 0.5 }, "-=0.4")
         .from(".scroll-indicator",     { opacity: 0, duration: 0.5 }, "-=0.1");
@@ -133,7 +137,11 @@ import Contacto from './Contacto.astro';
     const phoneWrap = document.querySelector<HTMLElement>(".phone-wrap");
     const formBubble = document.querySelector<HTMLElement>(".contact-form-container");
 
-    if (phoneWrap && formBubble) {
+    // Solo en escritorio: en móvil/tablet no hay marco de móvil que
+    // "centrar y encoger" (contacto.css lo desmonta a partir de 899px), y
+    // el scale 1.12 de salida sobre un bloque ya a ancho completo se salía
+    // de pantalla. Ahí la burbuja entra sola con su revealOn de siempre.
+    if (phoneWrap && formBubble && window.innerWidth >= 900) {
         // Cuánto hay que desplazar el móvil desde su sitio final (columna
         // izquierda del grid) para que quede centrado en el VIEWPORT, no
         // solo en su columna — se mide contra su posición en reposo, así

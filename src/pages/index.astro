@@ -180,19 +180,36 @@ import "../styles/loader.css";
     const mainNav = document.getElementById("main-nav");
     if (!menuToggle || !mainNav) return;
 
+    const setMenu = (open: boolean) => {
+      menuToggle.classList.toggle("active", open);
+      mainNav.classList.toggle("open", open);
+      menuToggle.setAttribute("aria-expanded", String(open));
+      menuToggle.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
+      // Bloquea el scroll de la página mientras el overlay está abierto: si
+      // no, el fondo se desplaza por detrás del menú.
+      document.body.style.overflow = open ? "hidden" : "";
+    };
+
     menuToggle.addEventListener("click", () => {
-      menuToggle.classList.toggle("active");
-      mainNav.classList.toggle("open");
-      document.body.style.overflow = mainNav.classList.contains("open") ? "hidden" : "";
+      setMenu(!mainNav.classList.contains("open"));
     });
 
     const navLinks = document.querySelectorAll<HTMLAnchorElement>(".nav-link");
     navLinks.forEach((link) => {
-      link.addEventListener("click", () => {
-        menuToggle.classList.remove("active");
-        mainNav.classList.remove("open");
-        document.body.style.overflow = "";
-      });
+      link.addEventListener("click", () => setMenu(false));
+    });
+
+    // Cerrar también con el CTA, con Escape y tocando el fondo del overlay
+    // (solo el fondo: e.target === mainNav excluye enlaces y botón).
+    document.querySelector<HTMLAnchorElement>(".nav-cta")
+      ?.addEventListener("click", () => setMenu(false));
+
+    mainNav.addEventListener("click", (e) => {
+      if (e.target === mainNav) setMenu(false);
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && mainNav.classList.contains("open")) setMenu(false);
     });
 
     // Active section highlighting
