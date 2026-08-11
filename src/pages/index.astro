@@ -15,9 +15,12 @@ import "../styles/loader.css";
 <html lang="es">
   <head>
   <meta charset="utf-8" />
+  <!-- El favicon.svg de Astro iba aquí y ganaba a los otros dos: los
+       navegadores prefieren SVG, y al ir el último también se imponía por
+       orden. Eliminado (fichero incluido) para que quede el logo propio. -->
   <link rel="icon" type="image/x-icon" href="/logo.ico" />
   <link rel="icon" type="image/png" href="/logo.png" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/logo.png" />
   <meta name="viewport" content="width=device-width" />
   <meta name="generator" content={Astro.generator} />
 
