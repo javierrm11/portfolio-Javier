@@ -1038,7 +1038,26 @@ if (canvas && wrapper) {
   );
 
   resize();
-  window.addEventListener("resize", resize);
+  // Guarda contra la barra de direcciones de Safari/Chrome móvil: se
+  // oculta/muestra al hacer scroll (típico cerca del final de una sección
+  // larga, como Sobre mí) y eso dispara "resize" con el ancho IGUAL pero el
+  // alto cambiado ~50-100px. Sin esta guarda, ese resize recalculaba toda
+  // la cámara (fitCameraToModel: distancia + lookAt) desde cero, y aunque
+  // la base/personaje siguen en el mismo sitio del mundo 3D, su proyección
+  // en pantalla saltaba a otra posición — el faceT/uReveal no cambiaba, solo
+  // coincidía con estar cerca del final del scroll. Solo se re-encuadra de
+  // verdad si el ancho cambió o el alto lo hizo en más de ese margen (giro
+  // real de pantalla, ventana redimensionada de verdad).
+  let lastResizeWidth = window.innerWidth;
+  let lastResizeHeight = window.innerHeight;
+  window.addEventListener("resize", () => {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    if (w === lastResizeWidth && Math.abs(h - lastResizeHeight) < 150) return;
+    lastResizeWidth = w;
+    lastResizeHeight = h;
+    resize();
+  });
 
   let running = true;
 

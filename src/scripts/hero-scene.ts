@@ -195,7 +195,21 @@ if (canvas && wrapper) {
   );
 
   resize();
-  window.addEventListener("resize", resize);
+  // Misma guarda que hero-character.ts: la barra de direcciones de
+  // Safari/Chrome móvil dispara "resize" al ocultarse/mostrarse durante el
+  // scroll, con el ancho igual pero el alto cambiado ~50-100px. Sin esto,
+  // ese resize reencuadraba la cámara entera y el escritorio "saltaba" en
+  // pantalla aunque nada hubiera cambiado de verdad.
+  let lastResizeWidth = window.innerWidth;
+  let lastResizeHeight = window.innerHeight;
+  window.addEventListener("resize", () => {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    if (w === lastResizeWidth && Math.abs(h - lastResizeHeight) < 150) return;
+    lastResizeWidth = w;
+    lastResizeHeight = h;
+    resize();
+  });
 
   let running = true;
 
