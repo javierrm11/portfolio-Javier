@@ -21,7 +21,13 @@ import "../styles/loader.css";
   <link rel="icon" type="image/x-icon" href="/logo.ico" />
   <link rel="icon" type="image/png" href="/logo.png" />
   <link rel="apple-touch-icon" href="/logo.png" />
-  <meta name="viewport" content="width=device-width" />
+  <!-- Sin initial-scale=1, el móvil no fija el zoom a 1:1: en cuanto algo
+       en la página desborda aunque sea un poco, el navegador puede
+       renderizar la página zoom-out (más ancha que el viewport real y
+       escalada para caber), dejando franjas del fondo del propio SO/
+       navegador a los lados — el "se sale del body" que se veía en
+       iPhone. Con esto el zoom queda anclado a 1:1 desde el arranque. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="generator" content={Astro.generator} />
 
   <!-- Title optimizado -->
