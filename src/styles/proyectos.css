@@ -99,7 +99,7 @@
    grandes y en horizontal. */
 @media (max-width: 600px) {
   .laptop-wrap {
-    max-width: 350px;
+    max-width: 300px;
   }
 }
 
