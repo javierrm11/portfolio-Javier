@@ -68,6 +68,15 @@ html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Hace pareja con el overflow-x:hidden de <body> más abajo — hace falta
+     en LOS DOS para bloquear del todo el scroll horizontal en Safari/
+     Chrome móvil. Con solo uno de los dos, elementos que se salen del
+     viewport (.laptop-base al 112% de ancho, el bisel del móvil de
+     Contacto) podían arrastrar la página unos píxeles hacia un lado con el
+     rebote táctil, dejando todo desplazado (ej. el portátil de Proyectos
+     "descentrado") sin que ningún elemento tuviera de verdad mal el
+     centrado — el escritorio no lo sufre porque no hay scroll por gestos. */
+  overflow-x: hidden;
 }
 
 body {
