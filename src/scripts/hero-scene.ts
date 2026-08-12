@@ -125,21 +125,32 @@ if (canvas && wrapper) {
     camera.lookAt(baseLookAt);
   }
 
-  function resize() {
+  // refit=false: solo tamaño de canvas/aspect (necesario SIEMPRE, incluso
+  // cuando la barra de direcciones móvil cambia el alto real de la ventana
+  // — si no, el canvas deja de coincidir con su caja CSS y sale estirado).
+  // refit=true reencuadra la cámara desde cero (fitCameraToModel), que es
+  // lo que hacía "saltar" la escena en pantalla con esos resize espurios;
+  // ver el listener más abajo para cuándo se activa cada uno.
+  function resize(refit = true) {
     if (!canvas || !wrapper) return;
     isCompactLayout = window.innerWidth < 1000;
     const { clientWidth, clientHeight } = wrapper;
+    // visualViewport.height en vez de window.innerHeight: en iOS Safari
+    // innerHeight se queda desfasado respecto a la altura REALMENTE visible
+    // mientras la barra de direcciones se anima al ocultarse/mostrarse con
+    // el scroll. Mismo motivo que hero-character.ts (deben coincidir).
+    const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
     // El canvas sobresale por debajo de la ventana (bottom:-35% en
     // .hero-visual) solo como lienzo extra para los pies/silla. El encuadre
     // se calcula como si terminara donde siempre (12% arriba + 100vh + 1%
     // abajo = 113vh) y setViewOffset extiende el frustum hacia abajo para
     // rellenar el resto sin alterar la parte visible.
-    const frameHeight = Math.min(clientHeight, window.innerHeight * 1.13);
+    const frameHeight = Math.min(clientHeight, viewportHeight * 1.13);
     camera.aspect = clientWidth / frameHeight;
     camera.setViewOffset(clientWidth, frameHeight, 0, 0, clientWidth, clientHeight);
     camera.updateProjectionMatrix();
     renderer.setSize(clientWidth, clientHeight, false);
-    fitCameraToModel();
+    if (refit) fitCameraToModel();
   }
 
   // Bounding box solo de las mallas: los huesos/empties de una animación de
@@ -197,19 +208,21 @@ if (canvas && wrapper) {
   resize();
   // Misma guarda que hero-character.ts: la barra de direcciones de
   // Safari/Chrome móvil dispara "resize" al ocultarse/mostrarse durante el
-  // scroll, con el ancho igual pero el alto cambiado ~50-100px. Sin esto,
-  // ese resize reencuadraba la cámara entera y el escritorio "saltaba" en
-  // pantalla aunque nada hubiera cambiado de verdad.
+  // scroll, con el ancho igual pero el alto cambiado ~50-100px. El tamaño
+  // de canvas se actualiza siempre; solo se evita el REENCUADRE de cámara
+  // (que es lo que hacía "saltar" la escena) cuando ese cambio es de altura
+  // pequeña y sin cambio de ancho.
   let lastResizeWidth = window.innerWidth;
   let lastResizeHeight = window.innerHeight;
   window.addEventListener("resize", () => {
     const w = window.innerWidth;
     const h = window.innerHeight;
-    if (w === lastResizeWidth && Math.abs(h - lastResizeHeight) < 150) return;
+    const refit = w !== lastResizeWidth || Math.abs(h - lastResizeHeight) >= 150;
     lastResizeWidth = w;
     lastResizeHeight = h;
-    resize();
+    resize(refit);
   });
+  window.visualViewport?.addEventListener("resize", () => resize(false));
 
   let running = true;
 

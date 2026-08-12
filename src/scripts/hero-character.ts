@@ -793,18 +793,33 @@ if (canvas && wrapper) {
     );
   }
 
-  function resize() {
+  // refit=false: solo actualiza tamaño de canvas/aspect/wrapperRect (lo que
+  // hace falta SIEMPRE, incluso cuando la barra de direcciones de Safari/
+  // Chrome móvil cambia el alto real de la ventana — si no, el canvas deja
+  // de coincidir con su caja CSS y el render sale estirado). refit=true
+  // además reencuadra la cámara desde cero (fitCameraToModel: distancia +
+  // lookAt) — eso es lo que hacía "saltar" la base/contador en pantalla
+  // aunque su posición en el mundo 3D no cambiara, así que solo se hace
+  // ante un cambio de tamaño de verdad (ver el listener más abajo).
+  function resize(refit = true) {
     if (!canvas || !wrapper) return;
     isCompactLayout = window.innerWidth < 1000;
     const { clientWidth, clientHeight } = wrapper;
+    // visualViewport.height en vez de window.innerHeight: en iOS Safari
+    // innerHeight se queda desfasado respecto a la altura REALMENTE visible
+    // mientras la barra de direcciones se anima al ocultarse/mostrarse con
+    // el scroll — con innerHeight el encuadre se calculaba para una altura
+    // que ya no era la que se veía, y la base/personaje aparecían más abajo
+    // de lo que deberían. visualViewport sí refleja el área visible real.
+    const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
     // Mismo truco que hero-scene.ts: el canvas sobresale por abajo y el
     // encuadre se calcula como si terminara en 113vh (setViewOffset).
-    const frameHeight = Math.min(clientHeight, window.innerHeight * 1.13);
+    const frameHeight = Math.min(clientHeight, viewportHeight * 1.13);
     camera.aspect = clientWidth / frameHeight;
     camera.setViewOffset(clientWidth, frameHeight, 0, 0, clientWidth, clientHeight);
     camera.updateProjectionMatrix();
     renderer.setSize(clientWidth, clientHeight, false);
-    fitCameraToModel();
+    if (refit) fitCameraToModel();
     // El wrapper es más grande que la ventana (insets negativos) y NDC se
     // proyecta relativo a él (setViewOffset usa su tamaño como "sub-view").
     // #about-callouts en cambio es fixed+inset:0 (cubre la ventana), así
@@ -1041,23 +1056,29 @@ if (canvas && wrapper) {
   // Guarda contra la barra de direcciones de Safari/Chrome móvil: se
   // oculta/muestra al hacer scroll (típico cerca del final de una sección
   // larga, como Sobre mí) y eso dispara "resize" con el ancho IGUAL pero el
-  // alto cambiado ~50-100px. Sin esta guarda, ese resize recalculaba toda
-  // la cámara (fitCameraToModel: distancia + lookAt) desde cero, y aunque
-  // la base/personaje siguen en el mismo sitio del mundo 3D, su proyección
-  // en pantalla saltaba a otra posición — el faceT/uReveal no cambiaba, solo
-  // coincidía con estar cerca del final del scroll. Solo se re-encuadra de
-  // verdad si el ancho cambió o el alto lo hizo en más de ese margen (giro
-  // real de pantalla, ventana redimensionada de verdad).
+  // alto cambiado ~50-100px. El tamaño de canvas SIEMPRE se actualiza (si
+  // no, el canvas deja de coincidir con su caja CSS, que sí cambia de
+  // tamaño real, y el render sale estirado). Lo que se evita es el
+  // REENCUADRE de cámara (refit): eso es lo que hacía "saltar" la
+  // base/contador en pantalla aunque su posición en el mundo 3D no
+  // cambiara — solo se reencuadra de verdad si el ancho cambió o el alto
+  // lo hizo en más de ese margen (giro real de pantalla, ventana
+  // redimensionada de verdad).
   let lastResizeWidth = window.innerWidth;
   let lastResizeHeight = window.innerHeight;
   window.addEventListener("resize", () => {
     const w = window.innerWidth;
     const h = window.innerHeight;
-    if (w === lastResizeWidth && Math.abs(h - lastResizeHeight) < 150) return;
+    const refit = w !== lastResizeWidth || Math.abs(h - lastResizeHeight) >= 150;
     lastResizeWidth = w;
     lastResizeHeight = h;
-    resize();
+    resize(refit);
   });
+  // visualViewport se actualiza de forma más fiable que window.innerHeight
+  // durante la animación de la barra de direcciones en iOS Safari — sin
+  // refit (mismo motivo que arriba), solo para mantener el tamaño de canvas
+  // sincronizado con lo que se ve de verdad en cada instante.
+  window.visualViewport?.addEventListener("resize", () => resize(false));
 
   let running = true;
 
