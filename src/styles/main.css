@@ -92,6 +92,13 @@ main {
 @media (max-width: 999px) {
   .hero-card {
     justify-content: flex-start;
+    /* El bottom:-1% de escritorio deja la tarjeta solo ~8px por debajo del
+       viewport, pero el border-radius es de 80px: la curva arranca 80px
+       antes del borde inferior, así que a scroll 0 se veían las esquinas
+       redondeadas y el fondo asomando por los lados. Bajándola 96px (radio
+       + margen) la curva queda fuera de pantalla en reposo y solo aparece
+       cuando la tarjeta empieza a deslizarse, que es lo que se buscaba. */
+    bottom: -96px;
   }
 
   /* .hero-card empieza en top:-12% (sobresale por arriba), así que este
