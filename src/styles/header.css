@@ -205,7 +205,6 @@
   #main-nav .nav-link {
     display: flex;
     align-items: baseline;
-    gap: 0.9rem;
     font-size: clamp(1.75rem, 7vw, 2.5rem);
     font-weight: 800;
     letter-spacing: -0.02em;
@@ -231,19 +230,24 @@
     display: none;
   }
 
-  .nav-index {
-    font-family: 'Courier New', ui-monospace, monospace;
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    color: #6ecbff;
+  /* El activo se marca con blanco puro + una rayita a la izquierda, no con
+     el gradiente azul de acento: sobre el fondo azul oscuro del propio
+     menú, el gradiente (celeste sobre celeste) casi no se distinguía del
+     resto de enlaces — poco contraste. */
+  #main-nav .nav-link.active {
+    color: #ffffff;
+    padding-left: 1rem;
   }
 
-  .nav-link.active .nav-text {
+  #main-nav .nav-link.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.15em;
+    bottom: 0.15em;
+    width: 4px;
+    border-radius: 2px;
     background: var(--gradient-accent);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
   }
 
   .nav-cta {
@@ -310,9 +314,8 @@
     display: none;
   }
 
-  /* El número y el CTA solo tienen sentido en el overlay de móvil; en la
-     píldora de escritorio sobran. */
-  .nav-index,
+  /* El CTA solo tiene sentido en el overlay de móvil; en la píldora de
+     escritorio sobra. */
   .nav-cta {
     display: none;
   }
