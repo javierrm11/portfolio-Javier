@@ -174,12 +174,8 @@ if (canvas && wrapper) {
 
   const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
 
-  // Mismo criterio que hero-scene.ts (ver comentario ahí): en móvil se baja
-  // antialias/DPR a cambio de rendimiento — esta capa además lleva el
-  // shader X-Ray con ruido por píxel, así que es la más cara de las dos.
-  const isMobileGPU = window.innerWidth < 1000;
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: !isMobileGPU, alpha: true });
-  renderer.setPixelRatio(isMobileGPU ? 1 : Math.min(window.devicePixelRatio, 2));
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
   // Misma iluminación que hero-scene.ts para que el personaje no cambie de
@@ -1084,32 +1080,7 @@ if (canvas && wrapper) {
   // sincronizado con lo que se ve de verdad en cada instante.
   window.visualViewport?.addEventListener("resize", () => resize(false));
 
-  // Mismo mecanismo que hero-scene.ts: además de pararse con la pestaña
-  // oculta, el bucle de render se para cuando esta capa sale del viewport
-  // (Main.astro la suelta a "absolute" antes de Proyectos y a partir de ahí
-  // se desplaza con la página como cualquier contenido — sin esto seguía
-  // renderizando en segundo plano en Proyectos/Contacto/Footer).
-  let tabVisible = !document.hidden;
-  let inViewport = true;
   let running = true;
-
-  function updateRunning() {
-    const shouldRun = tabVisible && inViewport;
-    if (shouldRun && !running) {
-      running = true;
-      animate();
-    } else {
-      running = shouldRun;
-    }
-  }
-
-  new IntersectionObserver(
-    ([entry]) => {
-      inViewport = entry.isIntersecting;
-      updateRunning();
-    },
-    { threshold: 0 }
-  ).observe(wrapper);
 
   function animate() {
     if (!running) return;
@@ -1617,7 +1588,7 @@ if (canvas && wrapper) {
   animate();
 
   document.addEventListener("visibilitychange", () => {
-    tabVisible = !document.hidden;
-    updateRunning();
+    running = !document.hidden;
+    if (running) animate();
   });
 }
