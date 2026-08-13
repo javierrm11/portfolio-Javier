@@ -272,8 +272,14 @@
   .laptop-screen {
     border: 0;
     border-radius: var(--radius-lg);
-    aspect-ratio: auto;
-    height: min(64vh, 540px);
+    /* Ligado al ANCHO (estable), no a una altura en vh: vh depende de si
+       la barra de direcciones del móvil está visible, y cambia justo al
+       hacer scroll — eso realimentaba el alto de página completo, que
+       ScrollTrigger recalculaba en cada cambio, y la sección "saltaba" sola
+       cerca del límite con Contacto. max-height es un tope fijo en px (no
+       relativo al viewport), solo para no desbordar en móvil en horizontal. */
+    aspect-ratio: 3 / 4;
+    max-height: 640px;
     box-shadow: var(--glass-shadow);
   }
 
@@ -285,10 +291,6 @@
 }
 
 @media (max-width: 600px) {
-  .laptop-screen {
-    height: min(58vh, 460px);
-  }
-
   .browser-tabs {
     padding: 0.3rem 0.3rem 0;
     gap: 1px;
