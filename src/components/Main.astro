@@ -78,7 +78,11 @@ import Contacto from './Contacto.astro';
         rotation: 5,
         transformOrigin: "center center",
         ease: "none",
-        scrollTrigger: { trigger: "#about", start: "top top", end: "bottom top", scrub: true }
+        // scrub con número (en vez de true) añade un pequeño retraso/inercia
+        // entre el scroll real y el valor animado — se ve más fluido que el
+        // seguimiento 1:1. Sin efecto en hero-character.ts (capa aparte, no
+        // sujeta a este tween) ni en su propia coreografía de scroll.
+        scrollTrigger: { trigger: "#about", start: "top top", end: "bottom top", scrub: 0.5 }
     });
 
     // ── Scroll reveal utility ─────────────────────────────────────

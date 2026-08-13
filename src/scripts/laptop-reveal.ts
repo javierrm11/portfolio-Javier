@@ -35,7 +35,12 @@ if (wrap && screen && browserUI) {
       trigger: wrap,
       start: "top 95%", // antes 75%: arranca en cuanto asoma por abajo, se abre antes
       end: "middle 50%", // antes 25%: se queda abierta hasta que el centro de la pantalla llega al centro del viewport
-      scrub: true,
+      // scrub con número: pequeño retraso/inercia respecto al scroll real en
+      // vez del seguimiento exacto de scrub:true, se ve más fluido al abrir
+      // la pantalla. laptopReady se basa en self.progress, que sigue
+      // llegando a 1 igual, solo con un poco más de retardo tras parar de
+      // hacer scroll.
+      scrub: 0.5,
       onUpdate: (self) => {
         laptopReady = self.progress >= 0.999;
       },
