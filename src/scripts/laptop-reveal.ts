@@ -20,9 +20,20 @@ const addressUrl = document.querySelector<HTMLElement>(".browser-address-url");
 let laptopReady = false;
 
 if (wrap && screen && browserUI) {
-  // Cerrada: la pantalla cae hacia delante (casi tumbada sobre el teclado).
-  // Abierta: casi vertical, con una ligera reclinación natural.
-  gsap.set(screen, { rotationX: -96, transformPerspective: 1800 });
+  // Por debajo de 900px no hay marco de portátil (ver proyectos.css): la
+  // tarjeta es plana, así que no tiene sentido un giro de bisagra — se abre
+  // con un fade + slide-up simple en su lugar. Comprobado una sola vez al
+  // cargar (mismo criterio que el resto del sitio, p.ej. la coreografía de
+  // Contacto en Main.astro): no es reactivo a un resize en caliente.
+  const isCompactBrowser = window.innerWidth < 900;
+
+  if (isCompactBrowser) {
+    gsap.set(screen, { opacity: 0, y: 24 });
+  } else {
+    // Cerrada: la pantalla cae hacia delante (casi tumbada sobre el teclado).
+    // Abierta: casi vertical, con una ligera reclinación natural.
+    gsap.set(screen, { rotationX: -96, transformPerspective: 1800 });
+  }
   gsap.set(browserUI, { opacity: 0 });
 
   // Timeline scrubbed de una sola fase: se abre y se queda abierta — antes
@@ -50,8 +61,13 @@ if (wrap && screen && browserUI) {
     },
   });
 
-  tl.to(screen, { rotationX: -6, ease: "none", duration: 1 }, 0) // abrir: 0 → 1
-    .fromTo(browserUI, { opacity: 0 }, { opacity: 1, ease: "none", duration: 0.5 }, 0.4);
+  if (isCompactBrowser) {
+    tl.to(screen, { opacity: 1, y: 0, ease: "none", duration: 1 }, 0)
+      .fromTo(browserUI, { opacity: 0 }, { opacity: 1, ease: "none", duration: 0.5 }, 0.4);
+  } else {
+    tl.to(screen, { rotationX: -6, ease: "none", duration: 1 }, 0) // abrir: 0 → 1
+      .fromTo(browserUI, { opacity: 0 }, { opacity: 1, ease: "none", duration: 0.5 }, 0.4);
+  }
 }
 
 // Cualquier píxel dentro del portátil debe hacer scroll DENTRO de él, nunca

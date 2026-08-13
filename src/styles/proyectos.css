@@ -87,19 +87,11 @@
 }
 
 /* Tablet: el portátil se queda más pequeño que en escritorio, si no ocupa
-   casi toda la pantalla. */
+   casi toda la pantalla. Por debajo de 900px el portátil desaparece del
+   todo (ver más abajo), así que este tope solo aplica entre 900-999px. */
 @media (max-width: 999px) {
   .laptop-wrap {
     max-width: 600px;
-  }
-}
-
-/* Móvil: aún más pequeño. Por debajo de ~430px de ventana el ancho ya lo
-   limita el 100% del contenedor, así que este tope se nota en los móviles
-   grandes y en horizontal. */
-@media (max-width: 600px) {
-  .laptop-wrap {
-    max-width: 300px;
   }
 }
 
@@ -256,30 +248,45 @@
   background: #fff;
 }
 
-/* Móvil/tablet: aquí sí se escala. Con el portátil reducido, a 1:1 el
-   iframe mide ~340px y cabe muy poca "página" dentro del hueco. Al
-   escalarlo, el iframe cree que mide 154% (100/0.65) y luego se reduce a
-   ese 65%: entra un 54% más de contenido ocupando el mismo sitio visible.
-   OJO: width/height y el scale van emparejados — si cambias el scale, el
-   tamaño debe ser 100/scale % o el iframe deja de cubrir el panel (con
-   scale menor se ve el fondo por los lados). */
+/* ── Móvil: sin marco de portátil ──────────────────────────────────
+   Por debajo de 900px la pantalla del portátil (con la web escalada al 65%
+   para que "cupiera más" en un hueco pequeño) dejaba el sitio embebido
+   ilegible. En vez de seguir encogiendo el mismo mockup, se quita el
+   marco/base/perspectiva 3D: la interfaz de navegador (mismas pestañas +
+   iframes reales que en escritorio, ningún contenido nuevo) pasa a ser una
+   tarjeta plana a ancho completo — la web embebida recibe su propio layout
+   responsive de verdad para ese ancho, en vez de un escritorio en miniatura.
+   La animación de apertura (laptop-reveal.ts) también cambia en este mismo
+   corte: sin marco no hay tapa que abrir, así que ahí pasa a un fade/slide
+   simple en vez del giro de bisagra. */
 @media (max-width: 899px) {
+  .laptop-wrap {
+    max-width: 100%;
+    perspective: none;
+  }
+
+  .laptop-base {
+    display: none;
+  }
+
+  .laptop-screen {
+    border: 0;
+    border-radius: var(--radius-lg);
+    aspect-ratio: auto;
+    height: min(64vh, 540px);
+    box-shadow: var(--glass-shadow);
+  }
+
   .browser-panel iframe {
-    width: 154%;
-    height: 154%;
-    transform: scale(0.65);
+    width: 100%;
+    height: 100%;
+    transform: none;
   }
 }
 
-/* ── Móvil: hueco útil para la web ────────────────────────────────
-   Con el portátil a ~360px, la proporción 16/10.5 deja 217px de alto útil,
-   y la barra de pestañas (39px) + la de dirección (46px) se comían 85 de
-   esos 217: a la web real le quedaba una franja de 132px, en la que no se
-   veía prácticamente nada. Se ataca por los dos lados: pantalla más alta y
-   cromía más compacta. */
 @media (max-width: 600px) {
   .laptop-screen {
-    aspect-ratio: 16 / 13;
+    height: min(58vh, 460px);
   }
 
   .browser-tabs {
