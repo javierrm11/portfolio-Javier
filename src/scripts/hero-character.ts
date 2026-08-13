@@ -1,9 +1,10 @@
 import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { clone as cloneSkeleton } from "three/examples/jsm/utils/SkeletonUtils.js";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { mouseOrbit, setOrbitScrollActive } from "./mouse-orbit";
 import { beginLoad, finishLoad } from "./page-loader";
+import { loadSharedModel } from "./shared-model";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -879,12 +880,13 @@ if (canvas && wrapper) {
     "lamp_95", "mug_96", "pencil_97", "phone_98", "Plane_93",
   ];
 
-  const loader = new GLTFLoader();
   beginLoad("hero-character");
-  loader.load(
-    "/models/scene.glb",
-    (gltf) => {
-      const model = gltf.scene;
+  loadSharedModel().then(
+    ({ scene: sharedScene, animations }) => {
+      // Clon propio de esta capa (geometría/texturas compartidas por
+      // referencia con hero-scene.ts, ver shared-model.ts): puede animar/
+      // ocultar sus objetos sin afectar a la otra capa.
+      const model = cloneSkeleton(sharedScene) as THREE.Group;
 
       // Centrado con el bounding box de la ESCENA COMPLETA (antes de ocultar
       // nada): así el resultado es idéntico al de hero-scene.ts y las dos
@@ -903,9 +905,9 @@ if (canvas && wrapper) {
 
       scene.add(model);
 
-      if (gltf.animations.length > 0) {
+      if (animations.length > 0) {
         mixer = new THREE.AnimationMixer(model);
-        mixer.clipAction(gltf.animations[0]).play();
+        mixer.clipAction(animations[0]).play();
       }
 
       character = model.getObjectByName("Armature_92") ?? null;
@@ -1045,7 +1047,6 @@ if (canvas && wrapper) {
       resize();
       finishLoad("hero-character");
     },
-    undefined,
     (error) => {
       console.error("No se pudo cargar /models/scene.glb", error);
       finishLoad("hero-character");
@@ -1080,7 +1081,33 @@ if (canvas && wrapper) {
   // sincronizado con lo que se ve de verdad en cada instante.
   window.visualViewport?.addEventListener("resize", () => resize(false));
 
+  // Mismo mecanismo que hero-scene.ts: además de pararse con la pestaña
+  // oculta, el bucle de render se para cuando esta capa sale del viewport
+  // (Main.astro la suelta a "absolute" antes de Proyectos y a partir de ahí
+  // se desplaza con la página como cualquier contenido — sin esto seguía
+  // renderizando en segundo plano en Proyectos/Contacto/Footer). No cambia
+  // nada de lo que se ve, solo cuándo se dibuja.
+  let tabVisible = !document.hidden;
+  let inViewport = true;
   let running = true;
+
+  function updateRunning() {
+    const shouldRun = tabVisible && inViewport;
+    if (shouldRun && !running) {
+      running = true;
+      animate();
+    } else {
+      running = shouldRun;
+    }
+  }
+
+  new IntersectionObserver(
+    ([entry]) => {
+      inViewport = entry.isIntersecting;
+      updateRunning();
+    },
+    { threshold: 0 }
+  ).observe(wrapper);
 
   function animate() {
     if (!running) return;
@@ -1588,7 +1615,7 @@ if (canvas && wrapper) {
   animate();
 
   document.addEventListener("visibilitychange", () => {
-    running = !document.hidden;
-    if (running) animate();
+    tabVisible = !document.hidden;
+    updateRunning();
   });
 }

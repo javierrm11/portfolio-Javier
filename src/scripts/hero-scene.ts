@@ -1,9 +1,10 @@
 import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { clone as cloneSkeleton } from "three/examples/jsm/utils/SkeletonUtils.js";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { mouseOrbit, setOrbitScrollActive } from "./mouse-orbit";
 import { beginLoad, finishLoad } from "./page-loader";
+import { loadSharedModel } from "./shared-model";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -167,12 +168,13 @@ if (canvas && wrapper) {
     return box;
   }
 
-  const loader = new GLTFLoader();
   beginLoad("hero-scene");
-  loader.load(
-    "/models/scene.glb",
-    (gltf) => {
-      const model = gltf.scene;
+  loadSharedModel().then(
+    ({ scene: sharedScene }) => {
+      // Clon propio de esta capa (geometría/texturas compartidas por
+      // referencia con hero-character.ts, ver shared-model.ts): puede
+      // ocultar/mover sus objetos sin afectar a la otra capa.
+      const model = cloneSkeleton(sharedScene) as THREE.Group;
 
       // Centrar el modelo en el origen según su bounding box (de la escena
       // completa, personaje incluido, para coincidir con hero-character.ts).
@@ -198,7 +200,6 @@ if (canvas && wrapper) {
       resize();
       finishLoad("hero-scene");
     },
-    undefined,
     (error) => {
       console.error("No se pudo cargar /models/scene.glb", error);
       finishLoad("hero-scene");
@@ -224,7 +225,34 @@ if (canvas && wrapper) {
   });
   window.visualViewport?.addEventListener("resize", () => resize(false));
 
+  // El bucle de render se para no solo con la pestaña oculta sino también
+  // cuando esta capa sale del viewport: el tween de #hero-visual la deja
+  // desplazada fuera de pantalla (yPercent/xPercent) en cuanto se hace
+  // scroll más allá de Sobre mí, pero sin esto seguía renderizando a pleno
+  // rendimiento en segundo plano mientras el usuario estuviera en
+  // Proyectos/Contacto/Footer. No cambia nada de lo que se ve, solo cuándo
+  // se dibuja.
+  let tabVisible = !document.hidden;
+  let inViewport = true;
   let running = true;
+
+  function updateRunning() {
+    const shouldRun = tabVisible && inViewport;
+    if (shouldRun && !running) {
+      running = true;
+      animate();
+    } else {
+      running = shouldRun;
+    }
+  }
+
+  new IntersectionObserver(
+    ([entry]) => {
+      inViewport = entry.isIntersecting;
+      updateRunning();
+    },
+    { threshold: 0 }
+  ).observe(wrapper);
 
   function animate() {
     if (!running) return;
@@ -245,7 +273,7 @@ if (canvas && wrapper) {
   animate();
 
   document.addEventListener("visibilitychange", () => {
-    running = !document.hidden;
-    if (running) animate();
+    tabVisible = !document.hidden;
+    updateRunning();
   });
 }
