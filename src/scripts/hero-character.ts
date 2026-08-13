@@ -794,30 +794,42 @@ if (canvas && wrapper) {
     );
   }
 
+  // frameHeight fija el "zoom" (grados de FOV por píxel, ver setViewOffset
+  // más abajo): solo debe recalcularse en un refit de verdad — mismo motivo
+  // que hero-scene.ts (deben coincidir). Recalcularlo también en los resize
+  // espurios de la barra de direcciones (refit=false) repartía el mismo FOV
+  // sobre un frameHeight distinto SIN mover la cámara: la escena se veía
+  // "crecer" en pantalla según la barra se ocultaba al hacer scroll, aunque
+  // fitCameraToModel no llegara a ejecutarse.
+  let frameHeightCache = 0;
+
   // refit=false: solo actualiza tamaño de canvas/aspect/wrapperRect (lo que
   // hace falta SIEMPRE, incluso cuando la barra de direcciones de Safari/
   // Chrome móvil cambia el alto real de la ventana — si no, el canvas deja
   // de coincidir con su caja CSS y el render sale estirado). refit=true
   // además reencuadra la cámara desde cero (fitCameraToModel: distancia +
-  // lookAt) — eso es lo que hacía "saltar" la base/contador en pantalla
-  // aunque su posición en el mundo 3D no cambiara, así que solo se hace
-  // ante un cambio de tamaño de verdad (ver el listener más abajo).
+  // lookAt) y recalcula frameHeight — eso es lo que hacía "saltar" la
+  // base/contador en pantalla aunque su posición en el mundo 3D no
+  // cambiara, así que solo se hace ante un cambio de tamaño de verdad (ver
+  // el listener más abajo).
   function resize(refit = true) {
     if (!canvas || !wrapper) return;
     isCompactLayout = window.innerWidth < 1000;
     const { clientWidth, clientHeight } = wrapper;
-    // visualViewport.height en vez de window.innerHeight: en iOS Safari
-    // innerHeight se queda desfasado respecto a la altura REALMENTE visible
-    // mientras la barra de direcciones se anima al ocultarse/mostrarse con
-    // el scroll — con innerHeight el encuadre se calculaba para una altura
-    // que ya no era la que se veía, y la base/personaje aparecían más abajo
-    // de lo que deberían. visualViewport sí refleja el área visible real.
-    const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
-    // Mismo truco que hero-scene.ts: el canvas sobresale por abajo y el
-    // encuadre se calcula como si terminara en 113vh (setViewOffset).
-    const frameHeight = Math.min(clientHeight, viewportHeight * 1.13);
-    camera.aspect = clientWidth / frameHeight;
-    camera.setViewOffset(clientWidth, frameHeight, 0, 0, clientWidth, clientHeight);
+    if (refit || !frameHeightCache) {
+      // visualViewport.height en vez de window.innerHeight: en iOS Safari
+      // innerHeight se queda desfasado respecto a la altura REALMENTE visible
+      // mientras la barra de direcciones se anima al ocultarse/mostrarse con
+      // el scroll — con innerHeight el encuadre se calculaba para una altura
+      // que ya no era la que se veía, y la base/personaje aparecían más abajo
+      // de lo que deberían. visualViewport sí refleja el área visible real.
+      const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
+      // Mismo truco que hero-scene.ts: el canvas sobresale por abajo y el
+      // encuadre se calcula como si terminara en 113vh (setViewOffset).
+      frameHeightCache = Math.min(clientHeight, viewportHeight * 1.13);
+    }
+    camera.aspect = clientWidth / frameHeightCache;
+    camera.setViewOffset(clientWidth, frameHeightCache, 0, 0, clientWidth, clientHeight);
     camera.updateProjectionMatrix();
     renderer.setSize(clientWidth, clientHeight, false);
     if (refit) fitCameraToModel();

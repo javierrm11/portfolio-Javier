@@ -126,29 +126,41 @@ if (canvas && wrapper) {
     camera.lookAt(baseLookAt);
   }
 
+  // frameHeight fija el "zoom" (grados de FOV por píxel, ver setViewOffset
+  // más abajo): solo debe recalcularse en un refit de verdad. Si se
+  // recalculara también en los resize espurios de la barra de direcciones
+  // (refit=false), el mismo FOV se repartiría sobre un frameHeight distinto
+  // SIN mover la cámara — la escena se veía "crecer" en pantalla según la
+  // barra se ocultaba al hacer scroll, aunque fitCameraToModel (que sí
+  // movería la cámara) no llegara a ejecutarse.
+  let frameHeightCache = 0;
+
   // refit=false: solo tamaño de canvas/aspect (necesario SIEMPRE, incluso
   // cuando la barra de direcciones móvil cambia el alto real de la ventana
   // — si no, el canvas deja de coincidir con su caja CSS y sale estirado).
-  // refit=true reencuadra la cámara desde cero (fitCameraToModel), que es
-  // lo que hacía "saltar" la escena en pantalla con esos resize espurios;
-  // ver el listener más abajo para cuándo se activa cada uno.
+  // refit=true reencuadra la cámara desde cero (fitCameraToModel) Y
+  // recalcula frameHeight — es lo que hacía "saltar" la escena en pantalla
+  // con esos resize espurios; ver el listener más abajo para cuándo se
+  // activa cada uno.
   function resize(refit = true) {
     if (!canvas || !wrapper) return;
     isCompactLayout = window.innerWidth < 1000;
     const { clientWidth, clientHeight } = wrapper;
-    // visualViewport.height en vez de window.innerHeight: en iOS Safari
-    // innerHeight se queda desfasado respecto a la altura REALMENTE visible
-    // mientras la barra de direcciones se anima al ocultarse/mostrarse con
-    // el scroll. Mismo motivo que hero-character.ts (deben coincidir).
-    const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
-    // El canvas sobresale por debajo de la ventana (bottom:-35% en
-    // .hero-visual) solo como lienzo extra para los pies/silla. El encuadre
-    // se calcula como si terminara donde siempre (12% arriba + 100vh + 1%
-    // abajo = 113vh) y setViewOffset extiende el frustum hacia abajo para
-    // rellenar el resto sin alterar la parte visible.
-    const frameHeight = Math.min(clientHeight, viewportHeight * 1.13);
-    camera.aspect = clientWidth / frameHeight;
-    camera.setViewOffset(clientWidth, frameHeight, 0, 0, clientWidth, clientHeight);
+    if (refit || !frameHeightCache) {
+      // visualViewport.height en vez de window.innerHeight: en iOS Safari
+      // innerHeight se queda desfasado respecto a la altura REALMENTE visible
+      // mientras la barra de direcciones se anima al ocultarse/mostrarse con
+      // el scroll. Mismo motivo que hero-character.ts (deben coincidir).
+      const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
+      // El canvas sobresale por debajo de la ventana (bottom:-35% en
+      // .hero-visual) solo como lienzo extra para los pies/silla. El encuadre
+      // se calcula como si terminara donde siempre (12% arriba + 100vh + 1%
+      // abajo = 113vh) y setViewOffset extiende el frustum hacia abajo para
+      // rellenar el resto sin alterar la parte visible.
+      frameHeightCache = Math.min(clientHeight, viewportHeight * 1.13);
+    }
+    camera.aspect = clientWidth / frameHeightCache;
+    camera.setViewOffset(clientWidth, frameHeightCache, 0, 0, clientWidth, clientHeight);
     camera.updateProjectionMatrix();
     renderer.setSize(clientWidth, clientHeight, false);
     if (refit) fitCameraToModel();
