@@ -65,7 +65,15 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  /* OJO: aquí NO va "scroll-behavior: smooth". Esa propiedad no se limita a
+     la navegación por anclas: afecta a CUALQUIER cambio de posición de
+     scroll, incluidos los reajustes que hace el propio navegador. En móvil,
+     al mostrarse u ocultarse la barra de direcciones el viewport cambia y
+     el navegador corrige la posición; con smooth esa corrección se ANIMA y
+     se percibe como que la página se desplaza sola (sobre todo al subir,
+     que es justo cuando reaparece la barra, y al final de la página). El
+     desplazamiento suave de los enlaces de menú se hace ahora a mano en
+     index.astro, así solo se anima lo que el usuario pide. */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   /* Hace pareja con el overflow-x:hidden de <body> más abajo — hace falta
