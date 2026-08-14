@@ -1,5 +1,16 @@
 #about-me {
-  min-height: 500dvh;
+  /* svh (small viewport height), NO dvh: dvh es el viewport DINÁMICO, que
+     cambia al ocultarse/mostrarse la barra de direcciones y al abrirse el
+     teclado. Como esta sección mide cientos de "vh", cualquier cambio de
+     esos se multiplicaba por 500 y reescribía el alto de media página de
+     golpe: al tocar un campo del formulario de Contacto (teclado abierto,
+     ~370px menos de viewport) la página encogía miles de px y el scroll
+     pasaba a apuntar a otra sección. svh es la variante ESTABLE (siempre el
+     viewport más pequeño, con la barra visible), así el alto no depende ya
+     de la interfaz del navegador. La línea vh de antes queda de reserva
+     para navegadores sin soporte de svh. */
+  min-height: 500vh;
+  min-height: 500svh;
   position: relative;
 
 }
