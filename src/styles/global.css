@@ -83,8 +83,18 @@ html {
      Contacto) podían arrastrar la página unos píxeles hacia un lado con el
      rebote táctil, dejando todo desplazado (ej. el portátil de Proyectos
      "descentrado") sin que ningún elemento tuviera de verdad mal el
-     centrado — el escritorio no lo sufre porque no hay scroll por gestos. */
+     centrado — el escritorio no lo sufre porque no hay scroll por gestos.
+     "clip" en vez de "hidden": hidden convierte al elemento en contenedor
+     de scroll (solo que sin barra), y en Safari iOS eso no impide arrastrar
+     la página de lado cuando quien se sale es un elemento POSICIONADO
+     ABSOLUTO. Y aquí los hay: al pasar de Proyectos, #hero-character y
+     #about-callouts se sueltan a position:absolute conservando el ancho que
+     tenían (110% del viewport, por sus insets de -5%), así que llegan ~20px
+     más allá del borde derecho. clip recorta de verdad y no crea puerto de
+     scroll, así que no hay nada que arrastrar. La línea hidden se queda de
+     reserva para navegadores sin soporte de clip. */
   overflow-x: hidden;
+  overflow-x: clip;
   /* Corta el rebote elástico al llegar a los extremos. Importa sobre todo
      al FINAL de la página en móvil: allí estás en el máximo de scroll, y
      cuando la barra de direcciones se oculta el viewport crece, el máximo
@@ -107,7 +117,10 @@ body {
   background-color: #0a3350;
   color: var(--text-primary);
   line-height: 1.6;
+  /* Mismo criterio que en <html> (ver nota allí): clip recorta sin crear
+     contenedor de scroll; hidden queda de reserva. */
   overflow-x: hidden;
+  overflow-x: clip;
   min-height: 100vh;
 }
 
