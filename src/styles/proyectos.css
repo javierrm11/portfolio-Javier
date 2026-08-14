@@ -281,10 +281,14 @@
     aspect-ratio: 3 / 4;
     max-height: 640px;
     box-shadow: var(--glass-shadow);
-    /* Safari en iOS puede fallar al delegar el scroll táctil a un iframe
-       anidado dentro de un contenedor con overflow:hidden + border-radius
-       si no tiene su propia capa de composición — se la fuerza aquí. */
-    transform: translateZ(0);
+    /* overscroll-behavior:contain venía de la versión de escritorio (evita
+       que el scroll "se escape" del portátil hacia la página con el ratón,
+       ver laptop-reveal.ts). En iOS Safari esta propiedad, sobre un
+       contenedor que no es scrolleable él mismo (aquí solo clipa con
+       overflow:hidden — lo scrolleable es el iframe de dentro), tiene bugs
+       conocidos que pueden bloquear el scroll táctil del iframe anidado.
+       auto la neutraliza solo en este breakpoint táctil. */
+    overscroll-behavior: auto;
   }
 
   .browser-panel iframe {
