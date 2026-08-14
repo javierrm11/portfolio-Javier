@@ -382,6 +382,15 @@ textarea.form-input {
    ancho completo: caben los cuatro, sin scroll interno y con el texto en
    una línea. De 900px para arriba no cambia nada. */
 @media (max-width: 899px) {
+  /* 16px como MÍNIMO, no los 15px (0.9375rem) de escritorio: iOS Safari
+     hace zoom automático sobre cualquier campo de formulario con menos de
+     16px al enfocarlo, y ese zoom desplaza la página entera — se percibe
+     como un salto al tocar un campo. Es el umbral exacto de Safari, no un
+     valor estético. */
+  .form-input {
+    font-size: 16px;
+  }
+
   .phone-wrap {
     display: block;
     perspective: none;

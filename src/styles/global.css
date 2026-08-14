@@ -81,28 +81,44 @@ html {
 
 body {
   font-family: var(--font-sans);
-  /* Azul "normal" (ni negro ni navy extremo), mismo par de tonos que ya
-     usan Hero y Proyectos (radial-gradient #1c6f95 → #0a3350 en
-     main.css/proyectos.css) para que el fondo del body no desentone al
-     alternar con esas secciones. Textura de rejilla + nodos (SVG inline,
-     mismo patrón que .noise-overlay más abajo) para dar sensación de
-     "red/circuito" en vez de un azul plano — hace pareja con el efecto de
-     circuitos del personaje en la sección Sobre mí. */
+  /* El fondo (gradiente + rejilla) ya no se pinta aquí sino en
+     .page-backdrop, más abajo. Iba en el body con
+     "background-attachment: fixed", que iOS Safari nunca ha soportado bien:
+     obliga a repintar el fondo entero en cada frame de scroll y lo
+     recoloca de golpe cada vez que la barra de direcciones se oculta o se
+     muestra, lo que se ve como saltos/rebotes de la página mientras se
+     baja. Una capa position:fixed da exactamente el mismo resultado visual
+     sin ese problema. Se deja el color plano como base. */
+  background-color: #0a3350;
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* Capa de fondo fija: sustituye al background-attachment del body (ver la
+   nota de arriba). Azul "normal" (ni negro ni navy extremo), mismo par de
+   tonos que ya usan Hero y Proyectos (radial-gradient #1c6f95 → #0a3350 en
+   main.css/proyectos.css) para que no desentone al alternar con esas
+   secciones. Textura de rejilla + nodos (SVG inline, mismo patrón que
+   .noise-overlay) para dar sensación de "red/circuito" en vez de un azul
+   plano — hace pareja con el efecto de circuitos del personaje en Sobre mí.
+   z-index por debajo de las otras capas decorativas fijas (todas en -1). */
+.page-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
   background-color: #0a3350;
   background-image:
     linear-gradient(165deg, #1c6f95 0%, #0a3350 65%),
     var(--grid-pattern);
   background-size: cover, 56px 56px;
-  background-attachment: fixed, fixed;
   background-position: 0 0, 0 0;
   /* Misma rejilla a la deriva que la pantalla de carga (page-loader.css):
      el gradiente (capa 1) se queda quieto, solo se anima la posición de la
      capa 2 (la rejilla), un ciclo por celda para que el bucle sea invisible. */
   animation: body-grid-drift 12s linear infinite;
-  color: var(--text-primary);
-  line-height: 1.6;
-  overflow-x: hidden;
-  min-height: 100vh;
 }
 
 @keyframes body-grid-drift {
@@ -116,7 +132,7 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  body {
+  .page-backdrop {
     animation: none;
   }
 }

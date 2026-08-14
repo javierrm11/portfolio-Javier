@@ -161,6 +161,10 @@ import "../styles/loader.css";
         <span id="page-loader-label" class="page-loader-label">Inicializando escena</span>
       </div>
     </div>
+    <!-- Capa de fondo fija (gradiente + rejilla). Ver .page-backdrop en
+         global.css: sustituye al background-attachment:fixed del body, que
+         en iOS Safari provocaba saltos del fondo al hacer scroll. -->
+    <div class="page-backdrop"></div>
     <div class="aurora-bg">
       <div class="aurora-orb aurora-orb-1"></div>
       <div class="aurora-orb aurora-orb-2"></div>
