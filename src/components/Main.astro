@@ -249,6 +249,21 @@ import Contacto from './Contacto.astro';
         el.style.bottom = "";
         unpinnedFlags[id] = false;
     }
+    // Además del "soltado" a absolute de abajo, ambas capas se desvanecen a
+    // la vez mientras Proyectos entra en pantalla. Al ser cajas más altas
+    // que el viewport y estar fuera de flujo, aunque se desplacen con la
+    // página siguen asomando por arriba durante un buen tramo: en móvil
+    // (secciones más juntas) el personaje y la etiqueta se veían por detrás
+    // del título de Proyectos y de la tarjeta del navegador. El z-index de
+    // la sección (proyectos.css) impide que las tape, pero como la sección
+    // es transparente hay que ocultarlas además. Un ÚNICO tween para las
+    // dos: se van juntas, sin que una haga fade y la otra solo se deslice.
+    gsap.to(["#hero-character", "#about-callouts"], {
+        opacity: 0,
+        ease: "none",
+        scrollTrigger: { trigger: "#proyectos", start: "top 90%", end: "top 45%", scrub: true }
+    });
+
     const unpinnedFlags: Record<string, boolean> = {};
     ScrollTrigger.create({
         trigger: "#proyectos",

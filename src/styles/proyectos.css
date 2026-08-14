@@ -1,7 +1,17 @@
 /* Mismo azul que la portada (hero-card en main.css). */
 #proyectos {
   padding: var(--section-padding-y) clamp(1rem, 4vw, 3rem);
-
+  /* Por encima de la capa del personaje (.hero-character z-index:6) y de sus
+     etiquetas (#about-callouts z-index:7, ver about.css). Esas capas miden
+     más de un viewport de alto y están fuera de flujo, así que al soltarlas
+     antes de Proyectos (unpinFixedLayer en Main.astro) seguían pintando
+     ENCIMA del título y de la tarjeta del navegador — muy visible en móvil,
+     donde las secciones quedan más juntas: al bajar a Proyectos y subir un
+     poco, el personaje y la etiqueta se veían superpuestos sobre la
+     sección. Con su propio contexto de apilado por encima, la sección las
+     tapa en vez de dejarse tapar. */
+  position: relative;
+  z-index: 10;
 }
 
 .projects-header {
@@ -281,42 +291,12 @@
     aspect-ratio: 3 / 4;
     max-height: 640px;
     box-shadow: var(--glass-shadow);
-    /* Aquí no va overscroll-behavior: este elemento solo RECORTA
-       (overflow:hidden), no scrollea nada. El scroll táctil lo gestiona
-       .browser-panel, ver justo debajo. */
-  }
-
-  /* ── Scroll táctil dentro de la web embebida ──────────────────────
-     iOS Safari "aplana" los iframes de otro origen: los renderiza a la
-     altura completa de su contenido y NO les da su propio contenedor de
-     scroll. Por eso el gesto del dedo se lo quedaba la página y bajaba a
-     Contacto en vez de desplazar la web de dentro (un tap sí funcionaba:
-     no necesita que se delegue ningún gesto de scroll).
-     El arreglo es invertir quién scrollea: el PANEL pasa a ser el elemento
-     scrolleable — un div normal, que iOS sí sabe desplazar — y el iframe se
-     dibuja alto y entero dentro de él. overscroll-behavior aquí SÍ tiene
-     efecto (es un scroller de verdad) y es lo que impide que al llegar al
-     final el gesto encadene hacia la página. */
-  .browser-panel {
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
   }
 
   .browser-panel iframe {
     width: 100%;
-    /* Necesariamente una estimación: no se puede medir el contenido de una
-       web de otro origen desde aquí. Corto de más recortaría el final de la
-       página; largo de más deja hueco en blanco al final del recorrido. */
-    height: 1400px;
-    transform: none;
-  }
-
-  /* El panel bloqueado no tiene nada que desplazar: que ocupe justo el
-     hueco visible en vez de heredar el alto del iframe. */
-  .panel-locked {
     height: 100%;
-    min-height: 320px;
+    transform: none;
   }
 }
 

@@ -28,44 +28,60 @@ if (wrap && screen && browserUI) {
   const isCompactBrowser = window.innerWidth < 900;
 
   if (isCompactBrowser) {
+    // Entrada simple que se reproduce UNA vez y se queda puesta. A
+    // diferencia de la de escritorio NO va atada al scroll (scrub): aquí lo
+    // que se anima es la OPACIDAD, y un scrub la rebobina también al subir
+    // — al volver un poco hacia arriba desde Proyectos la tarjeta se
+    // quedaba a medio opacar, translúcida sobre el fondo de circuitos, con
+    // pinta de estar rota. El giro de bisagra de escritorio sí puede
+    // rebobinar sin problema: "cerrarse un poco" al subir se lee como algo
+    // físico, no como un fallo de pintado.
     gsap.set(screen, { opacity: 0, y: 24 });
+    gsap.set(browserUI, { opacity: 0 });
+
+    gsap.timeline({
+      scrollTrigger: {
+        trigger: wrap,
+        start: "top 85%",
+        toggleActions: "play none none none",
+        onEnter: () => {
+          laptopReady = true;
+        },
+      },
+    })
+      .to(screen, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" })
+      .to(browserUI, { opacity: 1, duration: 0.45, ease: "none" }, 0.25);
   } else {
     // Cerrada: la pantalla cae hacia delante (casi tumbada sobre el teclado).
     // Abierta: casi vertical, con una ligera reclinación natural.
     gsap.set(screen, { rotationX: -96, transformPerspective: 1800 });
-  }
-  gsap.set(browserUI, { opacity: 0 });
+    gsap.set(browserUI, { opacity: 0 });
 
-  // Timeline scrubbed de una sola fase: se abre y se queda abierta — antes
-  // se volvía a cerrar al seguir bajando hacia Contacto, pero al salir de
-  // Proyectos el portátil ya no vuelve a verse, así que cerrarla solo
-  // aportaba un parpadeo/salto justo antes de desaparecer. transform-origin
-  // en el borde inferior de la pantalla, como una bisagra real.
-  const tl = gsap.timeline({
-    scrollTrigger: {
-      trigger: wrap,
-      start: "top 95%", // antes 75%: arranca en cuanto asoma por abajo, se abre antes
-      end: "middle 50%", // antes 25%: se queda abierta hasta que el centro de la pantalla llega al centro del viewport
-      // scrub con número: pequeño retraso/inercia respecto al scroll real en
-      // vez del seguimiento exacto de scrub:true, se ve más fluido al abrir
-      // la pantalla. laptopReady se basa en self.progress, que sigue
-      // llegando a 1 igual, solo con un poco más de retardo tras parar de
-      // hacer scroll.
-      scrub: 0.5,
-      onUpdate: (self) => {
-        laptopReady = self.progress >= 0.999;
+    // Timeline scrubbed de una sola fase: se abre y se queda abierta — antes
+    // se volvía a cerrar al seguir bajando hacia Contacto, pero al salir de
+    // Proyectos el portátil ya no vuelve a verse, así que cerrarla solo
+    // aportaba un parpadeo/salto justo antes de desaparecer. transform-origin
+    // en el borde inferior de la pantalla, como una bisagra real.
+    gsap.timeline({
+      scrollTrigger: {
+        trigger: wrap,
+        start: "top 95%", // antes 75%: arranca en cuanto asoma por abajo, se abre antes
+        end: "middle 50%", // antes 25%: se queda abierta hasta que el centro de la pantalla llega al centro del viewport
+        // scrub con número: pequeño retraso/inercia respecto al scroll real en
+        // vez del seguimiento exacto de scrub:true, se ve más fluido al abrir
+        // la pantalla. laptopReady se basa en self.progress, que sigue
+        // llegando a 1 igual, solo con un poco más de retardo tras parar de
+        // hacer scroll.
+        scrub: 0.5,
+        onUpdate: (self) => {
+          laptopReady = self.progress >= 0.999;
+        },
+        onLeaveBack: () => {
+          laptopReady = false;
+        },
       },
-      onLeaveBack: () => {
-        laptopReady = false;
-      },
-    },
-  });
-
-  if (isCompactBrowser) {
-    tl.to(screen, { opacity: 1, y: 0, ease: "none", duration: 1 }, 0)
-      .fromTo(browserUI, { opacity: 0 }, { opacity: 1, ease: "none", duration: 0.5 }, 0.4);
-  } else {
-    tl.to(screen, { rotationX: -6, ease: "none", duration: 1 }, 0) // abrir: 0 → 1
+    })
+      .to(screen, { rotationX: -6, ease: "none", duration: 1 }, 0) // abrir: 0 → 1
       .fromTo(browserUI, { opacity: 0 }, { opacity: 1, ease: "none", duration: 0.5 }, 0.4);
   }
 }
@@ -78,23 +94,15 @@ if (wrap && screen && browserUI) {
 // inconsistencia. Los <iframe> (las webs reales) ya gestionan su propio
 // scroll interno de forma aislada por el navegador — no hace falta (ni se
 // puede, son de otro origen) tocarlos aquí; esto solo contiene el resto.
-//
-// Solo ratón real: el gesto táctil no dispara "wheel" en iOS/Android (usa
-// touchstart/move), así que este listener no aporta nada en móvil — y
-// mantenerlo (con {passive:false}, que hace a Safari más conservador sobre
-// qué gestos de scroll delega a un iframe anidado) podía ser justo lo que
-// bloqueaba el scroll dentro de la web embebida en iPhone.
-if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
-  wrap?.addEventListener(
-    "wheel",
-    (e) => {
-      if (!laptopReady) return; // deja pasar: es lo que abre el portátil
-      if ((e.target as HTMLElement | null)?.closest("iframe")) return;
-      e.preventDefault();
-    },
-    { passive: false }
-  );
-}
+wrap?.addEventListener(
+  "wheel",
+  (e) => {
+    if (!laptopReady) return; // deja pasar: es lo que abre el portátil
+    if ((e.target as HTMLElement | null)?.closest("iframe")) return;
+    e.preventDefault();
+  },
+  { passive: false }
+);
 
 // Pestañas: cada una carga la web real (iframe con carga diferida — el src
 // solo se asigna la primera vez que se abre esa pestaña).

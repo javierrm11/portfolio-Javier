@@ -4,6 +4,9 @@
 #contact {
   padding: var(--section-padding-y) clamp(1rem, 4vw, 3rem);
   position: relative;
+  /* Mismo motivo que en #proyectos (ver proyectos.css): la capa del
+     personaje y sus etiquetas no deben poder pintar sobre esta sección. */
+  z-index: 10;
 }
 
 .contact-container {
