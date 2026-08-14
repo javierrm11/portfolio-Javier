@@ -123,6 +123,11 @@ import Contacto from './Contacto.astro';
 
     // ── Projects ──────────────────────────────────────────────────
     revealOn("#proyectos", ".projects-header", 0);
+    // Tarjetas de móvil/tablet (en escritorio están display:none, así que
+    // animarlas ahí no tiene efecto). Se reproduce una vez y se queda, sin
+    // scrub: un fundido atado al scroll se rebobina al subir y deja las
+    // tarjetas a medio opacar.
+    revealOn(".projects-cards", ".project-card-m", 0.12);
 
     // Entrada escalonada: una sola animación con stagger, disparada al
     // entrar la rejilla completa (en vez de un trigger independiente por

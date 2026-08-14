@@ -258,72 +258,149 @@
   background: #fff;
 }
 
-/* ── Móvil: sin marco de portátil ──────────────────────────────────
-   Por debajo de 900px la pantalla del portátil (con la web escalada al 65%
-   para que "cupiera más" en un hueco pequeño) dejaba el sitio embebido
-   ilegible. En vez de seguir encogiendo el mismo mockup, se quita el
-   marco/base/perspectiva 3D: la interfaz de navegador (mismas pestañas +
-   iframes reales que en escritorio, ningún contenido nuevo) pasa a ser una
-   tarjeta plana a ancho completo — la web embebida recibe su propio layout
-   responsive de verdad para ese ancho, en vez de un escritorio en miniatura.
-   La animación de apertura (laptop-reveal.ts) también cambia en este mismo
-   corte: sin marco no hay tapa que abrir, así que ahí pasa a un fade/slide
-   simple en vez del giro de bisagra. */
+/* ── Tarjetas de proyecto (solo móvil/tablet) ─────────────────────
+   Sustituyen al portátil con las webs incrustadas por debajo de 900px:
+   ahí el iframe quedaba ilegible y en iOS ni siquiera se podía desplazar
+   (un iframe de otro origen no cede el gesto táctil). En escritorio se
+   ocultan y manda el portátil. */
+.projects-cards {
+  display: none;
+}
+
 @media (max-width: 899px) {
-  .laptop-wrap {
-    max-width: 100%;
-    perspective: none;
+  .projects-cards {
+    display: grid;
+    gap: 1.25rem;
+    max-width: 560px;
+    margin-inline: auto;
+    padding-top: clamp(1rem, 4vw, 2rem);
   }
 
-  .laptop-base {
-    display: none;
-  }
-
-  .laptop-screen {
-    border: 0;
+  .project-card-m {
+    background: var(--glass-bg);
+    border: var(--glass-border);
     border-radius: var(--radius-lg);
-    /* Ligado al ANCHO (estable), no a una altura en vh: vh depende de si
-       la barra de direcciones del móvil está visible, y cambia justo al
-       hacer scroll — eso realimentaba el alto de página completo, que
-       ScrollTrigger recalculaba en cada cambio, y la sección "saltaba" sola
-       cerca del límite con Contacto. max-height es un tope fijo en px (no
-       relativo al viewport), solo para no desbordar en móvil en horizontal. */
-    aspect-ratio: 3 / 4;
-    max-height: 640px;
-    box-shadow: var(--glass-shadow);
+    overflow: hidden;
+    -webkit-backdrop-filter: var(--glass-blur);
+    backdrop-filter: var(--glass-blur);
   }
 
-  .browser-panel iframe {
+  .pcm-media {
+    aspect-ratio: 16 / 9;
+    background: rgba(255, 255, 255, 0.04);
+    border-bottom: var(--glass-border);
+  }
+
+  .pcm-media img {
     width: 100%;
     height: 100%;
-    transform: none;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Proyectos sin captura: bloque con el color de marca y un icono, en vez
+     de un hueco vacío o una imagen de relleno que no represente nada. */
+  .pcm-media--placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(0, 102, 204, 0.22), rgba(59, 158, 255, 0.08));
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  .pcm-media--placeholder svg {
+    width: 44px;
+    height: 44px;
+  }
+
+  .pcm-body {
+    padding: 1.1rem 1.15rem 1.25rem;
+  }
+
+  .pcm-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .pcm-head h3 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  .pcm-badge {
+    flex-shrink: 0;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #cfe8ff;
+    background: rgba(0, 102, 204, 0.28);
+    border: 1px solid rgba(120, 190, 255, 0.28);
+    border-radius: var(--radius-full);
+    padding: 0.2rem 0.6rem;
+  }
+
+  .pcm-desc {
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  .pcm-tech {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.85rem;
+  }
+
+  .pcm-tech li {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.62);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: var(--radius-sm);
+    padding: 0.22rem 0.55rem;
+  }
+
+  .pcm-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-top: 1.05rem;
+    /* 44px de alto mínimo: objetivo táctil cómodo. */
+    min-height: 44px;
+    padding: 0.6rem 1.15rem;
+    background: var(--accent-from);
+    color: #fff;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: var(--radius-full);
+  }
+
+  .pcm-link svg {
+    width: 14px;
+    height: 14px;
   }
 }
 
-@media (max-width: 600px) {
-  .browser-tabs {
-    padding: 0.3rem 0.3rem 0;
-    gap: 1px;
-  }
-
-  .browser-tab {
-    font-size: 0.625rem;
-    padding: 0.3rem 0.55rem;
-    gap: 0.3rem;
-  }
-
-  .browser-tab .tab-dot {
-    width: 5px;
-    height: 5px;
-  }
-
-  .browser-address {
-    padding: 0.3rem 0.5rem;
-  }
-
-  .browser-address-url {
-    font-size: 0.6875rem;
-    padding: 0.2rem 0.6rem;
+/* ── Móvil/tablet: fuera el portátil ───────────────────────────────
+   Por debajo de 900px mandan las tarjetas (.projects-cards, más arriba).
+   Se probó antes a encoger el mockup y luego a quitarle el marco dejando
+   la web incrustada a ancho completo, pero el problema de fondo no era el
+   tamaño: en iOS un iframe de otro origen no cede el gesto táctil, así que
+   la web de dentro no se podía desplazar. laptop-reveal.ts además ni
+   siquiera asigna el src de los iframes en este corte, así que no se
+   descargan cuatro sitios externos de más en móvil. */
+@media (max-width: 899px) {
+  .projects-scene {
+    display: none;
   }
 }
 

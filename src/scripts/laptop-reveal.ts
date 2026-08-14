@@ -3,10 +3,19 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const wrap = document.querySelector<HTMLElement>(".laptop-wrap");
-const screen = document.querySelector<HTMLElement>(".laptop-screen");
-const browserUI = document.querySelector<HTMLElement>(".browser-ui");
-const tabs = document.querySelectorAll<HTMLButtonElement>(".browser-tab");
+// Por debajo de 900px el portátil no se muestra: manda la lista de
+// tarjetas (ver .projects-cards en proyectos.css). Se sale cuanto antes
+// para no montar el timeline, no anclar listeners y —sobre todo— no
+// asignar el src de los iframes: así en móvil no se descargan cuatro
+// sitios externos que nadie va a ver.
+const laptopEnabled = window.innerWidth >= 900;
+
+const wrap = laptopEnabled ? document.querySelector<HTMLElement>(".laptop-wrap") : null;
+const screen = laptopEnabled ? document.querySelector<HTMLElement>(".laptop-screen") : null;
+const browserUI = laptopEnabled ? document.querySelector<HTMLElement>(".browser-ui") : null;
+const tabs = laptopEnabled
+  ? document.querySelectorAll<HTMLButtonElement>(".browser-tab")
+  : ([] as unknown as NodeListOf<HTMLButtonElement>);
 const panels = document.querySelectorAll<HTMLElement>(".browser-panel");
 const addressUrl = document.querySelector<HTMLElement>(".browser-address-url");
 
@@ -20,70 +29,37 @@ const addressUrl = document.querySelector<HTMLElement>(".browser-address-url");
 let laptopReady = false;
 
 if (wrap && screen && browserUI) {
-  // Por debajo de 900px no hay marco de portátil (ver proyectos.css): la
-  // tarjeta es plana, así que no tiene sentido un giro de bisagra — se abre
-  // con un fade + slide-up simple en su lugar. Comprobado una sola vez al
-  // cargar (mismo criterio que el resto del sitio, p.ej. la coreografía de
-  // Contacto en Main.astro): no es reactivo a un resize en caliente.
-  const isCompactBrowser = window.innerWidth < 900;
+  // Cerrada: la pantalla cae hacia delante (casi tumbada sobre el teclado).
+  // Abierta: casi vertical, con una ligera reclinación natural.
+  gsap.set(screen, { rotationX: -96, transformPerspective: 1800 });
+  gsap.set(browserUI, { opacity: 0 });
 
-  if (isCompactBrowser) {
-    // Entrada simple que se reproduce UNA vez y se queda puesta. A
-    // diferencia de la de escritorio NO va atada al scroll (scrub): aquí lo
-    // que se anima es la OPACIDAD, y un scrub la rebobina también al subir
-    // — al volver un poco hacia arriba desde Proyectos la tarjeta se
-    // quedaba a medio opacar, translúcida sobre el fondo de circuitos, con
-    // pinta de estar rota. El giro de bisagra de escritorio sí puede
-    // rebobinar sin problema: "cerrarse un poco" al subir se lee como algo
-    // físico, no como un fallo de pintado.
-    gsap.set(screen, { opacity: 0, y: 24 });
-    gsap.set(browserUI, { opacity: 0 });
-
-    gsap.timeline({
-      scrollTrigger: {
-        trigger: wrap,
-        start: "top 85%",
-        toggleActions: "play none none none",
-        onEnter: () => {
-          laptopReady = true;
-        },
+  // Timeline scrubbed de una sola fase: se abre y se queda abierta — antes
+  // se volvía a cerrar al seguir bajando hacia Contacto, pero al salir de
+  // Proyectos el portátil ya no vuelve a verse, así que cerrarla solo
+  // aportaba un parpadeo/salto justo antes de desaparecer. transform-origin
+  // en el borde inferior de la pantalla, como una bisagra real.
+  gsap.timeline({
+    scrollTrigger: {
+      trigger: wrap,
+      start: "top 95%", // antes 75%: arranca en cuanto asoma por abajo, se abre antes
+      end: "middle 50%", // antes 25%: se queda abierta hasta que el centro de la pantalla llega al centro del viewport
+      // scrub con número: pequeño retraso/inercia respecto al scroll real en
+      // vez del seguimiento exacto de scrub:true, se ve más fluido al abrir
+      // la pantalla. laptopReady se basa en self.progress, que sigue
+      // llegando a 1 igual, solo con un poco más de retardo tras parar de
+      // hacer scroll.
+      scrub: 0.5,
+      onUpdate: (self) => {
+        laptopReady = self.progress >= 0.999;
       },
-    })
-      .to(screen, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" })
-      .to(browserUI, { opacity: 1, duration: 0.45, ease: "none" }, 0.25);
-  } else {
-    // Cerrada: la pantalla cae hacia delante (casi tumbada sobre el teclado).
-    // Abierta: casi vertical, con una ligera reclinación natural.
-    gsap.set(screen, { rotationX: -96, transformPerspective: 1800 });
-    gsap.set(browserUI, { opacity: 0 });
-
-    // Timeline scrubbed de una sola fase: se abre y se queda abierta — antes
-    // se volvía a cerrar al seguir bajando hacia Contacto, pero al salir de
-    // Proyectos el portátil ya no vuelve a verse, así que cerrarla solo
-    // aportaba un parpadeo/salto justo antes de desaparecer. transform-origin
-    // en el borde inferior de la pantalla, como una bisagra real.
-    gsap.timeline({
-      scrollTrigger: {
-        trigger: wrap,
-        start: "top 95%", // antes 75%: arranca en cuanto asoma por abajo, se abre antes
-        end: "middle 50%", // antes 25%: se queda abierta hasta que el centro de la pantalla llega al centro del viewport
-        // scrub con número: pequeño retraso/inercia respecto al scroll real en
-        // vez del seguimiento exacto de scrub:true, se ve más fluido al abrir
-        // la pantalla. laptopReady se basa en self.progress, que sigue
-        // llegando a 1 igual, solo con un poco más de retardo tras parar de
-        // hacer scroll.
-        scrub: 0.5,
-        onUpdate: (self) => {
-          laptopReady = self.progress >= 0.999;
-        },
-        onLeaveBack: () => {
-          laptopReady = false;
-        },
+      onLeaveBack: () => {
+        laptopReady = false;
       },
-    })
-      .to(screen, { rotationX: -6, ease: "none", duration: 1 }, 0) // abrir: 0 → 1
-      .fromTo(browserUI, { opacity: 0 }, { opacity: 1, ease: "none", duration: 0.5 }, 0.4);
-  }
+    },
+  })
+    .to(screen, { rotationX: -6, ease: "none", duration: 1 }, 0) // abrir: 0 → 1
+    .fromTo(browserUI, { opacity: 0 }, { opacity: 1, ease: "none", duration: 0.5 }, 0.4);
 }
 
 // Cualquier píxel dentro del portátil debe hacer scroll DENTRO de él, nunca
@@ -129,8 +105,12 @@ tabs.forEach((tab) => {
   });
 });
 
-// Precargar la pestaña activa por defecto.
-const firstIframe = document.querySelector<HTMLIFrameElement>(".browser-panel.is-active iframe[data-src]");
+// Precargar la pestaña activa por defecto — solo si el portátil se muestra
+// (ver laptopEnabled arriba): en móvil no se asigna ningún src, así que no
+// se descarga ninguna de las webs externas.
+const firstIframe = laptopEnabled
+  ? document.querySelector<HTMLIFrameElement>(".browser-panel.is-active iframe[data-src]")
+  : null;
 if (firstIframe) {
   firstIframe.src = firstIframe.dataset.src!;
   firstIframe.removeAttribute("data-src");

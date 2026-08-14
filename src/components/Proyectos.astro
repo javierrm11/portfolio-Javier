@@ -71,6 +71,122 @@
             <canvas id="projects-canvas"></canvas>
         </div>
     </div>
+
+    <!-- Versión móvil/tablet: tarjetas en vez del portátil con las webs
+         incrustadas. En una pantalla pequeña el iframe quedaba ilegible y,
+         además, iOS no cede el gesto de scroll a un iframe de otro origen,
+         así que no se podía recorrer la web de dentro. Aquí cada proyecto
+         se presenta con su propia ficha y un enlace al sitio real. El
+         portátil se oculta por CSS en este mismo corte (proyectos.css) y
+         laptop-reveal.ts ni siquiera carga los iframes. -->
+    <div class="projects-cards">
+        <article class="project-card-m">
+            <div class="pcm-media pcm-media--placeholder">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+            </div>
+            <div class="pcm-body">
+                <div class="pcm-head">
+                    <h3>Prezu</h3>
+                    <span class="pcm-badge">SaaS</span>
+                </div>
+                <p class="pcm-desc">
+                    Presupuestos por voz para gremios: dictas el trabajo al salir de la
+                    visita y el cliente recibe un PDF profesional por WhatsApp.
+                </p>
+                <a class="pcm-link" href="https://prezu.es" target="_blank" rel="noopener noreferrer">
+                    Visitar sitio
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                </a>
+            </div>
+        </article>
+
+        <article class="project-card-m">
+            <div class="pcm-media">
+                <img src="/canalplad.webp" alt="canalonescanalplad.es" loading="lazy" decoding="async" />
+            </div>
+            <div class="pcm-body">
+                <div class="pcm-head">
+                    <h3>Canalones Canalplad</h3>
+                    <span class="pcm-badge">SEO</span>
+                </div>
+                <p class="pcm-desc">
+                    Sitio web corporativo con SEO técnico optimizado. Incremento del 35%
+                    en tráfico orgánico.
+                </p>
+                <ul class="pcm-tech">
+                    <li>Next.js</li><li>SEO técnico</li><li>Vercel</li><li>TypeScript</li>
+                </ul>
+                <a class="pcm-link" href="https://canalonescanalplad.es" target="_blank" rel="noopener noreferrer">
+                    Visitar sitio
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                </a>
+            </div>
+        </article>
+
+        <article class="project-card-m">
+            <div class="pcm-media">
+                <img src="/apivuelos.png" alt="apivuelos.es" loading="lazy" decoding="async" />
+            </div>
+            <div class="pcm-body">
+                <div class="pcm-head">
+                    <h3>API Vuelos</h3>
+                    <span class="pcm-badge">Tiempo real</span>
+                </div>
+                <p class="pcm-desc">
+                    Seguimiento de vuelos en tiempo real con mapa interactivo,
+                    estadísticas y APIs externas.
+                </p>
+                <ul class="pcm-tech">
+                    <li>Next.js</li><li>APIs externas</li><li>Leaflet</li><li>Chart.js</li>
+                </ul>
+                <a class="pcm-link" href="https://apivuelos.es/Mapa" target="_blank" rel="noopener noreferrer">
+                    Visitar sitio
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                </a>
+            </div>
+        </article>
+
+        <article class="project-card-m">
+            <div class="pcm-media pcm-media--placeholder">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+                    <rect x="5" y="11" width="14" height="9" rx="2"></rect>
+                    <path d="M8 11V7a4 4 0 0 1 8 0v4"></path>
+                </svg>
+            </div>
+            <div class="pcm-body">
+                <div class="pcm-head">
+                    <h3>Citas WhatsApp</h3>
+                    <span class="pcm-badge">Privado</span>
+                </div>
+                <p class="pcm-desc">
+                    Panel de administración para la gestión de citas de una peluquería.
+                    Requiere inicio de sesión.
+                </p>
+                <a class="pcm-link" href="https://panel-admin-peluqueria.vercel.app" target="_blank" rel="noopener noreferrer">
+                    Abrir panel
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                </a>
+            </div>
+        </article>
+    </div>
 </section>
 
 <script>
