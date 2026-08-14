@@ -49,6 +49,16 @@ import Contacto from './Contacto.astro';
 
     gsap.registerPlugin(ScrollTrigger);
 
+    // El móvil dispara un evento de resize (mismo ancho, solo el alto
+    // cambiado) cuando la barra de direcciones se oculta/muestra al hacer
+    // scroll. Por defecto ScrollTrigger puede reaccionar con un refresh()
+    // que recalcula las posiciones de inicio/fin de TODOS los triggers de
+    // la página — con varias secciones con alturas ligadas al viewport, eso
+    // podía sentirse como si el scroll se moviera solo. Este flag le dice a
+    // ScrollTrigger que ignore los resize que son solo un cambio de alto en
+    // dispositivos táctiles.
+    ScrollTrigger.config({ ignoreMobileResize: true });
+
     const ease = {
         out: "power3.out",
         inOut: "power2.inOut",

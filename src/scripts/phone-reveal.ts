@@ -8,7 +8,11 @@
 const wrap = document.querySelector<HTMLElement>(".phone-wrap");
 const phone = document.querySelector<HTMLElement>(".phone");
 
-if (wrap && phone) {
+// Solo dispositivos con ratón real: en móvil/tablet no hay "mousemove" que
+// lo mueva y el marco del móvil ya se desmonta por CSS (contacto.css), así
+// que este bucle de rAF no hacía nada salvo escribir un transform en cada
+// frame para siempre.
+if (wrap && phone && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
   const MAX_TILT = 9; // grados
   const LERP = 0.08;
 
