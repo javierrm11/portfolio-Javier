@@ -2,11 +2,28 @@
    remata la página como una tarjeta que se curva en su borde inferior,
    igual que el detalle de la referencia. */
 #footer {
-  padding: 4rem 0 2rem;
+  /* El margen de abajo incluye la franja segura del iPhone (barra de
+     inicio) y un colchón extra en táctil: al ocultarse la barra de
+     direcciones el máximo de scroll baja ~70-90px, y si el contenido
+     terminase justo ahí el navegador tendría que recortar la posición
+     encima del propio contenido. Con este colchón ese reajuste ocurre en
+     zona vacía y deja de notarse. */
+  padding: 4rem 0 calc(2rem + env(safe-area-inset-bottom, 0px));
   border-top: 1px solid var(--border-subtle);
   background: rgba(4, 14, 24, 0.55);
   position: relative;
   overflow: hidden;
+}
+
+/* Solo táctil: el colchón que absorbe el reajuste del máximo de scroll
+   cuando se oculta la barra de direcciones (ver nota de #footer). No es
+   hueco vacío — es fondo del propio footer, así que solo se percibe como un
+   footer un poco más alto. En escritorio no hace falta: no hay barra que se
+   oculte al hacer scroll. */
+@media (hover: none) and (pointer: coarse) {
+  #footer {
+    padding-bottom: calc(6rem + env(safe-area-inset-bottom, 0px));
+  }
 }
 
 .footer-container {

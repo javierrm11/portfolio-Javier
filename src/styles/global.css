@@ -77,6 +77,13 @@ html {
      "descentrado") sin que ningún elemento tuviera de verdad mal el
      centrado — el escritorio no lo sufre porque no hay scroll por gestos. */
   overflow-x: hidden;
+  /* Corta el rebote elástico al llegar a los extremos. Importa sobre todo
+     al FINAL de la página en móvil: allí estás en el máximo de scroll, y
+     cuando la barra de direcciones se oculta el viewport crece, el máximo
+     baja y el navegador tiene que recortarte hacia arriba — ese tirón
+     vuelve a sacar la barra y el ciclo se realimenta. Sin rebote elástico
+     el vaivén deja de encadenarse. */
+  overscroll-behavior-y: none;
 }
 
 body {
