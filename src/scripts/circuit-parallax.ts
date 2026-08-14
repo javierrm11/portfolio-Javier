@@ -12,8 +12,14 @@ const layers = [
 ];
 
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+// En táctil no se ejecuta: este bucle escribe un transform en las 3 capas en
+// CADA frame mientras se hace scroll, que es justo el momento en el que un
+// móvil menos margen tiene. Las capas siguen ahí y se ven igual, solo que
+// quietas (mismo criterio que los demás efectos decorativos, ver la nota de
+// "Táctil: los efectos decorativos se quedan quietos" en global.css).
+const isTouch = window.matchMedia("(hover: none) and (pointer: coarse)").matches;
 
-if (!reduceMotion && layers.some((l) => l.el)) {
+if (!reduceMotion && !isTouch && layers.some((l) => l.el)) {
   function tick() {
     requestAnimationFrame(tick);
     const y = window.scrollY;

@@ -302,6 +302,36 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+/* ── Táctil: los efectos decorativos se quedan quietos ─────────────
+   Nada desaparece — se siguen viendo exactamente igual — pero dejan de
+   animarse. En un GPU de móvil estos cuatro son justo los patrones que
+   hacen que el scroll dé tirones, y encima corren SIEMPRE, también en
+   secciones donde no aportan nada (Contacto, footer):
+   - .aurora-orb anima transform+scale sobre un filter: blur(120px), lo que
+     obliga a recalcular el desenfoque de un elemento de hasta 700px en
+     cada frame;
+   - body-grid-drift anima background-position sobre capas fijas a pantalla
+     completa: background-position no se puede componer en GPU, así que
+     repinta toda la superficie en cada frame;
+   - la banda de barrido se desplaza sin parar por encima de toda la página.
+   (El paralaje de circuitos se desactiva aparte, en circuit-parallax.ts:
+   ese escribe transforms por JS en cada frame DURANTE el scroll.) */
+@media (hover: none) and (pointer: coarse) {
+  .aurora-orb,
+  .page-backdrop,
+  .bg-grid,
+  .scanline-overlay::before {
+    animation: none;
+  }
+
+  /* Sin animación, will-change solo mantendría capas de composición vivas
+     consumiendo memoria de vídeo para nada. */
+  .aurora-orb,
+  .circuit-layer {
+    will-change: auto;
+  }
+}
+
 /* Gradient text utility */
 .text-gradient {
   background: var(--gradient-accent);

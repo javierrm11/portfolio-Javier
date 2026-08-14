@@ -185,6 +185,12 @@ import "../styles/loader.css";
 <script>
   import "../scripts/circuit-cursor";
   import "../scripts/circuit-parallax";
+
+  // Panel de diagnóstico del scroll: SOLO con ?debug en la URL. Al ser un
+  // import dinámico, en una visita normal ni se descarga.
+  if (new URLSearchParams(location.search).has("debug")) {
+    import("../scripts/scroll-debug");
+  }
 </script>
 <script>
   // Menu toggle
