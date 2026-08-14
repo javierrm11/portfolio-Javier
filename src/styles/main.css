@@ -12,12 +12,14 @@ main {
    hero-character.ts) se reproduce. Más alto = hay que hacer más scroll para
    la misma animación = se percibe más lenta. */
 #about {
-  /* svh, no dvh — mismo motivo que #about-me (ver about.css): con dvh el
-     alto de esta sección (y por tanto el de media página) cambiaba cada vez
-     que se ocultaba la barra de direcciones o se abría el teclado, y el
-     scroll saltaba de sección. */
-  min-height: 260vh;
-  min-height: 260svh;
+  /* Altura atada a --stable-vh (px bloqueados en el <head> de index.astro),
+     no a vh/svh/dvh. Comprobado en un iPhone real: con svh el alto seguía
+     variando con la barra de Safari, y como esta sección mide 260 unidades,
+     los 100px que ocupa la barra movían el documento 260px (760 sumando
+     #about-me) — suficiente para que el navegador recolocara el scroll y la
+     página se fuera sola de sección. El fallback 1vh cubre el instante
+     previo a que corra el script. */
+  min-height: calc(var(--stable-vh, 1vh) * 260);
 }
 
 /* Rigid "card": text + 3D canvas, fixed to the viewport so it can slide

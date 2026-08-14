@@ -1,16 +1,16 @@
 #about-me {
-  /* svh (small viewport height), NO dvh: dvh es el viewport DINÁMICO, que
-     cambia al ocultarse/mostrarse la barra de direcciones y al abrirse el
-     teclado. Como esta sección mide cientos de "vh", cualquier cambio de
-     esos se multiplicaba por 500 y reescribía el alto de media página de
-     golpe: al tocar un campo del formulario de Contacto (teclado abierto,
-     ~370px menos de viewport) la página encogía miles de px y el scroll
-     pasaba a apuntar a otra sección. svh es la variante ESTABLE (siempre el
-     viewport más pequeño, con la barra visible), así el alto no depende ya
-     de la interfaz del navegador. La línea vh de antes queda de reserva
-     para navegadores sin soporte de svh. */
-  min-height: 500vh;
-  min-height: 500svh;
+  /* Altura atada a --stable-vh (píxeles bloqueados en el <head> de
+     index.astro), NO a vh/svh/dvh. Esta sección mide 500 unidades de
+     viewport, así que cualquier variación del alto del viewport se
+     multiplica por 500 y reescribe el alto de media página de golpe;
+     entonces el navegador tiene que recolocar el scroll y la página se va
+     sola a otra sección. Se intentó primero con dvh→svh (la unidad que en
+     teoría es estable), pero medido en un iPhone real seguía variando: la
+     barra de Safari movía innerHeight 100px y el documento encogía 760px
+     entre esta sección y #about. Con un valor en px que solo se recalcula
+     al cambiar el ancho, el alto de la página ya no depende de la interfaz
+     del navegador. El fallback 1vh cubre el instante previo al script. */
+  min-height: calc(var(--stable-vh, 1vh) * 500);
   position: relative;
 
 }

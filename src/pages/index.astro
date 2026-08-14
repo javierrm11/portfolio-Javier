@@ -30,6 +30,49 @@ import "../styles/loader.css";
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="generator" content={Astro.generator} />
 
+  <!-- Altura de referencia BLOQUEADA para los espaciadores de scroll
+       (#about y #about-me, ver main.css/about.css). Entre los dos suman 760
+       unidades de viewport, así que cualquier cambio del alto del viewport
+       se multiplica por 7,6 en el alto de la página: medido en un iPhone
+       real, la barra de Safari cambia innerHeight 100px y el documento
+       encogía 760px de golpe. Cuando eso pasa estando abajo, el navegador
+       tiene que recolocar la posición de scroll y la página "se va sola" a
+       otra sección. Se probó con svh (la unidad que debería ser estable)
+       pero en iOS seguía variando igual. Aquí se fija en px una sola vez y
+       solo se recalcula si cambia el ANCHO (rotación de pantalla), nunca al
+       aparecer o esconderse la barra. Va inline y en el <head> para que la
+       primera pintura ya use el valor bueno y no haya salto al cargar. -->
+  <script is:inline>
+    (function () {
+      var root = document.documentElement;
+      var lockedWidth = -1;
+      var settled = false;
+      function lock() {
+        root.style.setProperty("--stable-vh", window.innerHeight / 100 + "px");
+        // clientWidth, NO innerWidth: innerWidth incluye la barra de
+        // desplazamiento, así que cambia sola (20px) en cuanto la página se
+        // vuelve scrollable — y eso disparaba un rebloqueo justo cuando la
+        // barra del navegador ya había cambiado el alto, que es el valor
+        // que precisamente no queremos capturar.
+        lockedWidth = root.clientWidth;
+      }
+      lock();
+      // En el <head> el layout aún no está asentado y innerWidth/innerHeight
+      // pueden no ser los definitivos. Se vuelve a fijar UNA vez con el DOM
+      // listo; si no, el primer resize los corregía y rebloqueaba justo con
+      // la barra del navegador ya desplegada, que es el valor que queremos
+      // evitar capturar.
+      document.addEventListener("DOMContentLoaded", function () {
+        if (!settled) { settled = true; lock(); }
+      });
+      window.addEventListener("resize", function () {
+        // Solo el ANCHO manda: la barra del navegador cambia el alto, no el
+        // ancho, así que sus idas y venidas no vuelven a tocar la altura.
+        if (root.clientWidth !== lockedWidth) lock();
+      });
+    })();
+  </script>
+
   <!-- Title optimizado -->
   <title>Javier Ruiz Molero | Desarrollador Web Full Stack & IA</title>
 
