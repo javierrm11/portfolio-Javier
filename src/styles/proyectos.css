@@ -281,20 +281,42 @@
     aspect-ratio: 3 / 4;
     max-height: 640px;
     box-shadow: var(--glass-shadow);
-    /* overscroll-behavior:contain venía de la versión de escritorio (evita
-       que el scroll "se escape" del portátil hacia la página con el ratón,
-       ver laptop-reveal.ts). En iOS Safari esta propiedad, sobre un
-       contenedor que no es scrolleable él mismo (aquí solo clipa con
-       overflow:hidden — lo scrolleable es el iframe de dentro), tiene bugs
-       conocidos que pueden bloquear el scroll táctil del iframe anidado.
-       auto la neutraliza solo en este breakpoint táctil. */
-    overscroll-behavior: auto;
+    /* Aquí no va overscroll-behavior: este elemento solo RECORTA
+       (overflow:hidden), no scrollea nada. El scroll táctil lo gestiona
+       .browser-panel, ver justo debajo. */
+  }
+
+  /* ── Scroll táctil dentro de la web embebida ──────────────────────
+     iOS Safari "aplana" los iframes de otro origen: los renderiza a la
+     altura completa de su contenido y NO les da su propio contenedor de
+     scroll. Por eso el gesto del dedo se lo quedaba la página y bajaba a
+     Contacto en vez de desplazar la web de dentro (un tap sí funcionaba:
+     no necesita que se delegue ningún gesto de scroll).
+     El arreglo es invertir quién scrollea: el PANEL pasa a ser el elemento
+     scrolleable — un div normal, que iOS sí sabe desplazar — y el iframe se
+     dibuja alto y entero dentro de él. overscroll-behavior aquí SÍ tiene
+     efecto (es un scroller de verdad) y es lo que impide que al llegar al
+     final el gesto encadene hacia la página. */
+  .browser-panel {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
   }
 
   .browser-panel iframe {
     width: 100%;
-    height: 100%;
+    /* Necesariamente una estimación: no se puede medir el contenido de una
+       web de otro origen desde aquí. Corto de más recortaría el final de la
+       página; largo de más deja hueco en blanco al final del recorrido. */
+    height: 1400px;
     transform: none;
+  }
+
+  /* El panel bloqueado no tiene nada que desplazar: que ocupe justo el
+     hueco visible en vez de heredar el alto del iframe. */
+  .panel-locked {
+    height: 100%;
+    min-height: 320px;
   }
 }
 
