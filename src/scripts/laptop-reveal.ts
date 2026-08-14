@@ -78,15 +78,23 @@ if (wrap && screen && browserUI) {
 // inconsistencia. Los <iframe> (las webs reales) ya gestionan su propio
 // scroll interno de forma aislada por el navegador — no hace falta (ni se
 // puede, son de otro origen) tocarlos aquí; esto solo contiene el resto.
-wrap?.addEventListener(
-  "wheel",
-  (e) => {
-    if (!laptopReady) return; // deja pasar: es lo que abre el portátil
-    if ((e.target as HTMLElement | null)?.closest("iframe")) return;
-    e.preventDefault();
-  },
-  { passive: false }
-);
+//
+// Solo ratón real: el gesto táctil no dispara "wheel" en iOS/Android (usa
+// touchstart/move), así que este listener no aporta nada en móvil — y
+// mantenerlo (con {passive:false}, que hace a Safari más conservador sobre
+// qué gestos de scroll delega a un iframe anidado) podía ser justo lo que
+// bloqueaba el scroll dentro de la web embebida en iPhone.
+if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+  wrap?.addEventListener(
+    "wheel",
+    (e) => {
+      if (!laptopReady) return; // deja pasar: es lo que abre el portátil
+      if ((e.target as HTMLElement | null)?.closest("iframe")) return;
+      e.preventDefault();
+    },
+    { passive: false }
+  );
+}
 
 // Pestañas: cada una carga la web real (iframe con carga diferida — el src
 // solo se asigna la primera vez que se abre esa pestaña).

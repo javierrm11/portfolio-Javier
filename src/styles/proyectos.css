@@ -281,6 +281,10 @@
     aspect-ratio: 3 / 4;
     max-height: 640px;
     box-shadow: var(--glass-shadow);
+    /* Safari en iOS puede fallar al delegar el scroll táctil a un iframe
+       anidado dentro de un contenedor con overflow:hidden + border-radius
+       si no tiene su propia capa de composición — se la fuerza aquí. */
+    transform: translateZ(0);
   }
 
   .browser-panel iframe {
