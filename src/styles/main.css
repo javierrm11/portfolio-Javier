@@ -111,7 +111,7 @@ main {
      padding se mide desde ahí: ~12dvh se comen ese desfase y el resto deja
      el título en el tercio de arriba de la ventana. */
   .hero-inner {
-    padding-top: 30dvh;
+    padding-top: 27dvh;
   }
 }
 
@@ -119,7 +119,7 @@ main {
    más corta y el bloque de texto se comía demasiado espacio de la escena. */
 @media (max-width: 600px) {
   .hero-inner {
-    padding-top: 26dvh;
+    padding-top: 23dvh;
   }
 }
 
