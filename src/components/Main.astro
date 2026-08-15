@@ -297,6 +297,18 @@ import Contacto from './Contacto.astro';
           canvas.style.height = "";
         }
         unpinnedFlags[id] = false;
+        // Mientras esta capa estaba desanclada, hero-character.ts ignoraba
+        // los resize que le llegaran (ver el guard en su resize(), justo
+        // por este motivo: si leía el ancho recortado de arriba y
+        // reencuadraba la cámara con él, el personaje se quedaba encogido
+        // en Sobre mí aunque ya se hubiera vuelto a anclar). Al reanclar
+        // hace falta forzar un reencuadre de verdad, ahora que
+        // wrapper.clientWidth vuelve a ser el ancho real — un "resize"
+        // normal no sirve porque, si el tamaño de VENTANA no cambió
+        // mientras tanto, su propia guarda lo descartaría como espurio.
+        if (id === "hero-character") {
+          window.dispatchEvent(new Event("hero-character-repin"));
+        }
     }
     // Además del "soltado" a absolute de abajo, ambas capas se desvanecen a
     // la vez mientras Proyectos entra en pantalla. Al ser cajas más altas

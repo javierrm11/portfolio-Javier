@@ -814,6 +814,21 @@ if (canvas && wrapper) {
   // el listener más abajo).
   function resize(refit = true) {
     if (!canvas || !wrapper) return;
+    // Mientras Main.astro tiene esta capa "desanclada" (position:absolute,
+    // ver unpinFixedLayer en Main.astro — pasa justo antes de Proyectos)
+    // recorta el ancho de #hero-character al del viewport para que no
+    // sobresalga por los lados. Esta misma función lee wrapper.clientWidth
+    // para encuadrar la cámara (aspect, frameHeight, setViewOffset,
+    // fitCameraToModel): si un resize de verdad (la barra de direcciones
+    // del móvil cambia el alto) llega mientras el ancho está así recortado,
+    // el encuadre se recalculaba con ese ancho más estrecho y se quedaba
+    // "pegado" así — el personaje se veía encogido en Sobre mí incluso
+    // después de volver a anclarse, hasta el siguiente resize de verdad.
+    // Mientras está desanclada no importa su encuadre (está desvaneciéndose
+    // o fuera de pantalla), así que se ignora sin más; al reanclarse
+    // (repinFixedLayer) se dispara un resize a mano con el ancho ya
+    // correcto para refrescarlo.
+    if (wrapper.style.position === "absolute") return;
     isCompactLayout = window.innerWidth < 1000;
     const { clientWidth, clientHeight } = wrapper;
     if (refit || !frameHeightCache) {
@@ -1092,6 +1107,14 @@ if (canvas && wrapper) {
   // refit (mismo motivo que arriba), solo para mantener el tamaño de canvas
   // sincronizado con lo que se ve de verdad en cada instante.
   window.visualViewport?.addEventListener("resize", () => resize(false));
+  // Main.astro avisa por aquí justo al reanclar esta capa (repinFixedLayer,
+  // tras subir desde Proyectos): un "resize" normal no basta porque, si el
+  // ancho/alto de VENTANA no cambiaron entretanto, la guarda de arriba lo
+  // trataría como espurio y no reencuadraría — precisamente el escenario en
+  // el que el resize() de mientras estaba desanclada dejó a la cámara con
+  // un encuadre corrupto (ver el guard de arriba) que hace falta corregir
+  // sí o sí.
+  window.addEventListener("hero-character-repin", () => resize(true));
 
   // Mismo mecanismo que hero-scene.ts: además de pararse con la pestaña
   // oculta, el bucle de render se para cuando esta capa sale del viewport
