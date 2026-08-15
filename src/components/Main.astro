@@ -234,9 +234,21 @@ import Contacto from './Contacto.astro';
         const parentRect = (el.offsetParent as HTMLElement | null)?.getBoundingClientRect();
         const parentTop = parentRect?.top ?? -window.scrollY;
         const parentLeft = parentRect?.left ?? -window.scrollX;
+        // Recorte horizontal al ancho real del viewport: mientras está fixed,
+        // esta capa sobresale por los lados a propósito (insets negativos:
+        // lienzo extra para pies/silla en hero-character.ts, ver main.css).
+        // Al pasar a absolute conservaba ese mismo ancho de más — en Safari
+        // iOS, un elemento POSICIONADO que sobresale del viewport permite
+        // arrastrar la página de lado con el dedo aunque html/body tengan
+        // overflow-x:clip (confirmado: en Chromium el clip sí lo contiene,
+        // en iOS no de forma fiable). Más robusto quitar el sobresaliente en
+        // el origen que confiar en que el recorte del ancestro baste.
+        const vw = document.documentElement.clientWidth;
+        const left = Math.max(rect.left, 0);
+        const right = Math.min(rect.right, vw);
         el.style.top = `${rect.top - parentTop}px`;
-        el.style.left = `${rect.left - parentLeft}px`;
-        el.style.width = `${rect.width}px`;
+        el.style.left = `${left - parentLeft}px`;
+        el.style.width = `${Math.max(0, right - left)}px`;
         el.style.height = `${rect.height}px`;
         el.style.right = "auto";
         el.style.bottom = "auto";
