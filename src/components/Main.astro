@@ -246,12 +246,35 @@ import Contacto from './Contacto.astro';
         const vw = document.documentElement.clientWidth;
         const left = Math.max(rect.left, 0);
         const right = Math.min(rect.right, vw);
+        const clampedWidth = Math.max(0, right - left);
         el.style.top = `${rect.top - parentTop}px`;
         el.style.left = `${left - parentLeft}px`;
-        el.style.width = `${Math.max(0, right - left)}px`;
+        el.style.width = `${clampedWidth}px`;
         el.style.height = `${rect.height}px`;
         el.style.right = "auto";
         el.style.bottom = "auto";
+        // El <canvas> de dentro (three.js, en #hero-character) tiene
+        // width:100% en CSS (ver .hero-character canvas en main.css): sigue
+        // dibujando a su resolución ORIGINAL (más ancha), y al encoger el
+        // envoltorio al ancho seguro de arriba, esa regla lo estiraba/
+        // comprimía para encajar en la caja más estrecha — el personaje se
+        // veía "compactado" al volver a verse (el fundido de opacidad se
+        // revierte antes de que esta capa se reancle a fixed, así que hay
+        // un tramo en el que es visible con este recorte aplicado). Se le
+        // fija su tamaño real en píxeles y se desplaza dentro del
+        // envoltorio para que siga pintando en el mismo sitio; el sobrante
+        // ya no cabe y overflow:hidden lo recorta sin deformar nada.
+        if (clampedWidth !== rect.width) {
+          el.style.overflow = "hidden";
+          const canvas = el.querySelector("canvas");
+          if (canvas instanceof HTMLElement) {
+            canvas.style.position = "absolute";
+            canvas.style.top = "0";
+            canvas.style.left = `${rect.left - left}px`;
+            canvas.style.width = `${rect.width}px`;
+            canvas.style.height = `${rect.height}px`;
+          }
+        }
         unpinnedFlags[id] = true;
     }
     function repinFixedLayer(id: string, unpinnedFlags: Record<string, boolean>) {
@@ -264,6 +287,15 @@ import Contacto from './Contacto.astro';
         el.style.height = "";
         el.style.right = "";
         el.style.bottom = "";
+        el.style.overflow = "";
+        const canvas = el.querySelector("canvas");
+        if (canvas instanceof HTMLElement) {
+          canvas.style.position = "";
+          canvas.style.top = "";
+          canvas.style.left = "";
+          canvas.style.width = "";
+          canvas.style.height = "";
+        }
         unpinnedFlags[id] = false;
     }
     // Además del "soltado" a absolute de abajo, ambas capas se desvanecen a
