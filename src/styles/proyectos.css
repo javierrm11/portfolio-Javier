@@ -35,6 +35,13 @@
   flex-direction: column;
 }
 
+/* Táctil: fondo con la sección, no fijo (ver la nota en main.css). */
+@media (hover: none) and (pointer: coarse) {
+  #proyectos {
+    background-attachment: scroll;
+  }
+}
+
 .projects-header {
   max-width: var(--container-max);
   margin: 0 auto clamp(1rem, 2.5vw, 2.25rem);

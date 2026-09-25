@@ -41,6 +41,13 @@
   filter: saturate(0.6) brightness(1.05);
 }
 
+/* Táctil: fondo con la sección, no fijo (ver la nota en main.css). */
+@media (hover: none) and (pointer: coarse) {
+  #footer::before {
+    background-attachment: scroll;
+  }
+}
+
 #footer::after {
   background: linear-gradient(100deg, rgba(255, 255, 255, 0.96) 0%, rgba(244, 249, 255, 0.9) 50%, rgba(234, 243, 255, 0.85) 100%);
 }

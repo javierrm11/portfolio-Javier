@@ -32,6 +32,17 @@ main {
   background-attachment: fixed;
 }
 
+/* En táctil el fondo va con la sección ("scroll"). Chrome Android sí aplica
+   fixed, pero obliga a repintar la sección entera en cada frame del scroll,
+   y al mostrarse u ocultarse la barra de direcciones cambia el alto de la
+   ventana y la foto (cover) se reescala de golpe: eran los tirones al subir
+   desde Contacto. Mismo criterio en #proyectos y el footer. */
+@media (hover: none) and (pointer: coarse) {
+  #hero, #about-me, #tecnologias, #contact {
+    background-attachment: scroll;
+  }
+}
+
 /* Secciones claras: la misma foto pero con un velo blanco translucido en
    vez del azul oscuro, y las variables de texto/superficie vuelven a su
    valor claro. Proyectos ahora es la sección oscura de este par (ver
