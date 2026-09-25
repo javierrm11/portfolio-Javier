@@ -148,8 +148,8 @@
 }
 
 /* El colchon inferior en tactil absorbe el reajuste del maximo de scroll
-   cuando se oculta la barra de direcciones (ver la nota en global.css); el
-   safe-area cubre la barra de inicio del iPhone. */
+   cuando se oculta la barra de direcciones; el safe-area cubre la barra de
+   inicio del iPhone. */
 .footer-bottom {
   display: flex;
   align-items: center;
