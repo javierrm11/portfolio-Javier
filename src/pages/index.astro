@@ -7,9 +7,9 @@ import "../styles/header.css";
 import "../styles/main.css";
 import "../styles/footer.css";
 import "../styles/about.css";
+import "../styles/tecnologias.css";
 import "../styles/proyectos.css";
 import "../styles/contacto.css";
-import "../styles/loader.css";
 ---
 
 <html lang="es">
@@ -18,7 +18,7 @@ import "../styles/loader.css";
   <!-- El favicon.svg de Astro iba aquí y ganaba a los otros dos: los
        navegadores prefieren SVG, y al ir el último también se imponía por
        orden. Eliminado (fichero incluido) para que quede el logo propio. -->
-  <link rel="icon" type="image/x-icon" href="/logo.ico" />
+  <link rel="preload" as="image" href="/hero-desk.webp" fetchpriority="high" />
   <link rel="icon" type="image/png" href="/logo.png" />
   <link rel="apple-touch-icon" href="/logo.png" />
   <!-- Sin initial-scale=1, el móvil no fija el zoom a 1:1: en cuanto algo
@@ -91,7 +91,7 @@ import "../styles/loader.css";
   <meta name="author" content="Javier Ruiz Molero" />
 
   <!-- Canonical URL -->
-  <link rel="canonical" href="https://javierm.dev" />
+  <link rel="canonical" href="https://www.javierm.dev" />
 
   <!-- Open Graph mejorado -->
   <meta
@@ -102,7 +102,7 @@ import "../styles/loader.css";
     property="og:description"
     content="Desarrollador web full stack especializado en crear aplicaciones modernas con React, Astro y Node.js. Código limpio y rendimiento óptimo."
   />
-  <meta property="og:image" content="https://javierm.dev/javier.webp" />
+  <meta property="og:image" content="https://www.javierm.dev/og-image.jpg" />
   <meta
     property="og:image:alt"
     content="Javier Ruiz Molero - Desarrollador Web"
@@ -110,7 +110,7 @@ import "../styles/loader.css";
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://javierm.dev" />
+  <meta property="og:url" content="https://www.javierm.dev" />
   <meta property="og:site_name" content="Javier Ruiz Molero" />
   <meta property="og:locale" content="es_ES" />
 
@@ -124,7 +124,7 @@ import "../styles/loader.css";
     name="twitter:description"
     content="Desarrollador web full stack especializado en crear aplicaciones modernas con React, Astro y Node.js."
   />
-  <meta name="twitter:image" content="https://javierm.dev/javier.webp" />
+  <meta name="twitter:image" content="https://www.javierm.dev/og-image.jpg" />
   <meta
     name="twitter:image:alt"
     content="Javier Ruiz Molero - Desarrollador Web"
@@ -137,12 +137,11 @@ import "../styles/loader.css";
       "@type": "Person",
       "name": "Javier Ruiz Molero",
       "jobTitle": "Desarrollador Web Full Stack",
-      "url": "https://javierm.dev",
-      "image": "https://javierm.dev/javier.webp",
+      "url": "https://www.javierm.dev",
+      "image": "https://www.javierm.dev/javier.webp",
       "sameAs": [
         "https://github.com/javierrm11",
-        "https://www.linkedin.com/in/javierrm11",
-        "https://www.instagram.com/javiermdevweb/"
+        "https://www.linkedin.com/in/javiermdev"
       ],
       "knowsAbout": [
         "Desarrollo Web",
@@ -172,7 +171,7 @@ import "../styles/loader.css";
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Karla:wght@400;500;600;700&display=swap"
     rel="stylesheet"
   />
 
@@ -185,50 +184,12 @@ import "../styles/loader.css";
   
 </head>
   <body>
-    <div id="page-loader" class="page-loader">
-      <div class="page-loader-grid"></div>
-      <div class="page-loader-scanline"></div>
-      <div class="page-loader-core">
-        <svg class="page-loader-ring" viewBox="0 0 120 120">
-          <circle class="ring-track" cx="60" cy="60" r="52" />
-          <circle class="ring-progress" cx="60" cy="60" r="52" />
-          <polyline class="ring-bracket bracket-tl" points="14,34 14,14 34,14" />
-          <polyline class="ring-bracket bracket-tr" points="86,14 106,14 106,34" />
-          <polyline class="ring-bracket bracket-br" points="106,86 106,106 86,106" />
-          <polyline class="ring-bracket bracket-bl" points="34,106 14,106 14,86" />
-        </svg>
-        <span class="page-loader-mark">JM</span>
-      </div>
-      <div class="page-loader-status">
-        <span class="page-loader-percent"><span id="page-loader-count">0</span>%</span>
-        <span id="page-loader-label" class="page-loader-label">Inicializando escena</span>
-      </div>
-    </div>
-    <!-- Capa de fondo fija (gradiente + rejilla). Ver .page-backdrop en
-         global.css: sustituye al background-attachment:fixed del body, que
-         en iOS Safari provocaba saltos del fondo al hacer scroll. -->
-    <div class="page-backdrop"></div>
-    <div class="aurora-bg">
-      <div class="aurora-orb aurora-orb-1"></div>
-      <div class="aurora-orb aurora-orb-2"></div>
-      <div class="aurora-orb aurora-orb-3"></div>
-    </div>
-    <div class="scanline-overlay"></div>
-    <div class="noise-overlay"></div>
-    <div class="circuit-parallax">
-      <div class="circuit-layer circuit-layer-1"></div>
-      <div class="circuit-layer circuit-layer-2"></div>
-      <div class="circuit-layer circuit-layer-3"></div>
-    </div>
     <Header />
     <Main />
     <Footer />
   </body>
 </html>
 <script>
-  import "../scripts/circuit-cursor";
-  import "../scripts/circuit-parallax";
-
   // Panel de diagnóstico del scroll: SOLO con ?debug en la URL. Al ser un
   // import dinámico, en una visita normal ni se descarga.
   if (new URLSearchParams(location.search).has("debug")) {
@@ -261,11 +222,8 @@ import "../styles/loader.css";
       link.addEventListener("click", () => setMenu(false));
     });
 
-    // Cerrar también con el CTA, con Escape y tocando el fondo del overlay
-    // (solo el fondo: e.target === mainNav excluye enlaces y botón).
-    document.querySelector<HTMLAnchorElement>(".nav-cta")
-      ?.addEventListener("click", () => setMenu(false));
-
+    // Cerrar también con Escape y tocando el fondo del overlay (solo el
+    // fondo: e.target === mainNav excluye enlaces y botón).
     mainNav.addEventListener("click", (e) => {
       if (e.target === mainNav) setMenu(false);
     });

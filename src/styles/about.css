@@ -1,247 +1,275 @@
 #about-me {
-  /* Altura atada a --stable-vh (píxeles bloqueados en el <head> de
-     index.astro), NO a vh/svh/dvh. Esta sección mide 500 unidades de
-     viewport, así que cualquier variación del alto del viewport se
-     multiplica por 500 y reescribe el alto de media página de golpe;
-     entonces el navegador tiene que recolocar el scroll y la página se va
-     sola a otra sección. Se intentó primero con dvh→svh (la unidad que en
-     teoría es estable), pero medido en un iPhone real seguía variando: la
-     barra de Safari movía innerHeight 100px y el documento encogía 760px
-     entre esta sección y #about. Con un valor en px que solo se recalcula
-     al cambiar el ancho, el alto de la página ya no depende de la interfaz
-     del navegador. El fallback 1vh cubre el instante previo al script. */
-  min-height: calc(var(--stable-vh, 1vh) * 500);
+  padding: var(--section-padding-y) clamp(1rem, 4vw, 3rem);
+}
+
+.about-layout {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2.5rem, 5vw, 4rem);
+}
+
+@media (min-width: 900px) {
+  .about-layout {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+/* ── Cronología ────────────────────────────────────────────────── */
+.about-timeline {
+  flex: 0 0 auto;
+}
+
+@media (min-width: 900px) {
+  .about-timeline {
+    flex: 1 1 50%;
+  }
+}
+
+.about-timeline h2 {
+  font-family: 'Poppins', var(--font-sans);
+  font-size: clamp(1.75rem, 3.5vw, 2.25rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: clamp(1.5rem, 3vw, 2rem);
+}
+
+.timeline-list {
+  list-style: none;
+}
+
+.timeline-item {
+  display: flex;
+  gap: 1.25rem;
+}
+
+/* El carril estira a la altura completa del <li> (la del texto, siempre
+   más alto que el punto) — así la línea de ::after, anclada a su top/
+   bottom, siempre llega justo hasta el punto siguiente sin importar si la
+   descripción ocupa una línea de texto o dos. Con la línea fija en
+   .timeline-dot (altura fija de 13px, no estira) se quedaba corta o larga
+   según cuánto texto hubiera. */
+.timeline-rail {
+  flex-shrink: 0;
+  width: 13px;
   position: relative;
-
 }
 
-/* Capa de etiquetas ancladas al cuerpo del personaje. Fixed + inset:0, como
-   .hero-character, para compartir el mismo sistema de coordenadas de
-   pantalla que usa hero-character.ts al proyectar cada hueso. z-index por
-   encima del personaje (6) para que las etiquetas se vean sobre él. */
-#about-callouts {
-  position: fixed;
-  inset: 0;
-  z-index: 7;
-  pointer-events: none;
+.timeline-item:not(.timeline-item--last) .timeline-rail {
+  align-self: stretch;
 }
 
-/* Punto de anclaje: hero-character.ts mueve este elemento cada frame con
-   transform: translate(Xpx, Ypx) a la posición en pantalla del hueso. Sin
-   tamaño propio (width/height: 0) para que sea un origen de coordenadas
-   limpio del que cuelgan el punto, la línea y la etiqueta. */
-/* Sin opacity aquí a propósito: hero-character.ts escribe su transform en
-   cada frame (proyección del hueso), y GSAP anima la opacidad/entrada de
-   los HIJOS (punto, línea, etiqueta) — si el contenedor también tuviera
-   una transición/opacity propia gestionada por GSAP, competiría por la
-   misma propiedad con la escritura por frame y una de las dos "ganaría"
-   de forma inconsistente. */
-.about-callout {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 0;
-  height: 0;
-  will-change: transform;
-}
-
-.callout-dot {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #4fc3ff;
-  transform: translate(-50%, -50%);
-  box-shadow: 0 0 0 4px rgba(79, 195, 255, 0.22), 0 0 10px rgba(79, 195, 255, 0.8);
-  opacity: 0;
-}
-
-.callout-line {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 1px;
-  background: linear-gradient(90deg, #4fc3ff, transparent);
-  transform-origin: 0 50%;
-  opacity: 0;
-}
-
-.callout-label {
-  position: absolute;
-  top: 0;
-  left: 0;
-  min-width: 170px;
-  max-width: 220px;
-  padding: 0.7rem 0.9rem;
-  border-radius: var(--radius-md);
-  background: rgba(10, 40, 66, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  backdrop-filter: var(--glass-blur);
-  box-shadow: var(--glass-shadow), 0 0 20px rgba(79, 195, 255, 0.12);
-  opacity: 0;
-}
-
-.callout-eyebrow {
+/* Anillo blanco alrededor del punto: sobre la foto de fondo (con iconos y
+   texto del editor de código asomando bajo el velo claro) un punto fino
+   sin más se perdía contra ese ruido de fondo. El anillo lo separa de lo
+   que haya detrás sea lo que sea. */
+.timeline-dot {
   display: block;
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--accent-from);
+  box-shadow: 0 0 0 5px #fff, 0 2px 6px rgba(16, 24, 40, 0.25);
+  margin-top: 0.3rem;
+}
+
+/* Línea que conecta cada punto con el siguiente — no en el último. Termina
+   un poco pasado el borde del carril para asomar por detrás del punto
+   siguiente, en vez de quedarse justo a su borde. */
+.timeline-item:not(.timeline-item--last) .timeline-rail::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: calc(0.3rem + 13px + 5px);
+  bottom: -0.75rem;
+  width: 2px;
+  transform: translateX(-50%);
+  background: rgba(0, 102, 204, 0.35);
+}
+
+.timeline-body {
+  padding-bottom: 2.25rem;
+}
+
+.timeline-item--last .timeline-body {
+  padding-bottom: 0;
+}
+
+.timeline-body h3 {
+  font-family: 'Poppins', var(--font-sans);
+  font-weight: 700;
+  font-size: 1.0625rem;
+  margin-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* El último punto no se distingue por un azul especial (fallaba en
+   contraste) sino por esta etiqueta junto al título — dot y texto quedan
+   iguales que el resto de la cronología. */
+.timeline-current-badge {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: #6ecbff;
-  margin-bottom: 0.3rem;
+  color: #fff;
+  background: var(--accent-from);
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-full);
 }
 
-.callout-label p {
-  font-size: 0.82rem;
-  color: var(--text-primary);
+.timeline-body p {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  max-width: 26rem;
+}
+
+/* ── Tarjeta de cita ───────────────────────────────────────────── */
+.about-quote-card {
+  flex: 1 1 50%;
+  background: var(--glass-bg);
+  border-radius: var(--radius-lg);
+  padding: clamp(1.75rem, 3vw, 2.25rem);
+  box-shadow: 0 24px 50px -30px rgba(16, 24, 40, 0.25);
+}
+
+.about-quote-header {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.about-quote-header img {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.about-quote-header h3 {
+  font-family: 'Poppins', var(--font-sans);
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.about-quote-header span {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+}
+
+.about-quote-card blockquote {
+  margin: 0;
+}
+
+.quote-mark {
+  display: block;
+  font-family: 'Poppins', var(--font-sans);
+  font-weight: 800;
+  font-size: 2.25rem;
+  line-height: 1;
+  color: rgba(0, 102, 204, 0.18);
+}
+
+.about-quote-card p {
+  margin: 0.5rem 0 0;
+  font-family: 'Poppins', var(--font-sans);
+  font-weight: 700;
+  font-size: clamp(1.125rem, 2vw, 1.375rem);
   line-height: 1.4;
+  letter-spacing: -0.005em;
+  color: var(--text-primary);
 }
 
-/* Geometría de cada callout: offset fijo (dx, dy en px) del punto de
-   anclaje a la etiqueta. La línea usa el mismo vector como ancho + ángulo
-   (atan2), y la etiqueta se ancla por el borde más cercano al punto. */
-.about-callout[data-anchor="head"] .callout-line {
-  width: 175px;
-  transform: rotate(-166.8deg);
-}
-.about-callout[data-anchor="head"] .callout-label {
-  transform: translate(-170px, -40px) translate(-100%, -50%);
-}
-
-/* Codo izquierdo EN PANTALLA (hueso ForearmR_67 — el rig usa L/R
-   anatómico del personaje, espejado al mirar de frente, ver
-   CALLOUT_ANCHORS en hero-character.ts). Etiqueta empujada un poco más
-   hacia ese mismo lado (no cruzando al lado contrario), evita que la
-   línea atraviese el cuerpo. */
-.about-callout[data-anchor="elbow-left"] .callout-line {
-  width: 194px;
-  transform: rotate(-168.1deg);
-}
-.about-callout[data-anchor="elbow-left"] .callout-label {
-  transform: translate(-190px, -40px) translate(-100%, -50%);
+.about-quote-card::after {
+  content: '';
+  display: block;
+  margin-top: 1.25rem;
+  width: 40px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--accent-from);
 }
 
-.about-callout[data-anchor="elbow-right"] .callout-line {
-  width: 194px;
-  transform: rotate(-11.9deg);
-}
-.about-callout[data-anchor="elbow-right"] .callout-label {
-  transform: translate(190px, -40px) translate(0, -50%);
-}
-
-.about-callout[data-anchor="leg-left"] .callout-line {
-  width: 246px;
-  transform: rotate(153.4deg);
-}
-.about-callout[data-anchor="leg-left"] .callout-label {
-  transform: translate(-220px, 110px) translate(-100%, -50%);
-}
-
-.about-callout[data-anchor="leg-right"] .callout-line {
-  width: 246px;
-  transform: rotate(26.6deg);
-}
-.about-callout[data-anchor="leg-right"] .callout-label {
-  transform: translate(220px, 110px) translate(0, -50%);
-}
-
-.about-callout[data-anchor="hip"] .callout-line {
-  width: 173px;
-  transform: rotate(10deg);
-}
-.about-callout[data-anchor="hip"] .callout-label {
-  transform: translate(170px, 30px) translate(0, -50%);
-}
-
-/* ── Móvil/tablet: panel único bajo el personaje ──────────────────
-   Las etiquetas ancladas a huesos no caben en una pantalla estrecha (se
-   pisan entre ellas y tapan al personaje), así que aquí dejan de estar
-   ancladas: todas se apilan en el MISMO recuadro fijo bajo el personaje y
-   hero-character.ts solo muestra la que toca según el % de transformación
-   (ver isCompactLayout en el bucle de callouts). El punto y la línea
-   conectora sobran sin anclaje, se ocultan. */
-@media (max-width: 999px) {
-  .about-callout {
-    position: absolute;
-    top: auto;
-    left: clamp(1rem, 5vw, 2rem);
-    right: clamp(1rem, 5vw, 2rem);
-    bottom: clamp(1.5rem, 5vh, 3rem);
-    width: auto;
-    height: auto;
+/* Móvil (<820px): la sección ocupa al menos una pantalla (min-height, no
+   height — con height fijo, un móvil girado en horizontal, ~375px de alto,
+   recortaba el contenido) — línea de tiempo y tarjeta de cita se comprimen
+   con unidades de alto (vh) para caber en pantallas de poca altura, y si
+   aun así no caben, la sección crece en vez de cortarse. */
+@media (max-width: 819px) {
+  #about-me {
+    min-height: var(--section-min-h);
+    padding: clamp(2.5rem, 7vh, 4.5rem) clamp(1rem, 4vw, 3rem);
   }
 
-  .callout-dot,
-  .callout-line {
+  .about-layout {
+    gap: clamp(0.75rem, 2.2vh, 2rem);
+  }
+
+  .about-timeline h2 {
+    font-size: clamp(1.25rem, 3.4vh, 1.75rem);
+    margin-bottom: clamp(0.5rem, 1.6vh, 1.25rem);
+  }
+
+  .timeline-item {
+    gap: 1rem;
+  }
+
+  .timeline-body {
+    padding-bottom: clamp(0.5rem, 2.4vh, 1.75rem);
+  }
+
+  .timeline-body h3 {
+    font-size: 0.9375rem;
+    margin-bottom: 0.125rem;
+  }
+
+  .timeline-body p {
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    max-width: none;
+  }
+
+  .about-quote-card {
+    padding: clamp(0.75rem, 2.2vh, 1.5rem);
+  }
+
+  .about-quote-header {
+    margin-bottom: clamp(0.5rem, 1.6vh, 1rem);
+    padding-bottom: clamp(0.5rem, 1.4vh, 0.875rem);
+  }
+
+  .about-quote-header img {
+    width: 44px;
+    height: 44px;
+  }
+
+  .quote-mark {
+    font-size: 1.75rem;
+    height: 0.9rem;
+  }
+
+  .about-quote-card p {
+    font-size: clamp(0.875rem, 2.3vh, 1.125rem);
+    line-height: 1.35;
+  }
+
+  .about-quote-card::after {
+    margin-top: clamp(0.5rem, 1.4vh, 1rem);
+  }
+}
+
+/* Móviles muy bajos (≤600px de alto, p. ej. 320×568): se oculta la cabecera
+   con foto de la tarjeta para que todo siga cabiendo en 100vh. */
+@media (max-width: 819px) and (max-height: 600px) {
+  .about-quote-header {
     display: none;
   }
-
-  /* Mismo nivel de especificidad que las reglas por anchor de arriba
-     (.about-callout[data-anchor="x"] .callout-label) y posterior en el
-     archivo, así gana sin necesidad de !important: anula los offsets
-     px calculados para el anclaje a huesos. */
-  .about-callout[data-anchor] .callout-label {
-    position: static;
-    min-width: 0;
-    max-width: none;
-    padding: 1rem 1.15rem;
-    transform: none;
-    /* El cambio de una etiqueta a la siguiente lo escribe JS por frame;
-       la transición lo convierte en un fundido en vez de un corte seco. */
-    transition: opacity 0.35s ease;
-  }
-
-  .callout-eyebrow {
-    font-size: 0.75rem;
-  }
-
-  .callout-label p {
-    font-size: 0.95rem;
-  }
-}
-
-/* Contador de "% transformado", bajo la base holográfica de los pies.
-   Igual que .about-callout: hero-character.ts escribe su transform cada
-   frame (proyección de un punto a los pies), width/height:0 como origen de
-   coordenadas limpio; la opacidad la controla también hero-character.ts
-   (ligada a uReveal, no al scroll-stagger de los demás callouts). */
-.about-counter {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 0;
-  height: 0;
-  opacity: 0;
-  will-change: transform, opacity;
-  text-align: center;
-}
-
-.about-counter .counter-value {
-  display: block;
-  transform: translate(-50%, 0);
-  min-width: 90px;
-  padding: 0.3rem 0.9rem;
-  border-radius: var(--radius-sm);
-  background: rgba(4, 20, 26, 0.75);
-  border: 1px solid rgba(0, 212, 255, 0.5);
-  box-shadow: 0 0 16px rgba(0, 212, 255, 0.35);
-  font-family: 'Courier New', ui-monospace, monospace;
-  font-size: 1.1rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  color: #00d4ff;
-  text-shadow: 0 0 8px rgba(0, 212, 255, 0.7);
-}
-
-.about-counter .counter-label {
-  display: block;
-  transform: translate(-50%, 0);
-  margin-top: 0.35rem;
-  font-size: 0.62rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(0, 212, 255, 0.75);
 }

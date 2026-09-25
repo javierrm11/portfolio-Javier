@@ -1,47 +1,49 @@
 ---
 import About from './About.astro';
+import Tecnologias from './Tecnologias.astro';
 import Proyectos from './Proyectos.astro';
 import Contacto from './Contacto.astro';
+
 ---
-<!-- Caja rígida del hero (texto): se desliza hacia arriba y sale de
-     pantalla con el scroll, revelando lo que hay debajo. -->
-<div id="hero-card" class="hero-card">
-    <div class="hero-inner">
-        <div class="hero-text">
-            <div id="info">
-                <h2>Javier Ruiz Molero</h2>
-                <span class="hero-role-badge">Full Stack + IA</span>
+<main>
+    <section id="hero" class="hero">
+        <div class="hero-inner">
+            <!-- Retrato circular con anillo de marca (variante "5" del
+                 explorador de diseño en móvil/tablet): por debajo de 1000px
+                 va en flujo normal, pequeño, encima del texto — desde 1000px
+                 sale del flujo (position:absolute) y se ancla aparte a la
+                 derecha, como antes. -->
+            <div class="hero-portrait" aria-hidden="true">
+                <img src="/javier.webp" alt="" />
+            </div>
+
+            <div class="hero-text">
+                <div id="info">
+                    <span class="hero-eyebrow">Full Stack + IA</span>
+                    <h1>Javier Ruiz<br><span class="hero-outline">Molero</span></h1>
+                    <p class="hero-tagline">Construyo productos web de extremo a extremo, del backend a la IA.</p>
+                </div>
             </div>
         </div>
-    </div>
-</div>
 
-<!-- Escena 3D en dos capas fijas con la misma cámara:
-     #hero-visual (escritorio) se desliza en sincronía con #hero-card;
-     #hero-character (solo el personaje) NO se mueve con el scroll, así el
-     personaje sigue visible y en el mismo sitio cuando la caja se va. -->
-<div id="hero-visual" class="hero-visual">
-    <canvas id="hero-canvas"></canvas>
-    <div class="hero-visual-loader"></div>
-</div>
-<div id="hero-character" class="hero-character">
-    <canvas id="hero-character-canvas"></canvas>
-</div>
-
-<main>
-    <!-- Espaciador: solo aporta la distancia de scroll para que la tarjeta
-         del hero termine de deslizarse antes de que aparezca About. -->
-    <article id="about"></article>
+        <!-- Sobre 1000px se ancla abajo a la derecha del hero (separado del
+             bloque de texto, ver .hero-cta-row en main.css); por debajo se
+             queda en flujo normal bajo la frase, alineada a la izquierda
+             como el resto del bloque. -->
+        <div class="hero-cta-row">
+            <a href="#contact" class="hero-link">Contacto</a>
+            <a href="#proyectos" class="hero-cta">
+                Ver proyectos
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M7 17L17 7M9 7h8v8"></path></svg>
+            </a>
+        </div>
+    </section>
 
     <About />
     <Proyectos />
+    <Tecnologias />
     <Contacto />
 </main>
-
-<script>
-    import "../scripts/hero-scene";
-    import "../scripts/hero-character";
-</script>
 
 <script>
     import { gsap } from "gsap";
@@ -70,30 +72,15 @@ import Contacto from './Contacto.astro';
     // ── Hero entrance ──────────────────────────────────────────────
     const heroTl = gsap.timeline({ defaults: { ease: ease.out } });
     heroTl
-        // .header-inner, NO #header: el transform que deja esta animación
+        // .header-innFer, NO #header: el transform que deja esta animación
         // convertiría al header en bloque contenedor de sus descendientes
         // fixed, y el overlay del menú móvil (#main-nav, hermano de
         // .header-inner) quedaría recortado a la franja del header.
         .from(".header-inner",         { y: -60, opacity: 0, duration: 0.8 })
-        .from("#info h2",              { y: 32,  opacity: 0, duration: 0.7 }, "-=0.3")
-        .from(".hero-role-badge",      { y: 16,  opacity: 0, duration: 0.5 }, "-=0.4")
-        .from(".scroll-indicator",     { opacity: 0, duration: 0.5 }, "-=0.1");
-
-    // ── La caja del hero sale de pantalla hacia arriba-derecha con el scroll ──
-    // (#hero-visual va sincronizado: son dos capas independientes que se
-    // mueven igual, ver nota de z-index en main.css)
-    gsap.to(["#hero-card", "#hero-visual"], {
-        yPercent: -100,
-        xPercent: 25,
-        rotation: 5,
-        transformOrigin: "center center",
-        ease: "none",
-        // scrub con número (en vez de true) añade un pequeño retraso/inercia
-        // entre el scroll real y el valor animado — se ve más fluido que el
-        // seguimiento 1:1. Sin efecto en hero-character.ts (capa aparte, no
-        // sujeta a este tween) ni en su propia coreografía de scroll.
-        scrollTrigger: { trigger: "#about", start: "top top", end: "bottom top", scrub: 0.5 }
-    });
+        .from(".hero-eyebrow",         { y: 16,  opacity: 0, duration: 0.5 }, "-=0.3")
+        .from("#info h2",              { y: 32,  opacity: 0, duration: 0.7 }, "-=0.35")
+        .from(".hero-tagline",         { y: 20,  opacity: 0, duration: 0.6 }, "-=0.4")
+        .from(".hero-cta-row",         { y: 16,  opacity: 0, duration: 0.5 }, "-=0.35");
 
     // ── Scroll reveal utility ─────────────────────────────────────
     function revealOn(trigger: string, targets: string, stagger = STAGGER) {
@@ -107,94 +94,30 @@ import Contacto from './Contacto.astro';
         });
     }
 
-    // ── About: callouts anclados al personaje ───────────────────────
-    // La opacidad de cada callout (punto, línea, etiqueta) NO se anima
-    // aquí: hero-character.ts la escribe cada frame atada directamente al
-    // contador de "% transformado" (uReveal) — la 1ª etiqueta entra al 10%,
-    // la 2ª al 20%, etc. Al ser el mismo valor que ya va y vuelve con el
-    // scroll (scrubbed), el orden de aparición/desaparición es automático y
-    // exacto en ambas direcciones, sin tween de scroll aparte aquí.
-    // #about-callouts NO se desvanece con opacity: se suelta a "absolute"
-    // exactamente igual y en el mismo momento que #hero-character (más
-    // abajo) — así etiquetas, contador, base y personaje se van juntos,
-    // desplazándose con la página como cualquier contenido normal, en vez
-    // de que las etiquetas hagan un fade aparte mientras la base/personaje
-    // simplemente se quedan quietos y luego se deslizan.
+    // ── About ─────────────────────────────────────────────────────
+    revealOn("#about-me", ".timeline-item", 0.08);
+    revealOn("#about-me", ".about-quote-card", 0.1);
+
+    // ── Tecnologías ───────────────────────────────────────────────
+    revealOn("#tecnologias", ".tech-header", 0);
+    revealOn("#tecnologias", ".tech-group", 0.04);
 
     // ── Projects ──────────────────────────────────────────────────
     revealOn("#proyectos", ".projects-header", 0);
-    // Tarjetas de móvil/tablet (en escritorio están display:none, así que
-    // animarlas ahí no tiene efecto). Se reproduce una vez y se queda, sin
-    // scrub: un fundido atado al scroll se rebobina al subir y deja las
-    // tarjetas a medio opacar.
-    revealOn(".projects-cards", ".project-card-m", 0.12);
-
-    // Entrada escalonada: una sola animación con stagger, disparada al
-    // entrar la rejilla completa (en vez de un trigger independiente por
-    // tarjeta, que con el bento asimétrico dispararían casi a la vez).
-    gsap.from(".project-card", {
-        y: 40, opacity: 0, duration: DURATION, stagger: 0.15, ease: ease.out,
-        scrollTrigger: { trigger: ".projects-grid", start: "top 85%", toggleActions: "play none none none" }
-    });
-
-    gsap.utils.toArray<HTMLElement>(".project-card").forEach((card, i) => {
-        gsap.to(card, {
-            y: i % 2 === 0 ? -16 : 16,
-            ease: "none",
-            scrollTrigger: { trigger: card, start: "top bottom", end: "bottom top", scrub: 1.5 }
-        });
-    });
+    revealOn("#proyectos", ".projects-tab", 0.05);
+    revealOn("#proyectos", ".projects-panel-frame", 0.1);
 
     // ── Contact ───────────────────────────────────────────────────
-    // Coreografía de entrada: el móvil aparece CENTRADO en pantalla (grande,
-    // como un "hero" momentáneo) y, mientras la burbuja de "Nuevo mensaje"
-    // va emergiendo, el móvil se desliza hacia su columna del grid — los
-    // dos a la vez, terminando en el layout final de siempre (móvil a la
-    // izquierda, burbuja a la derecha).
-    revealOn("#contact", ".contact-header", 0);
-
-    const phoneWrap = document.querySelector<HTMLElement>(".phone-wrap");
-    const formBubble = document.querySelector<HTMLElement>(".contact-form-container");
-
-    // Solo en escritorio: en móvil/tablet no hay marco de móvil que
-    // "centrar y encoger" (contacto.css lo desmonta a partir de 899px), y
-    // el scale 1.12 de salida sobre un bloque ya a ancho completo se salía
-    // de pantalla. Ahí la burbuja entra sola con su revealOn de siempre.
-    if (phoneWrap && formBubble && window.innerWidth >= 900) {
-        // Cuánto hay que desplazar el móvil desde su sitio final (columna
-        // izquierda del grid) para que quede centrado en el VIEWPORT, no
-        // solo en su columna — se mide contra su posición en reposo, así
-        // que hay que calcularlo ANTES de que el timeline lo mueva.
-        const centerOffsetX = () => {
-            const rect = phoneWrap.getBoundingClientRect();
-            const phoneCenterX = rect.left + rect.width / 2;
-            return window.innerWidth / 2 - phoneCenterX;
-        };
-
-        gsap.set(phoneWrap, { x: centerOffsetX, scale: 1.12 });
-        gsap.set(formBubble, { opacity: 0, scale: 0.5, x: -60, transformOrigin: "left center" });
-
-        const contactEntranceTl = gsap.timeline({
-            scrollTrigger: { trigger: "#contact", start: "top 78%", toggleActions: "play none none reverse" }
-        });
-        contactEntranceTl
-            .to(phoneWrap, { x: 0, scale: 1, duration: 1.5, ease: "power3.inOut" })
-            .to(formBubble, { opacity: 1, scale: 1, x: 0, duration: 1.4, ease: "power3.out" }, 0.55);
-
-        // Recalcular el offset de centrado si cambia el tamaño de ventana,
-        // pero solo mientras el timeline no ha arrancado (progress 0) — si
-        // ya se movió, tocar la posición de salida a medio camino se vería
-        // como un salto.
-        window.addEventListener("resize", () => {
-            if (contactEntranceTl.progress() === 0) {
-                gsap.set(phoneWrap, { x: centerOffsetX });
-            }
-        });
-    }
+    revealOn("#contact", ".contact-title", 0);
+    revealOn("#contact", ".contact-info-item, .contact-social", 0.08);
+    gsap.from(".contact-form-container", {
+        y: 32, opacity: 0, duration: DURATION, ease: ease.out,
+        scrollTrigger: { trigger: ".contact-form-container", start: "top 85%", toggleActions: "play none none none" }
+    });
 
     // ── Footer ────────────────────────────────────────────────────
-    gsap.from(".footer-section", {
-        y: 24, opacity: 0, duration: DURATION, stagger: 0.1, ease: ease.out,
+    gsap.from(".footer-top", {
+        y: 24, opacity: 0, duration: DURATION, stagger: 0.15, ease: ease.out,
         scrollTrigger: { trigger: "#footer", start: "top 90%", toggleActions: "play none none none" }
     });
 
@@ -204,139 +127,6 @@ import Contacto from './Contacto.astro';
         end: 99999,
         onEnter:     () => document.getElementById("header")?.classList.add("scrolled"),
         onLeaveBack: () => document.getElementById("header")?.classList.remove("scrolled")
-    });
-
-    // ── Soltar al personaje (y sus etiquetas) antes de Proyectos ────
-    // #hero-character y #about-callouts van "position: fixed" (pegados a
-    // la pantalla) durante todo Hero + About para que la secuencia de
-    // scroll funcione. Pero si se quedan fijos para siempre, se superponen
-    // al título de Proyectos. Justo antes de que empiece a aparecer, ambos
-    // pasan a "absolute" en su posición actual: a partir de ahí se
-    // desplazan con la página como cualquier otro elemento y desaparecen
-    // por arriba antes de llegar a Proyectos — juntos, sin que unos hagan
-    // fade y otros se limiten a deslizarse.
-    function unpinFixedLayer(id: string, unpinnedFlags: Record<string, boolean>) {
-        const el = document.getElementById(id);
-        if (!el || unpinnedFlags[id]) return;
-        const rect = el.getBoundingClientRect();
-        el.style.position = "absolute";
-        // "position: absolute" no es relativo a la PÁGINA sino al ANCESTRO
-        // posicionado más cercano (offsetParent) — para #hero-character eso
-        // es <body> (sin ancestros posicionados de por medio, equivale a
-        // page-absolute, rect.top + scrollY de toda la vida), pero
-        // #about-callouts vive dentro de #about-me, que tiene
-        // "position: relative": su offsetParent pasa a ser #about-me, no
-        // <body>. Sumar scrollY a ciegas lo colocaba a ~1755px (el top de
-        // #about-me) de más, muy por debajo del viewport. Restar el propio
-        // rect del offsetParent (medido en el mismo instante, ambos
-        // viewport-relative) da el offset correcto sea cual sea el
-        // ancestro, y de propina ya no hace falta sumar scrollY a mano.
-        const parentRect = (el.offsetParent as HTMLElement | null)?.getBoundingClientRect();
-        const parentTop = parentRect?.top ?? -window.scrollY;
-        const parentLeft = parentRect?.left ?? -window.scrollX;
-        // Recorte horizontal al ancho real del viewport: mientras está fixed,
-        // esta capa sobresale por los lados a propósito (insets negativos:
-        // lienzo extra para pies/silla en hero-character.ts, ver main.css).
-        // Al pasar a absolute conservaba ese mismo ancho de más — en Safari
-        // iOS, un elemento POSICIONADO que sobresale del viewport permite
-        // arrastrar la página de lado con el dedo aunque html/body tengan
-        // overflow-x:clip (confirmado: en Chromium el clip sí lo contiene,
-        // en iOS no de forma fiable). Más robusto quitar el sobresaliente en
-        // el origen que confiar en que el recorte del ancestro baste.
-        const vw = document.documentElement.clientWidth;
-        const left = Math.max(rect.left, 0);
-        const right = Math.min(rect.right, vw);
-        const clampedWidth = Math.max(0, right - left);
-        el.style.top = `${rect.top - parentTop}px`;
-        el.style.left = `${left - parentLeft}px`;
-        el.style.width = `${clampedWidth}px`;
-        el.style.height = `${rect.height}px`;
-        el.style.right = "auto";
-        el.style.bottom = "auto";
-        // El <canvas> de dentro (three.js, en #hero-character) tiene
-        // width:100% en CSS (ver .hero-character canvas en main.css): sigue
-        // dibujando a su resolución ORIGINAL (más ancha), y al encoger el
-        // envoltorio al ancho seguro de arriba, esa regla lo estiraba/
-        // comprimía para encajar en la caja más estrecha — el personaje se
-        // veía "compactado" al volver a verse (el fundido de opacidad se
-        // revierte antes de que esta capa se reancle a fixed, así que hay
-        // un tramo en el que es visible con este recorte aplicado). Se le
-        // fija su tamaño real en píxeles y se desplaza dentro del
-        // envoltorio para que siga pintando en el mismo sitio; el sobrante
-        // ya no cabe y overflow:hidden lo recorta sin deformar nada.
-        if (clampedWidth !== rect.width) {
-          el.style.overflow = "hidden";
-          const canvas = el.querySelector("canvas");
-          if (canvas instanceof HTMLElement) {
-            canvas.style.position = "absolute";
-            canvas.style.top = "0";
-            canvas.style.left = `${rect.left - left}px`;
-            canvas.style.width = `${rect.width}px`;
-            canvas.style.height = `${rect.height}px`;
-          }
-        }
-        unpinnedFlags[id] = true;
-    }
-    function repinFixedLayer(id: string, unpinnedFlags: Record<string, boolean>) {
-        const el = document.getElementById(id);
-        if (!el || !unpinnedFlags[id]) return;
-        el.style.position = "";
-        el.style.top = "";
-        el.style.left = "";
-        el.style.width = "";
-        el.style.height = "";
-        el.style.right = "";
-        el.style.bottom = "";
-        el.style.overflow = "";
-        const canvas = el.querySelector("canvas");
-        if (canvas instanceof HTMLElement) {
-          canvas.style.position = "";
-          canvas.style.top = "";
-          canvas.style.left = "";
-          canvas.style.width = "";
-          canvas.style.height = "";
-        }
-        unpinnedFlags[id] = false;
-        // Mientras esta capa estaba desanclada, hero-character.ts ignoraba
-        // los resize que le llegaran (ver el guard en su resize(), justo
-        // por este motivo: si leía el ancho recortado de arriba y
-        // reencuadraba la cámara con él, el personaje se quedaba encogido
-        // en Sobre mí aunque ya se hubiera vuelto a anclar). Al reanclar
-        // hace falta forzar un reencuadre de verdad, ahora que
-        // wrapper.clientWidth vuelve a ser el ancho real — un "resize"
-        // normal no sirve porque, si el tamaño de VENTANA no cambió
-        // mientras tanto, su propia guarda lo descartaría como espurio.
-        if (id === "hero-character") {
-          window.dispatchEvent(new Event("hero-character-repin"));
-        }
-    }
-    // Además del "soltado" a absolute de abajo, ambas capas se desvanecen a
-    // la vez mientras Proyectos entra en pantalla. Al ser cajas más altas
-    // que el viewport y estar fuera de flujo, aunque se desplacen con la
-    // página siguen asomando por arriba durante un buen tramo: en móvil
-    // (secciones más juntas) el personaje y la etiqueta se veían por detrás
-    // del título de Proyectos y de la tarjeta del navegador. El z-index de
-    // la sección (proyectos.css) impide que las tape, pero como la sección
-    // es transparente hay que ocultarlas además. Un ÚNICO tween para las
-    // dos: se van juntas, sin que una haga fade y la otra solo se deslice.
-    gsap.to(["#hero-character", "#about-callouts"], {
-        opacity: 0,
-        ease: "none",
-        scrollTrigger: { trigger: "#proyectos", start: "top 90%", end: "top 45%", scrub: true }
-    });
-
-    const unpinnedFlags: Record<string, boolean> = {};
-    ScrollTrigger.create({
-        trigger: "#proyectos",
-        start: "top bottom",
-        onEnter: () => {
-            unpinFixedLayer("hero-character", unpinnedFlags);
-            unpinFixedLayer("about-callouts", unpinnedFlags);
-        },
-        onLeaveBack: () => {
-            repinFixedLayer("hero-character", unpinnedFlags);
-            repinFixedLayer("about-callouts", unpinnedFlags);
-        }
     });
 
     // ── Pause when tab hidden ─────────────────────────────────────

@@ -1,0 +1,230 @@
+/* Dos columnas tipo CV sobre la foto de monitores (fondo definido en
+   main.css, sección clara como Sobre mí — ver el comentario ahí):
+   variante "8" del explorador de diseño, sin chips ni tarjetas — cada área
+   es un bloque de texto con un punto de color y sus tecnologías en línea,
+   separadas por " · ". */
+#tecnologias {
+  position: relative;
+  overflow: hidden;
+  padding: var(--section-padding-y) clamp(1rem, 4vw, 3rem);
+  color: var(--text-primary);
+}
+
+.tech-header {
+  max-width: var(--container-max);
+  margin: 0 auto clamp(2rem, 5vw, 3rem);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.25rem 2rem;
+}
+
+.tech-header .section-eyebrow {
+  flex-basis: 100%;
+  margin-bottom: 0.35rem;
+}
+
+.tech-eyebrow {
+  color: var(--accent-from);
+}
+
+.tech-header h2 {
+  margin: 0;
+  font-family: 'Poppins', var(--font-sans);
+  font-weight: 700;
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.tech-sub {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+}
+
+.tech-columns {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(2rem, 5vw, 3.5rem);
+}
+
+.tech-group {
+  margin-bottom: clamp(1.25rem, 3vw, 1.75rem);
+}
+
+.tech-group:last-child {
+  margin-bottom: 0;
+}
+
+/* En escritorio/tablet el <details> va siempre abierto (lo fuerza el script
+   de Tecnologias.astro), así que el <summary> no debe parecer un botón. */
+.tech-group-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+  list-style: none;
+  cursor: default;
+}
+
+.tech-group-title::-webkit-details-marker {
+  display: none;
+}
+
+.tech-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.tech-group-title h3 {
+  margin: 0;
+  font-family: 'Poppins', var(--font-sans);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+.tech-count,
+.tech-chevron {
+  display: none;
+}
+
+.tech-group-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.875rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+.tech-group-items li {
+  display: inline;
+}
+
+.tech-group-items li + li::before {
+  content: ' · ';
+  white-space: pre;
+}
+
+/* Móvil (<1100px): acordeón (variante "4" del explorador) — filas con
+   separador y chevron, la abierta muestra sus tecnologías como chips. */
+@media (max-width: 1099px) {
+  .tech-columns {
+    gap: 0;
+  }
+
+  .tech-group {
+    margin-bottom: 0;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .tech-columns .tech-col:first-child .tech-group:first-child {
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .tech-group-title {
+    gap: 0.65rem;
+    margin-bottom: 0;
+    padding: 0.8125rem 0;
+    min-height: 44px;
+    cursor: pointer;
+  }
+
+  .tech-group-title h3 {
+    font-size: 0.9375rem;
+  }
+
+  .tech-count {
+    display: inline;
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+  }
+
+  .tech-chevron {
+    display: block;
+    margin-left: auto;
+    color: var(--text-secondary);
+    transition: transform var(--transition-base);
+  }
+
+  .tech-group[open]:not(.is-closing) .tech-chevron {
+    transform: rotate(180deg);
+  }
+
+  .tech-group-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    padding-bottom: 1rem;
+  }
+
+  .tech-group-items li {
+    display: inline-flex;
+    padding: 0.25rem 0.7rem;
+    border-radius: var(--radius-full);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    font-size: 0.78125rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .tech-group-items li + li::before {
+    content: none;
+  }
+}
+
+@media (max-width: 1099px) {
+  /* Con una sola columna, las dos mitades pasan a ser dos filas implícitas
+     del grid — sin align-content:start, "normal" (el valor por defecto)
+     estira cada fila para repartirse el hueco sobrante del flex:1 de más
+     abajo, dejando un hueco vacío al final de cada mitad en vez de solo al
+     final de la lista. */
+  .tech-columns {
+    grid-template-columns: 1fr;
+    align-content: start;
+  }
+}
+
+/* Móvil (<1100px): las 10 filas colapsadas caben de sobra en una pantalla
+   (min-height:100vh heredado de main.css), pero aquí se pueden abrir varias
+   categorías a la vez — sin scroll interno ni tope de 100vh: si abrir
+   varias no cabe, la sección crece más allá de una pantalla y es la propia
+   página la que hace scroll, en vez de recortar o meter scroll dentro de
+   la sección. */
+@media (max-width: 1099px) {
+  #tecnologias {
+    justify-content: flex-start;
+    padding: clamp(4.5rem, 12vh, 6.5rem) clamp(1rem, 4vw, 3rem) clamp(1rem, 3vh, 2rem);
+  }
+
+  .tech-header {
+    flex: 0 0 auto;
+    margin-bottom: clamp(0.75rem, 2vh, 1.5rem);
+  }
+
+  .tech-header h2 {
+    font-size: clamp(1.5rem, 5vh, 2rem);
+  }
+}
+
+@media (max-width: 1099px) and (max-height: 700px) {
+  .tech-group-title {
+    padding-block: 0.625rem;
+    min-height: 40px;
+  }
+
+  .tech-group-title h3 {
+    font-size: 0.875rem;
+  }
+
+  .tech-group-items {
+    padding-bottom: 0.75rem;
+  }
+}

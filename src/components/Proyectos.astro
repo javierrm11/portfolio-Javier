@@ -1,195 +1,189 @@
 ---
-// Proyectos.astro
+// Proyectos.astro — pestañas (variante "L5" del explorador de diseño), con
+// las capturas en su color real (sin viraje azul, a diferencia del resto
+// del sitio: aquí interesa que se vea la interfaz tal cual es).
+// Las capturas se importan desde src/assets para que astro:assets las
+// sirva en WebP y en varios tamaños (srcset) en vez de los PNG originales.
+import { Image } from 'astro:assets';
+import canalplad from '../assets/proyectos/canalplad.png';
+import guionia from '../assets/proyectos/guionia.png';
+import citaswassap from '../assets/proyectos/citaswassap.png';
+import prezu from '../assets/proyectos/prezu.es.png';
+import apivuelos from '../assets/proyectos/apivuelos.png';
+
+const projects = [
+    {
+        key: 'canalplad',
+        title: 'Canalplad',
+        badge: 'SEO',
+        dot: '#F7C948',
+        img: canalplad,
+        imgTop: true,
+        desc: 'Web de canalones y pladur en Córdoba: +35% de tráfico orgánico gracias al SEO técnico.',
+        skills: ['Next.js', 'SEO técnico', 'TypeScript'],
+        href: 'https://canalonescanalplad.es',
+    },
+    {
+        key: 'guionia',
+        title: 'GuionIA',
+        badge: 'SaaS · Guionia.es',
+        dot: '#C084FC',
+        img: guionia,
+        imgTop: true,
+        desc: 'Convierte ideas en guiones divididos en escenas, con banco de hooks reutilizables y seguimiento de vídeos ya publicados vía TikTok for Developers.',
+        skills: ['Next.js', 'Supabase', 'TikTok API'],
+        href: 'https://guionia.es',
+    },
+    {
+        key: 'citaswassap',
+        title: 'CitasWassap',
+        badge: 'SaaS',
+        dot: '#34D399',
+        img: citaswassap,
+        imgTop: true,
+        desc: 'Reservas por WhatsApp para barberías y peluquerías: un agente con IA gestiona citas y escala al dueño cuando hace falta. Multi-tenant desde el diseño.',
+        skills: ['Next.js', 'Supabase', 'WhatsApp API', 'IA'],
+        href: 'https://panel-admin-peluqueria.vercel.app',
+    },
+    {
+        key: 'prezu',
+        title: 'Prezu',
+        badge: 'SaaS · Prezu.es',
+        dot: '#4fc3ff',
+        img: prezu,
+        imgTop: true,
+        desc: 'Presupuestos y facturas en segundos, introduciendo los datos por texto, audio o formulario. Piloto activo con un negocio real; en desarrollo continuo.',
+        skills: ['Next.js', 'Voz/Audio', 'VeriFactu'],
+        href: 'https://prezu.es',
+    },
+    {
+        key: 'apivuelos',
+        title: 'API Vuelos',
+        badge: 'Tiempo real · Apivuelos.es',
+        dot: '#FF9A3D',
+        img: apivuelos,
+        imgTop: false,
+        desc: 'Seguimiento de vuelos en tiempo real con mapa interactivo, estadísticas y APIs externas.',
+        skills: ['Next.js', 'APIs externas', 'Chart.js'],
+        href: 'https://apivuelos.es/Mapa',
+    },
+];
 ---
 <section id="proyectos">
     <div class="projects-header">
+        <span class="projects-eyebrow">Con qué he construido</span>
         <h2>Proyectos</h2>
-        <span class="projects-badge">Destacados</span>
     </div>
 
-    <div class="projects-scene">
-        <div class="laptop-wrap">
-            <div class="laptop">
-                <div class="laptop-screen">
-                    <div class="browser-ui">
-                        <div class="browser-tabs">
-                            <button class="browser-tab is-active" data-target="prezu" data-url="https://prezu.es">
-                                <span class="tab-dot"></span>prezu.es
-                            </button>
-                            <button class="browser-tab" data-target="citas" data-url="https://panel-admin-peluqueria.vercel.app">
-                                <span class="tab-dot"></span>citaswhassap
-                            </button>
-                            <button class="browser-tab" data-target="canal" data-url="https://canalonescanalplad.es">
-                                <span class="tab-dot"></span>canalonescanalplad.es
-                            </button>
-                            <button class="browser-tab" data-target="api" data-url="https://apivuelos.es/Mapa">
-                                <span class="tab-dot"></span>apivuelos.es
-                            </button>
-                        </div>
+    <div class="projects-tabs">
+        <div class="projects-tablist" role="tablist" aria-label="Proyectos">
+            {projects.map((p, i) => (
+                <button
+                    type="button"
+                    role="tab"
+                    class="projects-tab"
+                    aria-selected={i === 0 ? 'true' : 'false'}
+                    aria-controls={`proj-panel-${p.key}`}
+                    id={`proj-tab-${p.key}`}
+                    data-index={i}
+                >
+                    <span class="projects-tab-dot" style={`background:${p.dot}`}></span>
+                    <span class="projects-tab-text">
+                        <span class="projects-tab-title">{p.title}</span>
+                        <span class="projects-tab-badge">{p.badge}</span>
+                    </span>
+                </button>
+            ))}
+        </div>
 
-                        <div class="browser-address">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#4b5563" stroke-width="2">
-                                <rect x="5" y="11" width="14" height="9" rx="2"></rect>
-                                <path d="M8 11V7a4 4 0 0 1 8 0v4"></path>
-                            </svg>
-                            <span class="browser-address-url">https://prezu.es</span>
-                        </div>
-
-                        <div class="browser-panels">
-                            <div class="browser-panel is-active" id="panel-prezu">
-                                <iframe data-src="https://prezu.es" title="prezu.es" loading="lazy"></iframe>
-                            </div>
-
-                            <div class="browser-panel" id="panel-citas">
-                                <div class="panel-locked">
-                                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="1.75">
-                                        <rect x="5" y="11" width="14" height="9" rx="2"></rect>
-                                        <path d="M8 11V7a4 4 0 0 1 8 0v4"></path>
-                                    </svg>
-                                    <p>Panel privado — requiere inicio de sesión.</p>
-                                    <a href="https://panel-admin-peluqueria.vercel.app" target="_blank" rel="noopener noreferrer">Abrir de todas formas ↗</a>
+        <div class="projects-panel-frame">
+            {projects.map((p, i) => (
+                <div
+                    class="projects-panel"
+                    id={`proj-panel-${p.key}`}
+                    role="tabpanel"
+                    aria-labelledby={`proj-tab-${p.key}`}
+                    hidden={i !== 0}
+                >
+                    <Image
+                        class:list={['projects-panel-img', { 'projects-panel-img--top': p.imgTop }]}
+                        src={p.img}
+                        alt={`Captura de pantalla de ${p.title}`}
+                        format="webp"
+                        quality={78}
+                        widths={[480, 800, 1000]}
+                        sizes="(max-width: 899px) 100vw, 1032px"
+                        loading={i === 0 ? 'eager' : 'lazy'}
+                        decoding="async"
+                    />
+                    <div class="projects-panel-overlay"></div>
+                    <div class="projects-panel-body" style={`--proj-accent:${p.dot}`}>
+                        <span class="projects-panel-badge">{p.badge}</span>
+                        <h3 class="projects-panel-title">{p.title}</h3>
+                        <div class="projects-panel-extra"><div>
+                            <p class="projects-panel-desc">{p.desc}</p>
+                            <div class="projects-panel-foot">
+                                <div class="projects-panel-skills">
+                                    {p.skills.map((s) => <span>{s}</span>)}
                                 </div>
+                                <a class="projects-panel-link" href={p.href} target="_blank" rel="noopener noreferrer">
+                                    Visitar sitio
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M7 17L17 7M9 7h8v8"></path></svg>
+                                </a>
                             </div>
-
-                            <div class="browser-panel" id="panel-canal">
-                                <iframe data-src="https://canalonescanalplad.es" title="canalonescanalplad.es" loading="lazy"></iframe>
-                            </div>
-
-                            <div class="browser-panel" id="panel-api">
-                                <iframe data-src="https://apivuelos.es/Mapa" title="apivuelos.es" loading="lazy"></iframe>
-                            </div>
-                        </div>
+                        </div></div>
                     </div>
                 </div>
-                <div class="laptop-base">
-                    <div class="laptop-notch"></div>
-                </div>
-            </div>
+            ))}
         </div>
-
-        <div class="projects-character">
-            <canvas id="projects-canvas"></canvas>
-        </div>
-    </div>
-
-    <!-- Versión móvil/tablet: tarjetas en vez del portátil con las webs
-         incrustadas. En una pantalla pequeña el iframe quedaba ilegible y,
-         además, iOS no cede el gesto de scroll a un iframe de otro origen,
-         así que no se podía recorrer la web de dentro. Aquí cada proyecto
-         se presenta con su propia ficha y un enlace al sitio real. El
-         portátil se oculta por CSS en este mismo corte (proyectos.css) y
-         laptop-reveal.ts ni siquiera carga los iframes. -->
-    <div class="projects-cards">
-        <article class="project-card-m">
-            <div class="pcm-media pcm-media--placeholder">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                </svg>
-            </div>
-            <div class="pcm-body">
-                <div class="pcm-head">
-                    <h3>Prezu</h3>
-                    <span class="pcm-badge">SaaS</span>
-                </div>
-                <p class="pcm-desc">
-                    Presupuestos por voz para gremios: dictas el trabajo al salir de la
-                    visita y el cliente recibe un PDF profesional por WhatsApp.
-                </p>
-                <a class="pcm-link" href="https://prezu.es" target="_blank" rel="noopener noreferrer">
-                    Visitar sitio
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                        <polyline points="15 3 21 3 21 9"></polyline>
-                        <line x1="10" y1="14" x2="21" y2="3"></line>
-                    </svg>
-                </a>
-            </div>
-        </article>
-
-        <article class="project-card-m">
-            <div class="pcm-media">
-                <img src="/canalplad.webp" alt="canalonescanalplad.es" loading="lazy" decoding="async" />
-            </div>
-            <div class="pcm-body">
-                <div class="pcm-head">
-                    <h3>Canalones Canalplad</h3>
-                    <span class="pcm-badge">SEO</span>
-                </div>
-                <p class="pcm-desc">
-                    Sitio web corporativo con SEO técnico optimizado. Incremento del 35%
-                    en tráfico orgánico.
-                </p>
-                <ul class="pcm-tech">
-                    <li>Next.js</li><li>SEO técnico</li><li>Vercel</li><li>TypeScript</li>
-                </ul>
-                <a class="pcm-link" href="https://canalonescanalplad.es" target="_blank" rel="noopener noreferrer">
-                    Visitar sitio
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                        <polyline points="15 3 21 3 21 9"></polyline>
-                        <line x1="10" y1="14" x2="21" y2="3"></line>
-                    </svg>
-                </a>
-            </div>
-        </article>
-
-        <article class="project-card-m">
-            <div class="pcm-media">
-                <img src="/apivuelos.png" alt="apivuelos.es" loading="lazy" decoding="async" />
-            </div>
-            <div class="pcm-body">
-                <div class="pcm-head">
-                    <h3>API Vuelos</h3>
-                    <span class="pcm-badge">Tiempo real</span>
-                </div>
-                <p class="pcm-desc">
-                    Seguimiento de vuelos en tiempo real con mapa interactivo,
-                    estadísticas y APIs externas.
-                </p>
-                <ul class="pcm-tech">
-                    <li>Next.js</li><li>APIs externas</li><li>Leaflet</li><li>Chart.js</li>
-                </ul>
-                <a class="pcm-link" href="https://apivuelos.es/Mapa" target="_blank" rel="noopener noreferrer">
-                    Visitar sitio
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                        <polyline points="15 3 21 3 21 9"></polyline>
-                        <line x1="10" y1="14" x2="21" y2="3"></line>
-                    </svg>
-                </a>
-            </div>
-        </article>
-
-        <article class="project-card-m">
-            <div class="pcm-media pcm-media--placeholder">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
-                    <rect x="5" y="11" width="14" height="9" rx="2"></rect>
-                    <path d="M8 11V7a4 4 0 0 1 8 0v4"></path>
-                </svg>
-            </div>
-            <div class="pcm-body">
-                <div class="pcm-head">
-                    <h3>Citas WhatsApp</h3>
-                    <span class="pcm-badge">Privado</span>
-                </div>
-                <p class="pcm-desc">
-                    Panel de administración para la gestión de citas de una peluquería.
-                    Requiere inicio de sesión.
-                </p>
-                <a class="pcm-link" href="https://panel-admin-peluqueria.vercel.app" target="_blank" rel="noopener noreferrer">
-                    Abrir panel
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                        <polyline points="15 3 21 3 21 9"></polyline>
-                        <line x1="10" y1="14" x2="21" y2="3"></line>
-                    </svg>
-                </a>
-            </div>
-        </article>
     </div>
 </section>
 
 <script>
-    import "../scripts/laptop-reveal";
-    import "../scripts/projects-character";
+    // Pestañas de Proyectos: un panel visible a la vez (hidden nativo, no
+    // display por JS), tabs accesibles por teclado (flechas ← → mueven el
+    // foco y activan, Home/End van al primero/último — patrón estándar de
+    // un tablist ARIA).
+    const tablist = document.querySelector<HTMLElement>('.projects-tablist');
+    if (tablist) {
+        const tabs = Array.from(tablist.querySelectorAll<HTMLButtonElement>('.projects-tab'));
+        const panels = Array.from(document.querySelectorAll<HTMLElement>('.projects-panel'));
+
+        const activate = (tab: HTMLButtonElement, focus = false) => {
+            tabs.forEach((t) => t.setAttribute('aria-selected', String(t === tab)));
+            const target = tab.getAttribute('aria-controls');
+            panels.forEach((p) => { p.hidden = p.id !== target; });
+            if (focus) tab.focus();
+        };
+
+        tabs.forEach((tab, i) => {
+            tab.addEventListener('click', () => activate(tab));
+            tab.addEventListener('keydown', (e) => {
+                const dir = e.key === 'ArrowDown' || e.key === 'ArrowRight' ? 1
+                    : e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -1
+                    : e.key === 'Home' ? -i
+                    : e.key === 'End' ? tabs.length - 1 - i
+                    : 0;
+                if (!dir) return;
+                e.preventDefault();
+                activate(tabs[(i + dir + tabs.length) % tabs.length], true);
+            });
+        });
+
+        // Deslizar horizontalmente sobre el panel cambia de proyecto (solo en
+        // móvil/tablet, donde la lista de pestañas es una barra inferior;
+        // mismo corte que el CSS, 900px).
+        const frame = document.querySelector<HTMLElement>('.projects-panel-frame');
+        const mobile = window.matchMedia('(max-width: 899px), (max-width: 1099px) and (orientation: portrait)');
+        let startX = 0;
+        let startY = 0;
+        frame?.addEventListener('pointerdown', (e) => { startX = e.clientX; startY = e.clientY; });
+        frame?.addEventListener('pointerup', (e) => {
+            if (!mobile.matches) return;
+            const dx = e.clientX - startX;
+            if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(e.clientY - startY)) return;
+            const current = tabs.findIndex((t) => t.getAttribute('aria-selected') === 'true');
+            activate(tabs[(current + (dx < 0 ? 1 : -1) + tabs.length) % tabs.length]);
+        });
+    }
 </script>

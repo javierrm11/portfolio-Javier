@@ -7,8 +7,12 @@
        Animando .header-inner el transform vive ahí y el nav se queda fuera
        de su alcance. -->
   <div class="header-inner">
+    <a href="#hero" class="logo-mark">JRM</a>
     <div id="header-buttons" class="header-buttons">
-      <a href="#contact" class="header-cta">Contáctame</a>
+      <a href="#proyectos" class="header-cta">
+        Ver proyectos
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M7 17L17 7M9 7h8v8"></path></svg>
+      </a>
       <button
         id="menu-toggle"
         class="menu-btn"
@@ -30,20 +34,64 @@
       <li>
         <a href="#about-me" class="nav-link">
           <span class="nav-text">Sobre mí</span>
+          <span class="nav-link-dot" aria-hidden="true"></span>
         </a>
       </li>
       <li>
         <a href="#proyectos" class="nav-link">
           <span class="nav-text">Proyectos</span>
+          <span class="nav-link-dot" aria-hidden="true"></span>
+        </a>
+      </li>
+      <li>
+        <a href="#tecnologias" class="nav-link">
+          <span class="nav-text">Tecnologías</span>
+          <span class="nav-link-dot" aria-hidden="true"></span>
         </a>
       </li>
       <li>
         <a href="#contact" class="nav-link">
           <span class="nav-text">Contacto</span>
+          <span class="nav-link-dot" aria-hidden="true"></span>
         </a>
       </li>
     </ul>
-
-    <a href="#contact" class="nav-cta">Contáctame</a>
   </nav>
 </header>
+
+<script>
+  // Cabecera que se oculta al bajar y reaparece al subir (la animación es
+  // una transición CSS de `top`, ver header.css — no un transform, que
+  // convertiría a #header en bloque contenedor del overlay del menú).
+  const header = document.getElementById("header");
+  const nav = document.getElementById("main-nav");
+  if (header) {
+    const mobile = window.matchMedia("(max-width: 819px)");
+    const THRESHOLD = 8;
+    const TOP_ZONE = 80;
+    let lastY = window.scrollY;
+    let ticking = false;
+
+    const update = () => {
+      ticking = false;
+      const y = window.scrollY;
+      const delta = y - lastY;
+      if (mobile.matches || y < TOP_ZONE || nav?.classList.contains("open")) {
+        header.classList.remove("header--hidden");
+      } else if (Math.abs(delta) >= THRESHOLD) {
+        header.classList.toggle("header--hidden", delta > 0);
+      }
+      if (Math.abs(delta) >= THRESHOLD || y < TOP_ZONE) lastY = y;
+    };
+
+    window.addEventListener("scroll", () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    }, { passive: true });
+
+    // Si el foco entra en la cabecera (Tab), que se vea.
+    header.addEventListener("focusin", () => header.classList.remove("header--hidden"));
+  }
+</script>

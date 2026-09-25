@@ -1,9 +1,9 @@
 :root {
-  --bg-primary: #050505;
-  --bg-surface: rgba(255, 255, 255, 0.04);
-  --bg-surface-hover: rgba(255, 255, 255, 0.07);
+  --bg-primary: #ffffff;
+  --bg-surface: rgba(0, 0, 0, 0.03);
+  --bg-surface-hover: rgba(0, 0, 0, 0.05);
 
-  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-subtle: rgba(0, 0, 0, 0.08);
   --border-focus: rgba(0, 102, 204, 0.5);
 
   --accent-from: #0066CC;
@@ -11,14 +11,14 @@
   --gradient-accent: linear-gradient(135deg, #0066CC, #3b9eff);
   --accent-ai: #10B981;
 
-  --text-primary: #F9FAFB;
+  --text-primary: #0a0a0a;
   --text-secondary: #6B7280;
-  --text-tertiary: #374151;
+  --text-tertiary: #9CA3AF;
 
-  --glass-bg: rgba(255, 255, 255, 0.04);
-  --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+  --glass-bg: rgba(0, 0, 0, 0.02);
+  --glass-border: 1px solid rgba(0, 0, 0, 0.08);
   --glass-blur: blur(24px);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
 
   --hover-lift: translateY(-4px);
   --hover-glow: 0 0 0 1px rgba(0, 102, 204, 0.4), 0 16px 40px rgba(0, 102, 204, 0.12);
@@ -34,27 +34,21 @@
   --transition-base: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-
-  /* Rejilla de circuito reutilizada en todo fondo azul opaco del sitio
-     (body, hero-card, Proyectos, Contacto) para que los cuadrados no
-     desaparezcan solo porque una sección pinta su propio gradiente encima. */
-  --grid-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Cpath d='M56 0H0V56' fill='none' stroke='rgba(255,255,255,0.09)' stroke-width='1'/%3E%3Ccircle cx='0' cy='0' r='2' fill='rgba(255,255,255,0.45)'/%3E%3C/svg%3E");
+  --font-sans: 'Karla', system-ui, -apple-system, sans-serif;
 }
 
-/* Aplicar junto a cualquier `background-image` propio de la sección:
-   .bg-grid { background-image: <gradiente-de-la-sección>, var(--grid-pattern); }
-   Mismo drift que el body, para que el patrón no "salte" al cruzar de una
-   sección a otra. */
-.bg-grid {
-  background-size: cover, 56px 56px;
-  background-position: 0 0, 0 0;
-  animation: body-grid-drift 12s linear infinite;
+/* Alto mínimo de las secciones: una pantalla entera (100vh). En pantallas
+   verticales MUY altas (p. ej. Surface Pro 960×1440, iPad Pro 1024×1366) se
+   topa a 1000px — con 100vh el contenido (600–900px) quedaba flotando en
+   medio de un mar de espacio vacío. El resto de dispositivos (móviles,
+   tablets normales, escritorio horizontal) no entra en esta condición. */
+:root {
+  --section-min-h: 100vh;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .bg-grid {
-    animation: none;
+@media (min-height: 1200px) and (orientation: portrait) {
+  :root {
+    --section-min-h: 1000px;
   }
 }
 
@@ -87,12 +81,9 @@ html {
      "clip" en vez de "hidden": hidden convierte al elemento en contenedor
      de scroll (solo que sin barra), y en Safari iOS eso no impide arrastrar
      la página de lado cuando quien se sale es un elemento POSICIONADO
-     ABSOLUTO. Y aquí los hay: al pasar de Proyectos, #hero-character y
-     #about-callouts se sueltan a position:absolute conservando el ancho que
-     tenían (110% del viewport, por sus insets de -5%), así que llegan ~20px
-     más allá del borde derecho. clip recorta de verdad y no crea puerto de
-     scroll, así que no hay nada que arrastrar. La línea hidden se queda de
-     reserva para navegadores sin soporte de clip. */
+     ABSOLUTO (ej. .laptop-base al 112% de ancho). clip recorta de verdad y
+     no crea puerto de scroll, así que no hay nada que arrastrar. La línea
+     hidden se queda de reserva para navegadores sin soporte de clip. */
   overflow-x: hidden;
   overflow-x: clip;
   /* Corta el rebote elástico al llegar a los extremos. Importa sobre todo
@@ -106,15 +97,7 @@ html {
 
 body {
   font-family: var(--font-sans);
-  /* El fondo (gradiente + rejilla) ya no se pinta aquí sino en
-     .page-backdrop, más abajo. Iba en el body con
-     "background-attachment: fixed", que iOS Safari nunca ha soportado bien:
-     obliga a repintar el fondo entero en cada frame de scroll y lo
-     recoloca de golpe cada vez que la barra de direcciones se oculta o se
-     muestra, lo que se ve como saltos/rebotes de la página mientras se
-     baja. Una capa position:fixed da exactamente el mismo resultado visual
-     sin ese problema. Se deja el color plano como base. */
-  background-color: #0a3350;
+  background-color: var(--bg-primary);
   color: var(--text-primary);
   line-height: 1.6;
   /* Mismo criterio que en <html> (ver nota allí): clip recorta sin crear
@@ -124,225 +107,12 @@ body {
   min-height: 100vh;
 }
 
-/* Capa de fondo fija: sustituye al background-attachment del body (ver la
-   nota de arriba). Azul "normal" (ni negro ni navy extremo), mismo par de
-   tonos que ya usan Hero y Proyectos (radial-gradient #1c6f95 → #0a3350 en
-   main.css/proyectos.css) para que no desentone al alternar con esas
-   secciones. Textura de rejilla + nodos (SVG inline, mismo patrón que
-   .noise-overlay) para dar sensación de "red/circuito" en vez de un azul
-   plano — hace pareja con el efecto de circuitos del personaje en Sobre mí.
-   z-index por debajo de las otras capas decorativas fijas (todas en -1). */
-.page-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: -2;
-  pointer-events: none;
-  background-color: #0a3350;
-  background-image:
-    linear-gradient(165deg, #1c6f95 0%, #0a3350 65%),
-    var(--grid-pattern);
-  background-size: cover, 56px 56px;
-  background-position: 0 0, 0 0;
-  /* Misma rejilla a la deriva que la pantalla de carga (page-loader.css):
-     el gradiente (capa 1) se queda quieto, solo se anima la posición de la
-     capa 2 (la rejilla), un ciclo por celda para que el bucle sea invisible. */
-  animation: body-grid-drift 12s linear infinite;
-}
-
-@keyframes body-grid-drift {
-  to { background-position: 0 0, 56px 56px; }
-}
-
-/* Misma deriva pero para fondos con la rejilla como ÚNICA capa
-   (background-image sin gradiente debajo, p.ej. #contact). */
-@keyframes grid-drift-solo {
-  to { background-position: 56px 56px; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .page-backdrop {
-    animation: none;
-  }
-}
-
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-sans);
   font-weight: 700;
   line-height: 1.1;
   letter-spacing: -0.02em;
   color: var(--text-primary);
-}
-
-/* Aurora background */
-.aurora-bg {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-.aurora-orb {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(120px);
-  opacity: 0.07;
-  animation: aurora-drift 25s ease-in-out infinite;
-  will-change: transform;
-}
-
-.aurora-orb-1 {
-  width: 700px;
-  height: 700px;
-  background: #0066CC;
-  top: -20%;
-  left: -15%;
-  animation-duration: 30s;
-}
-
-.aurora-orb-2 {
-  width: 500px;
-  height: 500px;
-  background: #3b9eff;
-  bottom: -15%;
-  right: -10%;
-  animation-duration: 25s;
-  animation-direction: reverse;
-}
-
-.aurora-orb-3 {
-  width: 400px;
-  height: 400px;
-  background: #0066CC;
-  top: 45%;
-  left: 55%;
-  animation-duration: 35s;
-  animation-delay: -8s;
-  opacity: 0.04;
-}
-
-@keyframes aurora-drift {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  25%       { transform: translate(60px, -40px) scale(1.05); }
-  50%       { transform: translate(30px, 80px) scale(0.95); }
-  75%       { transform: translate(-60px, 30px) scale(1.03); }
-}
-
-/* Barrido horizontal sutil, mismo efecto que .page-loader-scanline en
-   loader.css — continúa la sensación de "escena viva" tras la carga. */
-.scanline-overlay {
-  position: fixed;
-  inset: 0;
-  left: 0;
-  right: 0;
-  z-index: -1;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-.scanline-overlay::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 140px;
-  background: linear-gradient(180deg, transparent, rgba(0, 212, 255, 0.07), transparent);
-  animation: page-scanline-sweep 5.5s ease-in-out infinite;
-}
-
-@keyframes page-scanline-sweep {
-  0%   { transform: translateY(-20vh); }
-  100% { transform: translateY(120vh); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .scanline-overlay::before {
-    animation: none;
-    opacity: 0;
-  }
-}
-
-.noise-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  opacity: 0.025;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  background-repeat: repeat;
-  background-size: 128px 128px;
-}
-
-/* Paralaje de capas de circuito: 3 capas del mismo patrón de trazas PCB a
-   distinta escala/opacidad (más lejos = más pequeño y tenue), cada una
-   desplazada verticalmente por circuit-parallax.ts a una velocidad
-   distinta según el scroll — da sensación de profundidad real sin
-   three.js, solo transform (barato). El contenedor es más alto que el
-   viewport (inset negativo) para que el desplazamiento no deje huecos.  */
-.circuit-parallax {
-  position: fixed;
-  inset: -20% 0;
-  z-index: -1;
-  pointer-events: none;
-}
-
-.circuit-layer {
-  position: absolute;
-  inset: 0;
-  background-repeat: repeat;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cpath d='M14 14 H70 V70 H126' fill='none' stroke='%237cc8ff' stroke-width='1.4'/%3E%3Cpath d='M126 14 V56 H84' fill='none' stroke='%237cc8ff' stroke-width='1.4'/%3E%3Cpath d='M14 98 H42 V126' fill='none' stroke='%237cc8ff' stroke-width='1.4'/%3E%3Ccircle cx='14' cy='14' r='2.4' fill='%237cc8ff'/%3E%3Ccircle cx='70' cy='70' r='2.4' fill='%237cc8ff'/%3E%3Ccircle cx='126' cy='14' r='2' fill='%237cc8ff'/%3E%3Ccircle cx='84' cy='56' r='2' fill='%237cc8ff'/%3E%3Ccircle cx='14' cy='98' r='2' fill='%237cc8ff'/%3E%3Ccircle cx='42' cy='126' r='2' fill='%237cc8ff'/%3E%3C/svg%3E");
-  will-change: transform;
-}
-
-.circuit-layer-1 {
-  background-size: 340px 340px;
-  opacity: 0.05;
-}
-
-.circuit-layer-2 {
-  background-size: 210px 210px;
-  opacity: 0.08;
-}
-
-.circuit-layer-3 {
-  background-size: 130px 130px;
-  opacity: 0.12;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .circuit-layer {
-    transform: none !important;
-  }
-}
-
-/* ── Táctil: los efectos decorativos se quedan quietos ─────────────
-   Nada desaparece — se siguen viendo exactamente igual — pero dejan de
-   animarse. En un GPU de móvil estos cuatro son justo los patrones que
-   hacen que el scroll dé tirones, y encima corren SIEMPRE, también en
-   secciones donde no aportan nada (Contacto, footer):
-   - .aurora-orb anima transform+scale sobre un filter: blur(120px), lo que
-     obliga a recalcular el desenfoque de un elemento de hasta 700px en
-     cada frame;
-   - body-grid-drift anima background-position sobre capas fijas a pantalla
-     completa: background-position no se puede componer en GPU, así que
-     repinta toda la superficie en cada frame;
-   - la banda de barrido se desplaza sin parar por encima de toda la página.
-   (El paralaje de circuitos se desactiva aparte, en circuit-parallax.ts:
-   ese escribe transforms por JS en cada frame DURANTE el scroll.) */
-@media (hover: none) and (pointer: coarse) {
-  .aurora-orb,
-  .page-backdrop,
-  .bg-grid,
-  .scanline-overlay::before {
-    animation: none;
-  }
-
-  /* Sin animación, will-change solo mantendría capas de composición vivas
-     consumiendo memoria de vídeo para nada. */
-  .aurora-orb,
-  .circuit-layer {
-    will-change: auto;
-  }
 }
 
 /* Gradient text utility */
@@ -384,13 +154,22 @@ h1, h2, h3, h4, h5, h6 {
   transform: translateY(32px);
 }
 
-/* Cursor de circuito (circuit-cursor.ts): oculta el cursor nativo SOLO en
-   dispositivos con ratón real (mismo criterio que el script, así los dos
-   coinciden) — en táctil no se toca nada. !important porque muchos
-   elementos interactivos ya traen su propio "cursor: pointer" explícito
-   que si no ganaría a cualquier regla heredada normal. */
-@media (hover: hover) and (pointer: fine) {
-  *, *::before, *::after {
-    cursor: none !important;
-  }
+/* Tema sobre fotos: las secciones y el footer flotan sobre el fondo
+   continuo oscuro, asi que invierten las variables de texto/superficie. El
+   header queda fuera (su menu movil sigue siendo claro). */
+main,
+#footer {
+  --text-primary: #fff;
+  --text-secondary: rgba(255, 255, 255, 0.74);
+  --text-tertiary: rgba(255, 255, 255, 0.5);
+  --border-subtle: rgba(255, 255, 255, 0.18);
+  --bg-surface: rgba(255, 255, 255, 0.08);
+  --bg-surface-hover: rgba(255, 255, 255, 0.14);
+  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
+
+main .section-eyebrow {
+  color: #4fc3ff;
 }

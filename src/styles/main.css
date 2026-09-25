@@ -2,266 +2,283 @@ main {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  
+
 }
 
 /* ── Hero section ─────────────────────────────────────────── */
-/* #about is just a scroll spacer now — its height is the distance the
-   #hero-card needs to fully slide up and off-screen, AND the distance over
-   which la secuencia del personaje (girar → levantarse → centrar, ver
-   hero-character.ts) se reproduce. Más alto = hay que hacer más scroll para
-   la misma animación = se percibe más lenta. */
-#about {
-  /* Altura atada a --stable-vh (px bloqueados en el <head> de index.astro),
-     no a vh/svh/dvh. Comprobado en un iPhone real: con svh el alto seguía
-     variando con la barra de Safari, y como esta sección mide 260 unidades,
-     los 100px que ocupa la barra movían el documento 260px (760 sumando
-     #about-me) — suficiente para que el navegador recolocara el scroll y la
-     página se fuera sola de sección. El fallback 1vh cubre el instante
-     previo a que corra el script. */
-  min-height: calc(var(--stable-vh, 1vh) * 260);
-}
-
-/* Rigid "card": text + 3D canvas, fixed to the viewport so it can slide
-   away as one unit (see the gsap.to(#hero-card, ...) scroll animation in
-   Main.astro). z-index: -1 keeps it behind normal in-flow content, so
-   later sections with an opaque background naturally cover it. */
-.hero-card {
-  position: fixed;
-  /* Más ancha y alta que la ventana: al escalar/inclinar la tarjeta en 3D
-     los bordes se meten ligeramente hacia dentro, así que se deja margen
-     de sobra arriba para que no asome una línea del fondo nada más
-     empezar el scroll. Abajo se queda casi a 0 para que la esquina
-     redondeada aparezca pronto al deslizarse. */
-  top: -12%;
-  right: -5%;
-  bottom: -1%;
-  left: -5%;
-  z-index: -1;
+.hero {
+  position: relative;
+  min-height: var(--section-min-h);
   display: flex;
   flex-direction: column;
   justify-content: center;
+  padding: var(--section-padding-y) clamp(1rem, 4vw, 3rem);
   overflow: hidden;
-  /* Solo las esquinas inferiores: a scroll 0 la tarjeta ocupa toda la
-     pantalla (no se ve ningún radio); solo se aprecia al deslizarse. */
-  border-radius: 0 0 80px 80px;
-  background-image:
-    radial-gradient(ellipse at 50% 40%, #1c6f95 0%, #0a3350 100%),
-    var(--grid-pattern);
-  background-size: cover, 56px 56px;
-  background-position: 0 0, 0 0;
-  animation: body-grid-drift 12s linear infinite;
-  /* Cristal: borde con brillo sutil + sombra grande para vender la
-     profundidad al despegarse de la pantalla. */
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 0 60px 120px -20px rgba(0, 0, 0, 0.65);
-  will-change: transform;
+  color: #fff;
+}
+
+/* Fondo de cada seccion: foto estatica con viraje a la paleta de marca
+   (capa de color en modo "color" + degradado azul oscuro, mas cerrado a la
+   izquierda). Sin animacion. */
+#hero, #about-me, #tecnologias, #contact {
+  --bg-wash: linear-gradient(100deg, rgba(6, 20, 40, 0.9) 0%, rgba(8, 40, 80, 0.7) 45%, rgba(10, 60, 110, 0.5) 100%);
+  --bg-tint: linear-gradient(rgba(0, 60, 140, 0.18), rgba(0, 60, 140, 0.18));
+  background-size: cover;
+  background-position: center;
+  background-blend-mode: normal, color, normal;
+  /* Fija respecto a la ventana (no a la sección): parallax al hacer
+     scroll. Sin efecto en iOS Safari, que no soporta background-attachment
+     fixed — ahí se comporta como "scroll", sin más. */
+  background-attachment: fixed;
+}
+
+/* Secciones claras: la misma foto pero con un velo blanco translucido en
+   vez del azul oscuro, y las variables de texto/superficie vuelven a su
+   valor claro. Proyectos ahora es la sección oscura de este par (ver
+   proyectos.css, gestiona su propio fondo fuera de esta lista
+   compartida) — Tecnologías pasa a ser la clara. */
+#about-me, #tecnologias {
+  --bg-wash: linear-gradient(100deg, rgba(255, 255, 255, 0.96) 0%, rgba(244, 249, 255, 0.92) 50%, rgba(234, 243, 255, 0.88) 100%);
+  --bg-tint: linear-gradient(rgba(0, 102, 204, 0.1), rgba(0, 102, 204, 0.1));
+  --text-primary: #0a0a0a;
+  --text-secondary: #5b6472;
+  --text-tertiary: #9CA3AF;
+  --border-subtle: rgba(16, 24, 40, 0.12);
+  --bg-surface: rgba(16, 24, 40, 0.04);
+  --bg-surface-hover: rgba(16, 24, 40, 0.07);
+  --glass-bg: #fff;
+  --glass-border: 1px solid rgba(16, 24, 40, 0.08);
+  color: #0a0a0a;
+}
+
+#about-me .section-eyebrow {
+  color: var(--accent-from);
+}
+
+#hero { background-image: var(--bg-wash), var(--bg-tint), url('/hero-desk.webp'); }
+#about-me { background-image: var(--bg-wash), var(--bg-tint), url('/bg-code.webp'); }
+#tecnologias { background-image: var(--bg-wash), var(--bg-tint), url('/bg-monitors.webp'); }
+#contact { background-image: var(--bg-wash), var(--bg-tint), url('/bg-notebook.webp'); }
+
+/* Todas las secciones (salvo Proyectos, que gestiona su propio alto en
+   proyectos.css) ocupan al menos una pantalla, como el hero, con el
+   contenido centrado en vertical. Los hijos directos van a ancho completo
+   para que su max-width + margin auto los siga centrando (en un flex en
+   columna, el margin auto los encogeria al contenido). */
+#about-me, #tecnologias, #contact {
+  min-height: var(--section-min-h);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#about-me > *, #tecnologias > *, #contact > * {
+  width: 100%;
+}
+
+main > section,
+#footer {
+  position: relative;
+  z-index: 1;
 }
 
 .hero-inner {
   position: relative;
-  z-index: 1;
   width: 100%;
-  /* .hero-card sobresale 5vw por cada lado (left/right: -5%), así que
-     width:100% aquí son 110vw, no 100vw. Mientras 110vw > --container-max
-     da igual (el max-width manda y queda centrado sobre el viewport), pero
-     por debajo de ~1273px de ventana el bloque pasa a medir esos 110vw
-     completos y su borde izquierdo se sale de pantalla, cortando el
-     título. Se limita también al ancho REAL de la ventana menos el gutter
-     de siempre: en pantallas anchas no cambia nada y en las estrechas el
-     texto vuelve a quedar dentro. */
-  max-width: min(
-    var(--container-max),
-    calc(100vw - 2 * clamp(1rem, 4vw, 3rem))
-  );
+  max-width: var(--container-max);
   margin-inline: auto;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
+  align-items: flex-start;
+  text-align: left;
 }
 
 .hero-text {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
+  align-items: flex-start;
+  text-align: left;
 }
 
-/* Móvil/tablet: nombre a dos tercios de altura y la escena 3D pegada abajo
-   del todo, centrada horizontalmente — en escritorio el texto vive a la
-   izquierda y la escena se sesga a la derecha para dejarle sitio (ver
-   bias en hero-scene.ts/hero-character.ts), pero apiladas verticalmente
-   ese sesgo ya no tiene sentido: isCompactLayout en esos scripts anula el
-   sesgo horizontal del lookAt para que el escritorio/personaje queden
-   centrados bajo el nombre en vez de descentrados a la derecha. */
-@media (max-width: 999px) {
-  .hero-card {
-    justify-content: flex-start;
-    /* El bottom:-1% de escritorio deja la tarjeta solo ~8px por debajo del
-       viewport, pero el border-radius es de 80px: la curva arranca 80px
-       antes del borde inferior, así que a scroll 0 se veían las esquinas
-       redondeadas y el fondo asomando por los lados. Bajándola 96px (radio
-       + margen) la curva queda fuera de pantalla en reposo y solo aparece
-       cuando la tarjeta empieza a deslizarse, que es lo que se buscaba. */
-    bottom: -96px;
-  }
-
-  /* .hero-card empieza en top:-12% (sobresale por arriba), así que este
-     padding se mide desde ahí: ~12dvh se comen ese desfase y el resto deja
-     el título en el tercio de arriba de la ventana. */
-  .hero-inner {
-    padding-top: 27dvh;
-  }
-}
-
-/* Móvil: título y badge un poco más arriba que en tablet — la pantalla es
-   más corta y el bloque de texto se comía demasiado espacio de la escena. */
-@media (max-width: 600px) {
-  .hero-inner {
-    padding-top: 23dvh;
-  }
-}
-
-@media (min-width: 1000px) {
-  .hero-inner {
-    align-items: flex-start;
-    text-align: left;
-  }
-
+@media (min-width: 820px) {
   .hero-text {
-    align-items: flex-start;
-    text-align: left;
-    max-width: 45%;
+    max-width: 60%;
   }
 }
 
-/* Capa independiente de .hero-card (no es su hijo): así no queda atrapada
-   en su z-index:-1 y el personaje puede quedar por encima de las secciones
-   siguientes al girar/deslizarse, en vez de cortarse contra su fondo.
-   Mismos insets que .hero-card para ocupar exactamente el mismo sitio. */
-.hero-visual {
-  position: fixed;
-  top: -12%;
-  right: -5%;
-  /* Sobresale mucho por debajo: es lienzo extra donde pintar los pies y la
-     silla cuando el personaje se separa del escritorio (WebGL no puede
-     dibujar fuera del canvas y se cortaba justo en el borde). El encuadre
-     de cámara ignora este exceso (setViewOffset en hero-scene.ts). */
-  bottom: -35%;
-  left: -5%;
-  z-index: 5;
-  pointer-events: none;
-  will-change: transform;
+/* Retrato: por debajo de 820px va en flujo normal, pequeño, encima del
+   texto (variante "5" del explorador de diseño) — javier.webp es una foto
+   pequeña (230×230), el tamaño se queda moderado a propósito para no
+   ampliarla más de la cuenta. Desde 820px sale del flujo y se ancla
+   aparte a la derecha del hero, junto a .hero-text — el mismo layout de
+   escritorio, bajado a partir de tablet en vez de un tercer layout solo
+   para tablet (dejaba demasiado hueco vacío apilado). */
+.hero-portrait {
+  display: block;
+  width: clamp(88px, 24vw, 140px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  padding: 4px;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, #4fc3ff, var(--accent-from));
 }
 
-/* Capa fija con SOLO el personaje: mismos insets que .hero-visual pero sin
-   animar con el scroll (no está en el tween de Main.astro) y por encima,
-   para que el personaje siga visible en su sitio cuando la caja se va. */
-.hero-character {
-  position: fixed;
-  top: -12%;
-  right: -5%;
-  bottom: -35%;
-  left: -5%;
-  z-index: 6;
-  pointer-events: none;
+/* Entrada al cargar: aparece con fundido y un pequeño zoom, en paralelo a
+   la secuencia de GSAP del resto del hero (Main.astro). Se usa CSS con las
+   propiedades individuales `opacity` y `scale` — y no GSAP con `y` —
+   porque en escritorio el retrato se centra con transform: translateY(-50%)
+   y un tween de transform lo pisaría o lo dejaría fijado en píxeles. */
+.hero-portrait {
+  animation: hero-portrait-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.45s both;
 }
 
-/* Nota: en móvil/tablet el canvas NO se recorta a la franja de abajo. Se
-   probó y el problema es que esta misma capa sirve para dos encuadres muy
-   distintos: el Hero (escena abajo, bajo el título) y Sobre mí (personaje
-   de pie, que debe quedar centrado). Con el canvas recortado, el personaje
-   se centra dentro de esa franja y en Sobre mí acaba pegado abajo, chocando
-   con el panel de etiquetas. Ocupando la pantalla entera, quien decide la
-   altura es el sesgo vertical de la cámara — que sí puede cambiar con el
-   scroll (lookBias → lookCenter, ver isCompactLayout en
-   hero-scene.ts/hero-character.ts). */
+@keyframes hero-portrait-in {
+  from {
+    opacity: 0;
+    scale: 0.82;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
 
-.hero-visual canvas,
-.hero-character canvas {
+@media (prefers-reduced-motion: reduce) {
+  .hero-portrait {
+    animation: none;
+  }
+}
+
+.hero-portrait img {
+  display: block;
   width: 100%;
   height: 100%;
-  display: block;
-  opacity: 0;
-  transition: opacity 0.6s ease;
-}
-
-.hero-visual.is-loaded canvas,
-.hero-character.is-loaded canvas {
-  opacity: 1;
-}
-
-.hero-visual-loader {
-  position: absolute;
-  inset: 0;
-  /* Compensa el exceso inferior del canvas para que el spinner quede
-     centrado respecto a la ventana, no respecto al canvas alargado. */
-  bottom: 23%;
-  margin: auto;
-  width: 36px;
-  height: 36px;
   border-radius: 50%;
-  border: 3px solid rgba(5, 5, 5, 0.1);
-  border-top-color: var(--accent-from);
-  animation: hero-visual-spin 0.8s linear infinite;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
+  object-fit: cover;
+  border: 3px solid #06142a;
 }
 
-.hero-visual.is-loaded .hero-visual-loader {
-  opacity: 0;
+@media (min-width: 820px) {
+  .hero-portrait {
+    position: absolute;
+    right: clamp(4rem, 14vw, 18rem);
+    top: 50%;
+    transform: translateY(-50%);
+    width: clamp(180px, 20vw, 300px);
+    padding: 6px;
+    margin-bottom: 0;
+    box-shadow: 0 30px 70px -20px rgba(0, 0, 0, 0.6);
+  }
+
+  .hero-portrait img {
+    border-width: 4px;
+  }
 }
 
-@keyframes hero-visual-spin {
-  to { transform: rotate(360deg); }
-}
-
-/* Hero headline */
+/* Hero headline — display type as the visual, an outlined word as the
+   one accent (variante "Bold display" del explorador de diseño). */
 #info {
   width: 100%;
 }
 
-#info h2 {
-  font-size: clamp(2.75rem, 7vw, 5rem);
-  font-weight: 800;
-  letter-spacing: -0.04em;
-  line-height: 1.05;
-  margin-bottom: 0.9rem;
-  color: var(--text-primary);
+.hero-eyebrow {
+  display: block;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  /* Azul más claro que --accent-from: sobre la foto de fondo oscura, el
+     tono de acento normal del sitio (pensado para fondo blanco) perdía
+     contraste. */
+  color: #4fc3ff;
+  margin-bottom: 1.1rem;
 }
 
-.hero-role-badge {
-  display: inline-block;
-  background: #fff;
-  color: var(--accent-from);
+#info h1 {
+  font-family: 'Poppins', var(--font-sans);
+  font-size: clamp(3rem, 8.5vw, 6.75rem);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 0.9;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+/* Contorno hueco como único acento de color: color sólido de reserva
+   para navegadores sin -webkit-text-stroke (Firefox < 49 y similares). */
+.hero-outline {
+  color: #4fc3ff;
+}
+
+@supports (-webkit-text-stroke: 1px black) {
+  .hero-outline {
+    -webkit-text-stroke: 2px #4fc3ff;
+    color: transparent;
+  }
+}
+
+.hero-tagline {
+  max-width: 480px;
+  margin-top: 1.75rem;
+  font-size: clamp(1rem, 1.6vw, 1.1875rem);
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+/* Por debajo de 1000px queda en flujo normal, centrada bajo la frase
+   (como el resto del bloque de texto en ese ancho). Desde 1000px se ancla
+   sola a la esquina inferior derecha del hero, separada del bloque de
+   texto — mismo max-width/gutter que .hero-inner para que su borde
+   derecho quede alineado con el resto de la página. */
+.hero-cta-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 2.5rem auto 0;
+}
+
+@media (min-width: 820px) {
+  .hero-cta-row {
+    position: absolute;
+    inset: auto 0 clamp(2rem, 6vw, 4rem) 0;
+    justify-content: flex-end;
+    padding-inline: clamp(1rem, 4vw, 3rem);
+    margin: 0 auto;
+  }
+}
+
+.hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: var(--accent-from);
+  color: #fff;
   font-weight: 700;
   font-size: 0.9375rem;
-  letter-spacing: 0.02em;
-  padding: 0.4rem 1rem;
+  padding: 1rem 1.75rem;
   border-radius: var(--radius-sm);
-  transform: rotate(-2deg);
+  text-decoration: none;
+  transition: opacity var(--transition-base), transform var(--transition-base), box-shadow var(--transition-base);
 }
 
-/* Scroll indicator */
-.scroll-indicator {
-  position: absolute;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.375rem;
-  color: var(--text-secondary);
-  font-size: 0.6875rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  animation: scroll-bounce 2.5s ease-in-out infinite;
-  pointer-events: none;
+.hero-cta:hover {
+  opacity: 0.92;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -12px rgba(0, 102, 204, 0.5);
 }
 
-@keyframes scroll-bounce {
-  0%, 100% { transform: translateX(-50%) translateY(0); }
-  50%       { transform: translateX(-50%) translateY(6px); }
+.hero-link {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: #fff;
+  text-decoration: none;
+  transition: color var(--transition-base);
+}
+
+.hero-link:hover {
+  color: #4fc3ff;
 }

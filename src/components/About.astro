@@ -1,72 +1,50 @@
 ---
-// About.astro
-// El tramo de scroll en negro revela al personaje ya de pie y centrado
-// (hero-character.ts se encarga de esa secuencia). Aquí solo viven las
-// etiquetas "callout" que se anclan a puntos de su cuerpo — la posición la
-// calcula hero-character.ts cada frame proyectando el hueso correspondiente
-// a coordenadas de pantalla; aquí solo hay marcado estático + contenido.
+// About.astro — cronología + tarjeta de cita (variante "B+6" del explorador
+// de diseño).
+const timeline = [
+    { title: 'DAW', desc: 'Formación de base en desarrollo de aplicaciones web.' },
+    { title: 'Signlab', desc: 'Experiencia construyendo producto de extremo a extremo.' },
+    { title: 'Especialización en IA y Big Data', desc: 'El giro: de construir productos a construir con IA.' },
+    { title: 'Weai', desc: 'Aplicando lo aprendido en proyectos full-stack reales.' },
+    { title: 'Ingeniería Informática', desc: 'Estudios en curso, compaginados con los proyectos.' },
+];
 ---
 <section id="about-me">
-  <div id="about-callouts">
-    <div class="about-callout" data-anchor="head">
-      <span class="callout-dot"></span>
-      <span class="callout-line"></span>
-      <div class="callout-label">
-        <span class="callout-eyebrow">Sobre mí</span>
-        <p>Full-stack en transición hacia IA — construyo productos de extremo a extremo.</p>
-      </div>
-    </div>
+    <div class="about-layout">
+        <div class="about-timeline">
+            <span class="section-eyebrow">Sobre mí</span>
+            <h2>Cómo he llegado hasta aquí</h2>
 
-    <div class="about-callout" data-anchor="elbow-left">
-      <span class="callout-dot"></span>
-      <span class="callout-line"></span>
-      <div class="callout-label">
-        <span class="callout-eyebrow">Experiencia</span>
-        <p>Weai · Signlab</p>
-      </div>
-    </div>
+            <ol class="timeline-list">
+                {timeline.map((step, i) => (
+                    <li class:list={['timeline-item', { 'timeline-item--last': i === timeline.length - 1 }]}>
+                        <span class="timeline-rail">
+                            <span class="timeline-dot"></span>
+                        </span>
+                        <div class="timeline-body">
+                            <h3>
+                                {step.title}
+                                {i === timeline.length - 1 && <span class="timeline-current-badge">Actual</span>}
+                            </h3>
+                            <p>{step.desc}</p>
+                        </div>
+                    </li>
+                ))}
+            </ol>
+        </div>
 
-    <div class="about-callout" data-anchor="elbow-right">
-      <span class="callout-dot"></span>
-      <span class="callout-line"></span>
-      <div class="callout-label">
-        <span class="callout-eyebrow">Estudios</span>
-        <p>DAW · Especialización en IA y Big Data</p>
-      </div>
+        <div class="about-quote-card">
+            <div class="about-quote-header">
+                <img src="/javier.webp" alt="Javier Ruiz Molero" width="56" height="56" />
+                <div>
+                    <h3>Javier Ruiz Molero</h3>
+                    <span>Full-stack en transición hacia IA</span>
+                </div>
+            </div>
+            <blockquote>
+                <span class="quote-mark" aria-hidden="true">&ldquo;</span>
+                <p>No quiero ser solo el que sabe usar IA — quiero ser el que la integra en productos que la gente usa de verdad.</p>
+            </blockquote>
+        </div>
     </div>
-
-    <div class="about-callout" data-anchor="hip">
-      <span class="callout-dot"></span>
-      <span class="callout-line"></span>
-      <div class="callout-label">
-        <span class="callout-eyebrow">Herramientas</span>
-        <p>Git · Docker · Prompt Engineering</p>
-      </div>
-    </div>
-
-    <div class="about-callout" data-anchor="leg-left">
-      <span class="callout-dot"></span>
-      <span class="callout-line"></span>
-      <div class="callout-label">
-        <span class="callout-eyebrow">Frontend</span>
-        <p>React · Next.js · Astro · TypeScript</p>
-      </div>
-    </div>
-
-    <div class="about-callout" data-anchor="leg-right">
-      <span class="callout-dot"></span>
-      <span class="callout-line"></span>
-      <div class="callout-label">
-        <span class="callout-eyebrow">Backend</span>
-        <p>Node.js · Python · PostgreSQL</p>
-      </div>
-    </div>
-
-    <!-- Contador de "% transformado": hero-character.ts lo posiciona bajo
-         la base holográfica (proyección del punto a los pies) y actualiza
-         su texto con uReveal cada frame. -->
-    <div id="about-counter" class="about-counter">
-      <span class="counter-value">000</span>
-    </div>
-  </div>
 </section>

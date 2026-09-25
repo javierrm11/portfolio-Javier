@@ -1,0 +1,112 @@
+---
+// Tecnologias.astro — dos columnas tipo CV (variante "8" del explorador de
+// diseño): sin chips ni tarjetas, cada área es un bloque de texto con un
+// punto de color y sus tecnologías separadas por " · ".
+type Cat = { name: string; color: string; items: string[] };
+
+const cats: Cat[] = [
+  { name: "Lenguajes", color: "#F7C948", items: ["JavaScript (ES6+)", "TypeScript", "PHP", "Java", "HTML5", "CSS3", "C++"] },
+  { name: "Frameworks y librerías", color: "#4fc3ff", items: ["React", "Next.js", "Vue.js", "Astro", "Node.js", "Express.js", "Capacitor", "jQuery"] },
+  { name: "Bases de datos", color: "#6FA8FF", items: ["MySQL", "PostgreSQL", "MongoDB", "Supabase", "Prisma"] },
+  { name: "IA y Data", color: "#C084FC", items: ["Python", "Pandas", "NumPy", "scikit-learn", "LightGBM", "PyTorch", "Keras", "OpenCV", "statsmodels"] },
+  { name: "Automatización e IA aplicada", color: "#34D399", items: ["n8n", "Gemini API", "Apify", "Integración de LLMs", "Prompt Engineering"] },
+  { name: "Big Data", color: "#FF9A3D", items: ["Apache Kafka", "Spark", "Hadoop/HDFS", "Elasticsearch", "Grafana", "Prometheus", "Docker Compose"] },
+  { name: "DevOps y herramientas", color: "#FF6B57", items: ["Git", "Docker", "CI/CD", "API REST", "WebSockets", "Microservicios", "Vercel", "GitHub Actions"] },
+  { name: "Diseño y UX", color: "#F472B6", items: ["Figma", "Tailwind CSS", "SASS", "Responsive Design", "SEO técnico"] },
+  { name: "Metodologías", color: "#A3E635", items: ["Agile", "Scrum", "TDD", "Code Review"] },
+  { name: "Mensajería y nube", color: "#22D3EE", items: ["WhatsApp API (Meta)", "Google Cloud"] },
+];
+
+const total = cats.reduce((n, c) => n + c.items.length, 0);
+const half = Math.ceil(cats.length / 2);
+const left = cats.slice(0, half);
+const right = cats.slice(half);
+---
+<section id="tecnologias">
+  <div class="tech-header">
+    <span class="section-eyebrow tech-eyebrow">Tecnologías</span>
+    <h2>Con qué trabajo</h2>
+    <p class="tech-sub">{total} tecnologías en {cats.length} áreas</p>
+  </div>
+
+  <div class="tech-columns">
+    {[left, right].map((col) => (
+      <div class="tech-col">
+        {col.map((c) => (
+          <details class="tech-group" open>
+            <summary class="tech-group-title">
+              <span class="tech-dot" style={`background:${c.color}`}></span>
+              <h3>{c.name}</h3>
+              <span class="tech-count" aria-hidden="true">{c.items.length}</span>
+              <svg class="tech-chevron" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+            </summary>
+            <ul class="tech-group-items">
+              {c.items.map((t) => <li>{t}</li>)}
+            </ul>
+          </details>
+        ))}
+      </div>
+    ))}
+  </div>
+</section>
+
+<script>
+  // Acordeón solo en móvil (<1100px, mismo corte que el CSS): allí solo la
+  // primera área arranca abierta. En pantallas anchas todas van abiertas y
+  // no se pueden cerrar (el <summary> ni siquiera parece interactivo).
+  const groups = Array.from(document.querySelectorAll<HTMLDetailsElement>("#tecnologias .tech-group"));
+  const mobile = window.matchMedia("(max-width: 1099px)");
+
+  const sync = () => {
+    groups.forEach((g, i) => { g.open = mobile.matches ? i === 0 : true; });
+  };
+  sync();
+  mobile.addEventListener("change", sync);
+
+  groups.forEach((g) => g.addEventListener("toggle", () => {
+    if (!mobile.matches && !g.open) g.open = true;
+  }));
+
+  // Animación de apertura/cierre: <details> corta el contenido en seco al
+  // cerrarse, así que el clic del <summary> se intercepta y se anima la
+  // altura (+ opacidad) de la lista con la Web Animations API; el atributo
+  // `open` solo se quita cuando termina la salida. Con movimiento reducido
+  // se abre/cierra sin animar.
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const DURATION = 320;
+  const EASE = "cubic-bezier(0.4, 0, 0.2, 1)";
+
+  groups.forEach((g) => {
+    const list = g.querySelector<HTMLElement>(".tech-group-items");
+    const summary = g.querySelector<HTMLElement>("summary");
+    if (!list || !summary) return;
+    let running = false;
+
+    summary.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (!mobile.matches || running) return;
+
+      const opening = !g.open;
+      if (reduced.matches) { g.open = opening; return; }
+
+      running = true;
+      if (opening) g.open = true;
+      else g.classList.add("is-closing");
+
+      const padBottom = parseFloat(getComputedStyle(list).paddingBottom) || 0;
+      const full = list.clientHeight - padBottom;
+      const shut = { height: "0px", paddingBottom: "0px", opacity: 0 };
+      const wide = { height: `${full}px`, paddingBottom: `${padBottom}px`, opacity: 1 };
+
+      list.style.overflow = "hidden";
+      list.animate(opening ? [shut, wide] : [wide, shut], { duration: DURATION, easing: EASE }).finished
+        .catch(() => {})
+        .then(() => {
+          if (!opening) g.open = false;
+          g.classList.remove("is-closing");
+          list.style.overflow = "";
+          running = false;
+        });
+    });
+  });
+</script>
