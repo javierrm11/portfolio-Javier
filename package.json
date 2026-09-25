@@ -12,8 +12,5 @@
     "@astrojs/sitemap": "^3.6.0",
     "astro": "^5.14.1",
     "gsap": "^3.13.0"
-  },
-  "devDependencies": {
-    "playwright": "^1.62.1"
   }
 }
