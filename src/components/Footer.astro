@@ -1,5 +1,12 @@
 ---
 // Footer.astro — "Ubicación" (variante Footer 9 del explorador de diseño).
+// Igual que en Header.astro: page="blog" antepone "/" a los enlaces de
+// sección, que si no apuntarían a un id que no existe en esa página.
+interface Props {
+  page?: 'home' | 'blog';
+}
+const { page = 'home' } = Astro.props;
+const base = page === 'home' ? '' : '/';
 ---
 
 <footer id="footer">
@@ -13,10 +20,11 @@
 
       <div class="footer-cols">
         <ul class="footer-links">
-          <li><a href="#about-me">Sobre mí</a></li>
-          <li><a href="#tecnologias">Tecnologías</a></li>
-          <li><a href="#proyectos">Proyectos</a></li>
-          <li><a href="#contact">Contacto</a></li>
+          <li><a href={`${base}#about-me`}>Sobre mí</a></li>
+          <li><a href={`${base}#tecnologias`}>Tecnologías</a></li>
+          <li><a href={`${base}#proyectos`}>Proyectos</a></li>
+          <li><a href="/blog">Blog</a></li>
+          <li><a href={`${base}#contact`}>Contacto</a></li>
         </ul>
         <div class="footer-contact">
           <a href="mailto:javiermdevweb@gmail.com">javiermdevweb@gmail.com</a>

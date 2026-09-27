@@ -1,0 +1,43 @@
+---
+// Cabecera <head> compartida por las páginas del blog (index.astro tiene la
+// suya propia, más larga, con el JSON-LD de la home — no se toca aquí).
+interface Props {
+  title: string;
+  description: string;
+  path: string; // ej. "/blog" o "/blog/mi-post"
+}
+const { title, description, path } = Astro.props;
+const url = `https://www.javierm.dev${path}`;
+---
+<meta charset="utf-8" />
+<link rel="icon" type="image/png" href="/logo.png" />
+<link rel="apple-touch-icon" href="/logo.png" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="generator" content={Astro.generator} />
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={url} />
+
+<meta property="og:type" content="article" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={url} />
+<meta property="og:image" content="https://www.javierm.dev/og-image.jpg" />
+<meta property="og:site_name" content="Javier Ruiz Molero" />
+<meta property="og:locale" content="es_ES" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content="https://www.javierm.dev/og-image.jpg" />
+
+<meta name="robots" content="index, follow" />
+<meta http-equiv="content-language" content="es" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Karla:wght@400;500;600;700&display=swap"
+  rel="stylesheet"
+/>

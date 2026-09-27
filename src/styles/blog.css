@@ -1,0 +1,354 @@
+/* Blog: listado (/blog) y post (/blog/[slug]). Reutiliza los tokens de
+   global.css (--accent-from, --radius-lg, --container-max…) — aquí solo van
+   los colores propios de categoría, que no forman parte del tema general. */
+:root {
+  --cat-nextjs: #0066CC;
+  --cat-seo: #3b9eff;
+  --cat-ia: #10B981;
+  --cat-supabase: #8B5CF6;
+  --cat-apis: #F5A623;
+}
+
+/* Varios enlaces envuelven tarjetas enteras (título + texto dentro de un
+   solo <a>, ver .featured-post/.blog-card). El subrayado por defecto del
+   navegador en <a> se cuela por todos sus descendientes — título, párrafo,
+   fecha — así que se anula aquí para todos los enlaces del blog. Los
+   estados hover/focus siguen marcándose por color, no por subrayado. */
+main.blog-main a {
+  text-decoration: none;
+}
+
+/* global.css pone `main` en blanco por defecto (pensado para las secciones
+   oscuras de la home, que flotan sobre foto — ver la nota allí). Las
+   páginas del blog son páginas claras normales, así que aquí se
+   restablecen los mismos valores que ya trae :root para el resto del
+   sitio; si no, el texto sale blanco sobre fondo blanco. */
+main.blog-main {
+  --text-primary: #0a0a0a;
+  --text-secondary: #6B7280;
+  --text-tertiary: #9CA3AF;
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --bg-surface: rgba(0, 0, 0, 0.03);
+  --bg-surface-hover: rgba(0, 0, 0, 0.05);
+  --glass-bg: rgba(0, 0, 0, 0.02);
+  --glass-border: 1px solid rgba(0, 0, 0, 0.08);
+  color: #0a0a0a;
+  /* #header es fixed (o absolute en móvil) — no reserva espacio propio, así
+     que sin esto el contenido arrancaría tapado debajo de la barra. La home
+     no necesita esto porque el Hero ya lleva de sobra con su propio
+     padding vertical (pensado para verse detrás de la cabecera de cristal). */
+  padding-top: clamp(4.5rem, 11vw, 5.5rem);
+}
+
+/* El listado (/blog) lleva su propio hero a toda pantalla (.blog-hero, más
+   abajo) que ya se encarga de despejar la cabecera con su propio padding —
+   igual que hace #hero en la home. Sin este modificador se sumarían los dos
+   huecos, uno en blanco antes del fondo oscuro del hero. */
+main.blog-main.has-hero {
+  padding-top: 0;
+}
+
+/* ── Layout compartido ───────────────────────────────────────────── */
+.blog-wrap {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding: 0 clamp(1rem, 4vw, 3rem) clamp(3rem, 6vw, 4.5rem);
+}
+
+/* Foto de portada de cada post (Unsplash, ver src/content/blog/covers/
+   y content.config.ts) — la <Image> de
+   astro:assets llena el hueco a modo de object-fit:cover. El
+   background-color de aquí es solo el hueco mientras carga. */
+.post-cover {
+  position: relative;
+  background: #081527;
+  overflow: hidden;
+}
+.post-cover img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover;
+}
+
+.cat-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+/* Foto del autor (javier.webp, la misma de "Sobre mí" en la home) — mismo
+   círculo en todas partes: cabecera del post, tarjeta de autor. El
+   degradado de acento se queda de reserva mientras carga. */
+.post-avatar {
+  width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+  /* Dos capas: la foto encima, el degradado debajo de reserva (se ve si la
+     foto no ha cargado aún, o si fallara). Un solo "background" con imagen
+     Y degradado a la vez no es válido CSS — cada capa lleva su propio
+     fondo, separadas por comas. */
+  background-image: url('/javier.webp'), var(--gradient-accent);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* ── Listado (/blog): hero a toda pantalla (variante "1" del explorador:
+   oscuro sólido con dos resplandores difuminados, título+filtros+destacado
+   cabiendo en una sola pantalla, sin necesidad de scroll). Mismo criterio
+   de alto que el resto del sitio (--section-min-h: 100vh, topado a 1000px
+   en portátiles/tablets muy altos en vertical). */
+.blog-hero {
+  position: relative;
+  overflow: hidden;
+  min-height: var(--section-min-h);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--section-padding-y) 0;
+  color: #fff;
+  /* Misma foto y mismo viraje oscuro que #hero en la home (ver main.css) —
+     así el blog se reconoce como la misma web. background-color de reserva
+     por si la imagen tarda: mismo azul marino que antes. */
+  background-color: #050f22;
+  background-image:
+    linear-gradient(100deg, rgba(6, 20, 40, 0.9) 0%, rgba(8, 40, 80, 0.7) 45%, rgba(10, 60, 110, 0.5) 100%),
+    linear-gradient(rgba(0, 60, 140, 0.18), rgba(0, 60, 140, 0.18)),
+    url('/hero-desk.webp');
+  background-size: cover;
+  background-position: center;
+  background-blend-mode: normal, color, normal;
+  background-attachment: fixed;
+}
+/* Táctil: fondo con la sección, no fijo (mismo motivo que el resto de fotos
+   de fondo del sitio — ver la nota en main.css). */
+@media (hover: none) and (pointer: coarse) {
+  .blog-hero { background-attachment: scroll; }
+}
+.blog-hero::before,
+.blog-hero::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  pointer-events: none;
+}
+.blog-hero::before { width: 44vw; height: 44vw; max-width: 640px; max-height: 640px; background: rgba(0, 102, 204, .35); top: -18%; left: -12%; }
+.blog-hero::after { width: 36vw; height: 36vw; max-width: 520px; max-height: 520px; background: rgba(59, 158, 255, .22); bottom: -16%; right: -8%; }
+
+/* Mismo modelo de caja que .blog-wrap (padding lateral DENTRO del ancho
+   máximo): así el texto del hero y el de "Últimos artículos" arrancan en
+   la misma columna también en pantallas anchas. */
+.blog-hero-inner { position: relative; z-index: 1; max-width: var(--container-max); margin-inline: auto; width: 100%; padding-inline: clamp(1rem, 4vw, 3rem); }
+
+.blog-eyebrow {
+  display: block; font-size: 0.75rem; font-weight: 800; letter-spacing: 0.1em;
+  text-transform: uppercase; color: #7ec4ff; margin-bottom: 0.875rem;
+}
+.blog-hero h1 {
+  font-family: 'Poppins', var(--font-sans); font-weight: 800; color: #fff;
+  font-size: clamp(2.25rem, 5vw, 3.5rem); line-height: 1.05; max-width: 780px;
+}
+.blog-hero p {
+  margin-top: 1.125rem; font-size: clamp(1rem, 1.4vw, 1.125rem); line-height: 1.6;
+  color: rgba(255, 255, 255, .7); max-width: 560px;
+}
+
+/* Los filtros viven junto a "Últimos artículos" (sección clara), no dentro
+   del hero — así se cambian sin tener que subir por encima de la tarjeta
+   destacada (ver la conversación: quedaban enterrados ahí antes). */
+/* Escritorio: la fila de píldoras de siempre (oculta por defecto — ver la
+   media query de abajo, que la muestra a partir de 900px y esconde el
+   desplegable). */
+.blog-pills {
+  display: none; gap: 0.625rem; margin: 0 0 clamp(1.75rem, 3.5vw, 2.5rem);
+  flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px;
+}
+.blog-pill {
+  flex-shrink: 0; padding: 0.55rem 1.2rem; border-radius: var(--radius-full);
+  border: 1px solid var(--border-subtle); font-size: 0.875rem; font-weight: 700;
+  color: var(--text-secondary); background: var(--bg-primary); cursor: pointer;
+  transition: border-color var(--transition-base), color var(--transition-base), background var(--transition-base);
+}
+.blog-pill[aria-pressed="true"] {
+  background: var(--gradient-accent); border-color: transparent; color: #fff;
+}
+
+/* Móvil/tablet (<900px, variante "3" del explorador de diseño): con 6
+   categorías la fila de píldoras se salía de pantalla sin dejar claro que
+   había más detrás — aquí es un desplegable compacto en su lugar. */
+.blog-cat-select-wrap {
+  position: relative;
+  margin: 0 0 clamp(1.75rem, 3.5vw, 2.5rem);
+}
+.blog-cat-trigger {
+  display: flex; align-items: center; gap: 0.625rem; width: 100%;
+  padding: 0.75rem 1rem; border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle); background: var(--bg-primary);
+  font-family: inherit; font-size: 0.9375rem; font-weight: 700; color: var(--text-primary);
+  cursor: pointer;
+}
+.blog-cat-trigger .k { color: var(--text-secondary); font-weight: 600; }
+.blog-cat-trigger svg { margin-left: auto; flex-shrink: 0; color: var(--text-secondary); }
+.blog-cat-count {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 22px; height: 22px; padding: 0 0.375rem; border-radius: var(--radius-full);
+  background: var(--gradient-accent); color: #fff; font-size: 0.75rem; font-weight: 800;
+}
+.blog-cat-menu {
+  position: absolute; z-index: 5; top: calc(100% + 8px); left: 0; right: 0;
+  margin: 0; padding: 0.375rem; list-style: none;
+  background: var(--bg-primary); border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md); box-shadow: 0 20px 45px -20px rgba(16, 24, 40, 0.35);
+}
+.blog-cat-menu[hidden] { display: none; }
+.blog-cat-menu li {
+  display: flex; align-items: center; gap: 0.625rem;
+  padding: 0.625rem 0.75rem; border-radius: calc(var(--radius-md) - 0.375rem);
+  font-size: 0.9375rem; font-weight: 600; color: var(--text-secondary); cursor: pointer;
+}
+.blog-cat-menu li:hover { background: var(--bg-surface); }
+.blog-cat-menu li.on { color: var(--text-primary); background: var(--bg-surface); font-weight: 700; }
+.blog-cat-menu .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+@media (min-width: 900px) {
+  .blog-cat-select-wrap { display: none; }
+  .blog-pills { display: flex; }
+}
+
+/* El destacado vive dentro del hero, como una tarjeta de cristal — en vez de
+   la tarjeta grande de antes debajo del título, para que todo quepa en una
+   pantalla. En móvil se apila: portada arriba, texto debajo. */
+.hero-featured {
+  margin-top: clamp(1.75rem, 3.5vw, 2.5rem);
+  display: flex; flex-direction: column; gap: 1.125rem;
+  background: rgba(255, 255, 255, .05); border: 1px solid rgba(255, 255, 255, .14);
+  border-radius: var(--radius-lg); padding: 1.25rem;
+  -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+}
+.hero-featured .post-cover { width: 100%; aspect-ratio: 16 / 10; border-radius: var(--radius-md); flex-shrink: 0; }
+.hero-featured-info { min-width: 0; }
+.hero-featured-badge {
+  display: block; font-size: 0.6875rem; font-weight: 800; letter-spacing: 0.06em;
+  text-transform: uppercase; color: #7ec4ff; margin-bottom: 0.5rem;
+}
+.hero-featured-info h2 {
+  font-family: 'Poppins', var(--font-sans); font-weight: 800; color: #fff;
+  font-size: clamp(1.25rem, 2.4vw, 1.5rem); line-height: 1.25; margin-bottom: 0.5rem;
+}
+.hero-featured-meta { font-size: 0.8125rem; color: rgba(255, 255, 255, .58); }
+.hero-featured-read {
+  display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 0.875rem;
+  font-weight: 700; font-size: 0.9rem; color: #7ec4ff;
+}
+
+@media (min-width: 700px) {
+  .hero-featured { flex-direction: row; align-items: center; gap: 1.75rem; }
+  .hero-featured .post-cover { width: 240px; aspect-ratio: auto; height: 150px; }
+  .hero-featured-info { flex: 1; }
+  .hero-featured-read { margin-top: 0; margin-left: auto; flex-shrink: 0; }
+}
+
+.blog-section-label { display: flex; align-items: baseline; justify-content: space-between; margin: clamp(2.5rem, 5vw, 4rem) 0 1.5rem; }
+.blog-section-label h3 { font-family: 'Poppins', var(--font-sans); font-weight: 800; font-size: 1.25rem; }
+.blog-section-label span { font-size: 0.875rem; color: var(--text-secondary); }
+
+.blog-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+.blog-card {
+  border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); overflow: hidden;
+  background: var(--bg-primary); transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+.blog-card:hover { transform: translateY(-3px); box-shadow: 0 20px 40px -28px rgba(16, 24, 40, 0.3); }
+.blog-card .post-cover { aspect-ratio: 16 / 10; }
+.blog-card-body { padding: 1.25rem 1.375rem 1.5rem; }
+.blog-card-cat { display: flex; align-items: center; gap: 0.4375rem; font-size: 0.75rem; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 0.625rem; }
+.blog-card h4 { font-family: 'Poppins', var(--font-sans); font-weight: 700; font-size: 1.1875rem; line-height: 1.3; margin-bottom: 0.5rem; }
+.blog-card p {
+  font-size: 0.9375rem; line-height: 1.55; color: var(--text-secondary); margin-bottom: 1rem;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.blog-card-foot { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8125rem; color: var(--text-tertiary); font-weight: 600; }
+.blog-card-foot .sep { width: 3px; height: 3px; border-radius: 50%; background: var(--text-tertiary); }
+
+.blog-empty { padding: 3rem 0; text-align: center; color: var(--text-secondary); display: none; }
+.blog-empty.show { display: block; }
+
+@media (min-width: 700px) {
+  .blog-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 1100px) {
+  .blog-grid { grid-template-columns: 1fr 1fr 1fr; }
+}
+
+/* ── Post (/blog/[slug]) ─────────────────────────────────────────── */
+.post-back {
+  display: flex; align-items: center; gap: 0.5rem; max-width: 1100px;
+  margin: 1.75rem auto 1.5rem; font-size: 0.875rem; font-weight: 700; color: var(--text-secondary);
+}
+.post-article-head { max-width: 1100px; margin: 0 auto; }
+.post-article-head h1 {
+  font-family: 'Poppins', var(--font-sans); font-weight: 800;
+  font-size: clamp(1.75rem, 4.2vw, 2.75rem); line-height: 1.1; margin-bottom: 1.375rem;
+}
+.post-meta-full {
+  display: flex; align-items: center; gap: 0.75rem; padding-bottom: 1.75rem; margin-bottom: 1.75rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.post-meta-full .post-avatar { width: 44px; height: 44px; }
+.post-meta-full .who b { display: block; font-size: 0.9375rem; font-weight: 700; }
+.post-meta-full .who span { font-size: 0.8125rem; color: var(--text-secondary); }
+
+.post-cover.post-cover-hero {
+  border-radius: var(--radius-lg); aspect-ratio: 16 / 9; margin: 0 auto clamp(2rem, 4vw, 3rem);
+  max-width: 1100px;
+}
+@media (min-width: 900px) { .post-cover.post-cover-hero { aspect-ratio: 21 / 9; } }
+
+.prose { max-width: 1100px; margin: 0 auto; font-size: 1.0625rem; line-height: 1.75; }
+.prose > p:first-of-type {
+  font-size: 1.1875rem; line-height: 1.6; color: var(--text-secondary);
+}
+.prose p { margin: 0 0 1.5rem; }
+.prose h2 {
+  font-family: 'Poppins', var(--font-sans); font-weight: 800; font-size: 1.5rem;
+  margin: 2.75rem 0 1.125rem; line-height: 1.25;
+}
+.prose ul { margin: 0 0 1.5rem; padding-left: 1.375rem; }
+.prose li { font-size: 1.0625rem; line-height: 1.7; margin-bottom: 0.5rem; }
+.prose code {
+  background: var(--bg-surface); padding: 0.15em 0.4em; border-radius: 6px;
+  font-family: ui-monospace, 'JetBrains Mono', SFMono-Regular, monospace; font-size: 0.9em;
+}
+.prose blockquote {
+  margin: 2.25rem 0; padding: 0.25rem 0 0.25rem 1.5rem; border-left: 3px solid var(--accent-from);
+}
+.prose blockquote p {
+  margin: 0; font-family: 'Poppins', var(--font-sans); font-weight: 700; font-size: 1.25rem;
+  line-height: 1.5; color: var(--text-primary);
+}
+.prose pre {
+  background: #081224; border-radius: var(--radius-md); padding: 1.375rem 1.5rem; margin: 1.875rem 0;
+  overflow-x: auto;
+}
+.prose pre code {
+  background: none; padding: 0; font-size: 0.8125rem; line-height: 1.7; color: #9fd7ff;
+}
+
+.post-tags-share {
+  max-width: 1100px; margin: 2.75rem auto 2.5rem; padding-top: 2rem; border-top: 1px solid var(--border-subtle);
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+}
+.post-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.post-tag { padding: 0.45rem 1rem; border-radius: var(--radius-full); border: 1px solid var(--border-subtle); font-size: 0.8125rem; font-weight: 700; color: var(--text-secondary); }
+.post-share { display: flex; gap: 0.625rem; }
+.post-share a {
+  width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--border-subtle);
+  display: flex; align-items: center; justify-content: center; color: var(--text-secondary);
+  transition: color var(--transition-base), border-color var(--transition-base);
+}
+.post-share a:hover { color: var(--accent-from); border-color: rgba(0,102,204,.3); }
+
+.author-card {
+  max-width: 1100px; margin: 0 auto 3.5rem; display: flex; gap: 1.125rem; align-items: flex-start;
+  background: var(--bg-surface); border-radius: var(--radius-lg); padding: 1.75rem;
+}
+.author-card .post-avatar { width: 56px; height: 56px; }
+.author-card h3 { font-family: 'Poppins', var(--font-sans); font-weight: 700; font-size: 1.0625rem; margin-bottom: 0.375rem; }
+.author-card p { font-size: 0.9375rem; color: var(--text-secondary); line-height: 1.55; margin: 0; }
+
+.related-wrap { max-width: 1100px; margin: 0 auto; }
+.related-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: clamp(3rem, 6vw, 4.5rem); }
+@media (min-width: 640px) { .related-grid { grid-template-columns: 1fr 1fr; } }

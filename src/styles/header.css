@@ -337,6 +337,13 @@
     inset: 0 0 auto 0;
     top: 50%;
     transform: translateY(-50%);
+    /* Por encima de .header-inner (z-index:2): esa capa existe para que la
+       hamburguesa se quede clicable sobre el overlay del menú móvil, pero
+       en escritorio .header-inner sigue ocupando TODO el ancho de la barra
+       (justify-content:space-between dejando hueco vacío en el centro), así
+       que sin esto tapaba a los propios enlaces — los interceptaba el hueco
+       vacío del centro y ningún enlace del menú respondía al clic. */
+    z-index: 3;
     max-width: var(--container-max);
     margin-inline: auto;
     padding-inline: clamp(1rem, 4vw, 3rem);

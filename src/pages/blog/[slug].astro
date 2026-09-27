@@ -1,0 +1,128 @@
+---
+import { getCollection, render } from 'astro:content';
+import { Image } from 'astro:assets';
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { CATEGORIES, formatDate } from '../../lib/blogCategories';
+import '../../styles/global.css';
+import '../../styles/header.css';
+import '../../styles/footer.css';
+import '../../styles/blog.css';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const cat = CATEGORIES[post.data.category];
+
+const allPosts = await getCollection('blog');
+const related = allPosts
+  .filter((p) => p.id !== post.id)
+  .sort((a, b) => {
+    const sameCat = (p: typeof a) => (p.data.category === post.data.category ? 0 : 1);
+    return sameCat(a) - sameCat(b) || b.data.pubDate.valueOf() - a.data.pubDate.valueOf();
+  })
+  .slice(0, 2);
+---
+
+<html lang="es">
+<head>
+  <BaseHead
+    title={`${post.data.title} | Blog de Javier Ruiz Molero`}
+    description={post.data.description}
+    path={`/blog/${post.id}/`}
+  />
+</head>
+<body>
+  <Header page="blog" />
+
+  <main class="blog-main">
+    <div class="blog-wrap">
+      <a href="/blog" class="post-back">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 18l-6-6 6-6"/></svg>
+        Volver al blog
+      </a>
+
+      <article>
+        <div class="post-article-head">
+          <span class="blog-eyebrow" style={`color:${cat.color}`}>{cat.label}</span>
+          <h1>{post.data.title}</h1>
+          <div class="post-meta-full">
+            <div class="post-avatar"></div>
+            <div class="who">
+              <b>{post.data.author}</b>
+              <span>{formatDate(post.data.pubDate)} · {post.data.readTime} min de lectura</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="post-cover post-cover-hero">
+          <Image src={post.data.cover} alt="" widths={[700, 1100, 1400]} sizes="(min-width: 900px) 1100px, 100vw" loading="eager" />
+        </div>
+
+        <div class="prose">
+          <Content />
+        </div>
+
+        <div class="post-tags-share">
+          <div class="post-tags">
+            {post.data.tags.map((tag) => <span class="post-tag">{tag}</span>)}
+          </div>
+          <div class="post-share">
+            <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.data.title)}&url=https://www.javierm.dev/blog/${post.id}/`} target="_blank" rel="noopener noreferrer" aria-label="Compartir en X">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.6 8.7L23.3 22h-7l-5.5-7.2L4.5 22H1.4l8.1-9.3L1 2h7.2l5 6.6L18.9 2z"/></svg>
+            </a>
+            <a href={`https://www.linkedin.com/sharing/share-offsite/?url=https://www.javierm.dev/blog/${post.id}/`} target="_blank" rel="noopener noreferrer" aria-label="Compartir en LinkedIn">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 11-.02 5 2.5 2.5 0 01.02-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95C20.9 8.75 22 11 22 14.2V21h-4v-6c0-1.4-.03-3.2-1.95-3.2-1.95 0-2.25 1.5-2.25 3.1V21H9z"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="author-card">
+          <div class="post-avatar"></div>
+          <div>
+            <h3>{post.data.author}</h3>
+            <p>Desarrollador Full Stack especializado en Next.js, Astro e integraciones de IA. Escribo sobre lo que aprendo construyendo productos reales, desde Córdoba.</p>
+          </div>
+        </div>
+
+        {related.length > 0 && (
+          <div class="related-wrap">
+            <h3 class="blog-section-label" style="margin-top:0"><span style="font-family:'Poppins',var(--font-sans);font-weight:800;font-size:1.25rem;color:var(--text-primary)">Sigue leyendo</span></h3>
+            <div class="related-grid">
+              {related.map((r) => {
+                const rcat = CATEGORIES[r.data.category];
+                return (
+                  <a href={`/blog/${r.id}/`} class="blog-card">
+                    <div class="post-cover">
+                      <Image src={r.data.cover} alt="" widths={[350, 700]} sizes="(min-width: 640px) 50vw, 100vw" loading="lazy" />
+                    </div>
+                    <div class="blog-card-body">
+                      <span class="blog-card-cat" style={`color:${rcat.color}`}><span class="cat-dot" style={`background:${rcat.color}`}></span>{rcat.label}</span>
+                      <h4>{r.data.title}</h4>
+                      <div class="blog-card-foot">
+                        <span>{formatDate(r.data.pubDate)}</span>
+                        <span class="sep"></span>
+                        <span>{r.data.readTime} min</span>
+                      </div>
+                    </div>
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </article>
+    </div>
+  </main>
+
+  <Footer page="blog" />
+</body>
+</html>

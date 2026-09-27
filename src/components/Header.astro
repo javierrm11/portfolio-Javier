@@ -1,3 +1,16 @@
+---
+// Cabecera del sitio: la misma en la home y en el blog (page="blog" ajusta
+// los enlaces de sección para que apunten a "/#seccion" en vez de "#seccion"
+// — si no, en /blog apuntarían a un id que no existe en esa página — y marca
+// "Blog" como activo). El fondo de cristal oscuro (#header::before, en
+// header.css) ya es siempre opaco, así que se lee igual en cualquier página,
+// no solo flotando sobre la foto del Hero.
+interface Props {
+  page?: 'home' | 'blog';
+}
+const { page = 'home' } = Astro.props;
+const base = page === 'home' ? '' : '/';
+---
 <header id="header">
   <!-- El overlay del menú (#main-nav) es hermano de .header-inner, NO su
        hijo: la animación de entrada de GSAP (Main.astro) escribe un
@@ -7,9 +20,9 @@
        Animando .header-inner el transform vive ahí y el nav se queda fuera
        de su alcance. -->
   <div class="header-inner">
-    <a href="#hero" class="logo-mark">JRM</a>
+    <a href={page === 'home' ? '#hero' : '/'} class="logo-mark">JRM</a>
     <div id="header-buttons" class="header-buttons">
-      <a href="#proyectos" class="header-cta">
+      <a href={`${base}#proyectos`} class="header-cta">
         Ver proyectos
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M7 17L17 7M9 7h8v8"></path></svg>
       </a>
@@ -32,25 +45,31 @@
   <nav id="main-nav" aria-label="Navegación principal">
     <ul>
       <li>
-        <a href="#about-me" class="nav-link">
+        <a href={`${base}#about-me`} class="nav-link">
           <span class="nav-text">Sobre mí</span>
           <span class="nav-link-dot" aria-hidden="true"></span>
         </a>
       </li>
       <li>
-        <a href="#proyectos" class="nav-link">
+        <a href={`${base}#proyectos`} class="nav-link">
           <span class="nav-text">Proyectos</span>
           <span class="nav-link-dot" aria-hidden="true"></span>
         </a>
       </li>
       <li>
-        <a href="#tecnologias" class="nav-link">
+        <a href={`${base}#tecnologias`} class="nav-link">
           <span class="nav-text">Tecnologías</span>
           <span class="nav-link-dot" aria-hidden="true"></span>
         </a>
       </li>
       <li>
-        <a href="#contact" class="nav-link">
+        <a href="/blog" class:list={['nav-link', { active: page === 'blog' }]}>
+          <span class="nav-text">Blog</span>
+          <span class="nav-link-dot" aria-hidden="true"></span>
+        </a>
+      </li>
+      <li>
+        <a href={`${base}#contact`} class="nav-link">
           <span class="nav-text">Contacto</span>
           <span class="nav-link-dot" aria-hidden="true"></span>
         </a>
@@ -65,6 +84,8 @@
   // convertiría a #header en bloque contenedor del overlay del menú).
   const header = document.getElementById("header");
   const nav = document.getElementById("main-nav");
+  const menuToggle = document.getElementById("menu-toggle");
+
   if (header) {
     const mobile = window.matchMedia("(max-width: 819px)");
     const THRESHOLD = 8;
@@ -93,5 +114,61 @@
 
     // Si el foco entra en la cabecera (Tab), que se vea.
     header.addEventListener("focusin", () => header.classList.remove("header--hidden"));
+  }
+
+  // Abrir/cerrar el menú móvil, y desplazamiento suave para los enlaces por
+  // ancla — vive aquí (no en cada página) para que funcione igual dondequiera
+  // que se use esta cabecera.
+  if (menuToggle && nav) {
+    const setMenu = (open: boolean) => {
+      menuToggle.classList.toggle("active", open);
+      nav.classList.toggle("open", open);
+      menuToggle.setAttribute("aria-expanded", String(open));
+      menuToggle.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
+      // Bloquea el scroll de la página mientras el overlay está abierto: si
+      // no, el fondo se desplaza por detrás del menú.
+      document.body.style.overflow = open ? "hidden" : "";
+    };
+
+    menuToggle.addEventListener("click", () => {
+      setMenu(!nav.classList.contains("open"));
+    });
+
+    const navLinks = document.querySelectorAll<HTMLAnchorElement>(".nav-link");
+    navLinks.forEach((link) => {
+      link.addEventListener("click", () => setMenu(false));
+    });
+
+    // Cerrar también con Escape y tocando el fondo del overlay (solo el
+    // fondo: e.target === nav excluye enlaces y botón).
+    nav.addEventListener("click", (e) => {
+      if (e.target === nav) setMenu(false);
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && nav.classList.contains("open")) setMenu(false);
+    });
+
+    // Desplazamiento suave SOLO para la navegación por anclas EN LA MISMA
+    // página (href="#..."). Un enlace a "/#..." (cabecera en otra página,
+    // como el blog) navega de verdad a la home, así que no entra aquí.
+    // Antes lo hacía "scroll-behavior: smooth" en <html>, pero eso animaba
+    // también los reajustes internos del navegador (ver la nota en
+    // global.css), y en móvil se percibía como que la página se movía sola.
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    document.addEventListener("click", (e) => {
+      const link = (e.target as HTMLElement | null)?.closest<HTMLAnchorElement>('a[href^="#"]');
+      if (!link) return;
+      const id = link.getAttribute("href");
+      if (!id || id === "#") return;
+      const target = document.querySelector(id);
+      if (!target) return;
+      e.preventDefault();
+      setMenu(false);
+      target.scrollIntoView({
+        behavior: prefersReducedMotion ? "auto" : "smooth",
+        block: "start",
+      });
+    });
   }
 </script>
