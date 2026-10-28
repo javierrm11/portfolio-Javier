@@ -3,6 +3,7 @@ import About from './About.astro';
 import Tecnologias from './Tecnologias.astro';
 import Proyectos from './Proyectos.astro';
 import Contacto from './Contacto.astro';
+import Servicios from './Servicios.astro';
 
 ---
 <main>
@@ -31,14 +32,15 @@ import Contacto from './Contacto.astro';
              queda en flujo normal bajo la frase, alineada a la izquierda
              como el resto del bloque. -->
         <div class="hero-cta-row">
-            <a href="#contact" class="hero-link">Contacto</a>
-            <a href="#proyectos" class="hero-cta">
-                Ver proyectos
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M7 17L17 7M9 7h8v8"></path></svg>
+            <a href="#proyectos" class="hero-link">Ver proyectos</a>
+            <a href="#servicios" class="hero-cta">
+                Pide presupuesto
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
             </a>
         </div>
     </section>
 
+    <Servicios />
     <About />
     <Proyectos />
     <Tecnologias />
@@ -93,6 +95,11 @@ import Contacto from './Contacto.astro';
             scrollTrigger: { trigger, start: "top 80%", toggleActions: "play none none none" }
         });
     }
+
+    // ── Servicios ─────────────────────────────────────────────────
+    revealOn("#servicios", ".servicios-header", 0);
+    revealOn("#servicios", ".svc-card", 0.06);
+    revealOn("#servicios", ".servicios-promises", 0);
 
     // ── About ─────────────────────────────────────────────────────
     revealOn("#about-me", ".timeline-item", 0.08);

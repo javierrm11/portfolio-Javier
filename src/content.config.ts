@@ -14,7 +14,7 @@ const blog = defineCollection({
     description: z.string(),
     pubDate: z.coerce.date(),
     // Debe coincidir con una clave de CATEGORIES en src/lib/blogCategories.ts.
-    category: z.enum(['seo-tecnico', 'ia', 'nextjs', 'supabase', 'apis']),
+    category: z.enum(['seo-tecnico', 'ia', 'nextjs', 'supabase', 'apis', 'claude', 'negocios', 'carrera']),
     tags: z.array(z.string()).default([]),
     readTime: z.number().int().positive(),
     // El post destacado arriba del todo del listado (uno solo debería llevar true).

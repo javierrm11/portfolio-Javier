@@ -1,0 +1,176 @@
+/* Botón flotante de WhatsApp + mini-chat (WhatsAppButton.astro).
+   z-index por debajo de la cabecera (1000): el menú móvil abierto tiene que
+   taparlo, no al revés. */
+.wa-widget {
+  --wa-green: #25D366;
+  --wa-green-ink: #0b2a17;
+  --wa-teal: #075E54;
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 900;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 14px;
+  font-family: var(--font-sans);
+}
+
+.wa-toggle {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--wa-green);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 10px 28px rgba(16, 24, 40, 0.28);
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.wa-toggle:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px rgba(16, 24, 40, 0.32);
+}
+
+.wa-toggle:focus-visible,
+.wa-topic:focus-visible,
+.wa-send:focus-visible {
+  outline: 3px solid var(--accent-from);
+  outline-offset: 3px;
+}
+
+.wa-icon-close { display: none; }
+.wa-widget.is-open .wa-icon-open { display: none; }
+.wa-widget.is-open .wa-icon-close { display: block; }
+
+.wa-panel {
+  width: min(320px, calc(100vw - 32px));
+  border-radius: var(--radius-md);
+  background: #fff;
+  border: 1px solid rgba(16, 24, 40, 0.12);
+  box-shadow: 0 18px 40px rgba(16, 24, 40, 0.2);
+  overflow: hidden;
+  transform-origin: bottom right;
+}
+
+/* [hidden] tiene que ganar al display de la propia clase. */
+.wa-panel[hidden] { display: none; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .wa-widget.is-open .wa-panel {
+    animation: wa-panel-in 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
+@keyframes wa-panel-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+
+.wa-panel-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--wa-teal);
+  color: #fff;
+}
+
+.wa-panel-head img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+}
+
+.wa-panel-who {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.wa-panel-who strong { font-size: 0.9375rem; }
+.wa-panel-who span { font-size: 0.8125rem; opacity: 0.9; }
+
+.wa-panel-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  background: #f3efe8;
+}
+
+.wa-bubble {
+  max-width: 92%;
+  padding: 10px 12px;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: #111b21;
+}
+
+.wa-bubble--in {
+  align-self: flex-start;
+  border-radius: 4px 12px 12px 12px;
+  background: #fff;
+}
+
+.wa-bubble--out {
+  align-self: flex-end;
+  border-radius: 12px 4px 12px 12px;
+  background: #d9fdd3;
+}
+
+.wa-topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.wa-topic {
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--wa-teal);
+  background: #fff;
+  color: var(--wa-teal);
+  font: 600 0.8125rem/1 var(--font-sans);
+  cursor: pointer;
+  transition: background var(--transition-base), color var(--transition-base);
+}
+
+.wa-topic[aria-pressed="true"] {
+  background: var(--wa-teal);
+  color: #fff;
+}
+
+.wa-send {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  background: var(--wa-green);
+  color: var(--wa-green-ink);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  text-decoration: none;
+}
+
+.wa-send:hover { filter: brightness(0.96); }
+
+@media (max-width: 600px) {
+  .wa-toggle {
+    width: 56px;
+    height: 56px;
+  }
+}
+
+@media print {
+  .wa-widget { display: none; }
+}

@@ -6,7 +6,7 @@ category: seo-tecnico
 tags: ["SEO técnico", "Next.js", "Performance"]
 readTime: 8
 cover: ./covers/canalplad-seo-tecnico-nextjs.jpg
-featured: true
+featured: false
 ---
 
 Cuando empecé con Canalplad, la web ya existía pero apenas aparecía en Google. Tres meses después el tráfico orgánico había subido un 35%. Esto es lo que cambié, en orden de impacto.

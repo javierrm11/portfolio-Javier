@@ -28,6 +28,21 @@ export const CATEGORIES = {
     color: '#F5A623',
     icon: '<path d="M12 3v12M6 9l6-6 6 6"/><path d="M5 15v3a2 2 0 002 2h10a2 2 0 002-2v-3"/>',
   },
+  claude: {
+    label: 'Claude',
+    color: '#D97757',
+    icon: '<path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4"/>',
+  },
+  negocios: {
+    label: 'IA para negocios',
+    color: '#25A55F',
+    icon: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  },
+  carrera: {
+    label: 'Carrera',
+    color: '#E8590C',
+    icon: '<path d="M4 18l6-6 4 4 6-8"/><path d="M14 8h6v6"/>',
+  },
 } as const;
 
 export type CategoryKey = keyof typeof CATEGORIES;

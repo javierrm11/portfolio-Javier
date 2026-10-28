@@ -1,0 +1,152 @@
+---
+// Servicios y tarifas (variante "06" del explorador de diseño). Un solo
+// marcado para los tres tamaños: en escritorio 5 columnas iguales, en tablet
+// la tarjeta destacada a todo el ancho partida en dos + cuadrícula 2×2, y en
+// móvil tarjetas compactas con "Qué incluye" desplegable (ver servicios.css).
+const PHONE = '34611434736';
+const waHref = (topic: string) =>
+  `https://wa.me/${PHONE}?text=${encodeURIComponent(`Hola Javier, vengo de tu web y me interesa ${topic}`)}`;
+
+const plans = [
+  {
+    title: 'Agente IA para WhatsApp',
+    label: 'Recomendado',
+    featured: true,
+    price: '590 €',
+    billing: '+ 29 €/mes de mantenimiento',
+    time: '2–4 semanas',
+    includes: ['API oficial de WhatsApp Business', 'IA entrenada con tu negocio', 'Agenda de citas y recordatorios', 'Panel de conversaciones'],
+    href: waHref('un agente IA para WhatsApp.'),
+  },
+  {
+    title: 'Web profesional',
+    label: 'Web + SEO',
+    price: '349 €',
+    billing: 'pago único',
+    time: '2–3 semanas',
+    includes: ['Diseño a medida y móvil', 'SEO técnico y local', 'Ficha de Google Business', 'Botón de WhatsApp'],
+    href: waHref('una página web para mi negocio.'),
+  },
+  {
+    title: 'Chatbot IA con tus documentos',
+    label: 'IA',
+    price: '449 €',
+    billing: '+ uso de IA según volumen',
+    time: '2–3 semanas',
+    includes: ['Entrenado con tus PDFs y web', 'Solo responde con datos reales', 'Aviso de clientes interesados', 'Integrado en tu web'],
+    href: waHref('un chatbot IA para mi web.'),
+  },
+  {
+    title: 'Automatizaciones',
+    label: 'Ahorro de tiempo',
+    price: '149 €',
+    billing: 'por automatización',
+    time: '1–2 semanas',
+    includes: ['Análisis de tus procesos', 'Conexión de herramientas', 'Avisos e informes automáticos', 'Documentación para tu equipo'],
+    href: waHref('automatizar tareas de mi negocio.'),
+  },
+  {
+    title: 'Apps a medida',
+    label: 'Startups',
+    price: '1.490 €',
+    billing: 'por proyecto',
+    time: '4–8 semanas',
+    includes: ['Login y roles de usuario', 'Pagos y suscripciones', 'Panel de administración', 'Entregas cada semana'],
+    href: waHref('crear una app.'),
+  },
+];
+
+const promises = [
+  'Llamada inicial sin compromiso',
+  'Presupuesto cerrado antes de empezar',
+  'Código y dominio a tu nombre',
+  '30 días de soporte tras la entrega',
+];
+---
+<section id="servicios" class="servicios">
+  <div class="servicios-inner">
+    <header class="servicios-header">
+      <span class="section-eyebrow">Servicios y tarifas</span>
+      <h2>Precios claros desde el principio</h2>
+      <p>
+        <span class="servicios-launch">Precios de lanzamiento</span>
+        Estoy empezando a ofrecer estos servicios, así que ahora salen más baratos. El presupuesto final es cerrado y por escrito: sin sorpresas.
+      </p>
+    </header>
+
+    <div class="svc-grid">
+      {plans.map((p, i) => (
+        <article class:list={['svc-card', { 'svc-card--featured': p.featured }]}>
+          <div class="svc-main">
+            <span class="svc-tag">{p.label}</span>
+            <h3 class="svc-title">{p.title}</h3>
+            <div class="svc-price">
+              <span class="svc-from">Desde</span>
+              <strong>{p.price}</strong>
+            </div>
+            <div class="svc-meta">
+              <span class="svc-billing">{p.billing}</span>
+              <span class="svc-time">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+                {p.time}
+              </span>
+            </div>
+          </div>
+          <div class="svc-detail">
+            {p.featured && <span class="svc-detail-label">Incluye</span>}
+            <ul class="svc-includes" id={`svc-includes-${i}`}>
+              {p.includes.map((inc) => (
+                <li>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+                  {inc}
+                </li>
+              ))}
+            </ul>
+            <div class="svc-actions">
+              {!p.featured && (
+                <button type="button" class="svc-toggle" aria-expanded="false" aria-controls={`svc-includes-${i}`}>
+                  <span>Qué incluye</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+                </button>
+              )}
+              <a class="svc-btn" href={p.href} target="_blank" rel="noopener noreferrer">
+                {p.featured && (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.4-4.2A8.5 8.5 0 1 1 8 19.3z"></path><path d="M9 8.6c.2 2.9 3 5.8 6.1 6.2l1.2-1.4-2-1-1 .8c-1-.5-2.2-1.6-2.7-2.7l.8-1-1-2z"></path></svg>
+                )}
+                Pedir presupuesto
+              </a>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <ul class="servicios-promises">
+      {promises.map((pr) => (
+        <li>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+          {pr}
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<script>
+  // El desplegable "Qué incluye" solo existe en móvil (CSS). Sin JS la lista
+  // se queda visible: el atributo data-js es el que activa el plegado.
+  const section = document.getElementById('servicios');
+  if (section) {
+    section.dataset.js = '';
+    section.querySelectorAll<HTMLButtonElement>('.svc-toggle').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const card = btn.closest('.svc-card');
+        const open = !card?.classList.contains('is-open');
+        card?.classList.toggle('is-open', open);
+        btn.setAttribute('aria-expanded', String(open));
+        const label = btn.querySelector('span');
+        if (label) label.textContent = open ? 'Ocultar' : 'Qué incluye';
+      });
+    });
+  }
+</script>

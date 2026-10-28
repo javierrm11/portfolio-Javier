@@ -1,0 +1,508 @@
+/* Servicios y tarifas (Servicios.astro). Tres disposiciones con el mismo
+   marcado:
+   - Escritorio (≥1180px): 5 columnas iguales, la destacada en oscuro.
+   - Tablet (641–1179px): destacada a todo el ancho partida en dos mitades
+     (datos | incluye + botón) y el resto en 2×2.
+   - Móvil (≤640px): tarjetas compactas (título y precio en una fila) con
+     "Qué incluye" desplegable; la destacada se queda completa. */
+.servicios {
+  --svc-navy: #06142a;
+  --svc-green: #25D366;
+  --svc-green-ink: #0b2a17;
+  --svc-check: #146c3c;
+  /* Sección clara dentro de <main>, que invierte las variables a blanco
+     para las secciones sobre foto (global.css): se restablecen aquí, como
+     hace #about-me en main.css. */
+  --text-primary: #0a0a0a;
+  --text-secondary: #5b6472;
+  --border-subtle: rgba(16, 24, 40, 0.12);
+  background: #f4f8fd;
+  color: var(--text-primary);
+  padding: var(--section-padding-y) clamp(1rem, 4vw, 3rem);
+}
+
+.servicios-inner {
+  max-width: var(--container-max);
+  margin-inline: auto;
+}
+
+.servicios-header {
+  max-width: 720px;
+  margin: 0 auto 3.5rem;
+  text-align: center;
+}
+
+.servicios-header .section-eyebrow {
+  display: block;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent-from);
+}
+
+.servicios-header h2 {
+  margin-top: 0.75rem;
+  font-family: 'Poppins', var(--font-sans);
+  font-weight: 800;
+  font-size: clamp(2rem, 4.4vw, 3.25rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.servicios-header p {
+  margin-top: 1.125rem;
+  font-size: clamp(1rem, 1.4vw, 1.125rem);
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.servicios-launch {
+  display: inline-block;
+  margin-right: 0.35rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: var(--radius-full);
+  background: #dcfce7;
+  color: var(--svc-check);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  vertical-align: 0.1em;
+}
+
+/* ── Rejilla y tarjeta base (escritorio) ─────────────────────── */
+.svc-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.svc-card {
+  display: flex;
+  flex-direction: column;
+  padding: 1.75rem 1.5rem;
+  border-radius: 20px;
+  background: #fff;
+  border: 1px solid rgba(16, 24, 40, 0.1);
+}
+
+.svc-card--featured {
+  background: var(--svc-navy);
+  color: #fff;
+  border-color: var(--svc-navy);
+  box-shadow: 0 20px 40px rgba(6, 20, 42, 0.22);
+}
+
+.svc-main {
+  display: flex;
+  flex-direction: column;
+}
+
+.svc-tag {
+  align-self: flex-start;
+  padding: 0.3rem 0.7rem;
+  border-radius: var(--radius-full);
+  background: #eaf3ff;
+  color: #00509e;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.svc-card--featured .svc-tag {
+  background: #34d27b;
+  color: var(--svc-green-ink);
+}
+
+.svc-title {
+  margin-top: 1.125rem;
+  min-height: 2.5em;
+  font-family: 'Poppins', var(--font-sans);
+  font-weight: 700;
+  font-size: 1.1875rem;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: inherit;
+}
+
+.svc-price {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(16, 24, 40, 0.1);
+}
+
+.svc-card--featured .svc-price,
+.svc-card--featured .svc-includes {
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.svc-from {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  opacity: 0.75;
+}
+
+.svc-price strong {
+  font-family: 'Poppins', var(--font-sans);
+  font-weight: 800;
+  font-size: 2.25rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.svc-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 0.25rem;
+}
+
+.svc-billing {
+  font-size: 0.875rem;
+  opacity: 0.8;
+}
+
+.svc-time {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.svc-detail {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.svc-detail-label {
+  display: none;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.svc-includes {
+  flex: 1 1 auto;
+  margin-top: 1.125rem;
+  padding-top: 1.125rem;
+  border-top: 1px solid rgba(16, 24, 40, 0.1);
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  font-size: 0.9375rem;
+  line-height: 1.4;
+}
+
+.svc-includes li {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.svc-includes svg {
+  flex: none;
+  margin-top: 1px;
+  color: var(--svc-check);
+}
+
+.svc-card--featured .svc-includes svg {
+  color: #34d27b;
+}
+
+.svc-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.svc-btn,
+.svc-toggle {
+  flex: 1 1 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 48px;
+  padding: 0 0.75rem;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  text-decoration: none;
+  transition: opacity var(--transition-base), transform var(--transition-base);
+}
+
+.svc-btn {
+  background: var(--accent-from);
+  color: #fff;
+}
+
+.svc-card--featured .svc-btn {
+  background: var(--svc-green);
+  color: var(--svc-green-ink);
+}
+
+.svc-btn:hover {
+  opacity: 0.92;
+  transform: translateY(-2px);
+}
+
+.svc-toggle {
+  display: none;
+  border: 1px solid rgba(16, 24, 40, 0.18);
+  background: #fff;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  cursor: pointer;
+}
+
+.svc-toggle svg {
+  transition: transform var(--transition-base);
+}
+
+.svc-card.is-open .svc-toggle svg {
+  transform: rotate(180deg);
+}
+
+.svc-btn:focus-visible,
+.svc-toggle:focus-visible {
+  outline: 3px solid var(--accent-from);
+  outline-offset: 3px;
+}
+
+.servicios-promises {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem 2.25rem;
+  margin-top: 2.5rem;
+  list-style: none;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.servicios-promises li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.servicios-promises svg {
+  flex: none;
+  color: var(--svc-check);
+}
+
+/* ── Tablet ──────────────────────────────────────────────────── */
+@media (max-width: 1179px) {
+  .svc-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .svc-card {
+    padding: 1.75rem;
+  }
+
+  .svc-card--featured {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+    border-radius: 24px;
+  }
+
+  .svc-card--featured .svc-title {
+    min-height: 0;
+    font-size: 1.625rem;
+  }
+
+  .svc-card--featured .svc-price strong {
+    font-size: 2.75rem;
+  }
+
+  /* El plazo baja al pie de la mitad izquierda, alineado con el botón. */
+  .svc-card--featured .svc-main {
+    height: 100%;
+  }
+
+  .svc-card--featured .svc-meta {
+    flex: 1 1 auto;
+    justify-content: space-between;
+  }
+
+  .svc-card--featured .svc-detail {
+    padding-left: 2rem;
+    border-left: 1px solid rgba(255, 255, 255, 0.16);
+  }
+
+  .svc-card--featured .svc-detail-label {
+    display: block;
+  }
+
+  .svc-card--featured .svc-includes {
+    margin-top: 1rem;
+    padding-top: 0;
+    border-top: 0;
+    font-size: 1rem;
+    gap: 0.75rem;
+  }
+
+  .servicios-promises {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.875rem 1.5rem;
+    max-width: 760px;
+    margin-inline: auto;
+    padding: 1.5rem 1.75rem;
+    border-radius: 20px;
+    background: #fff;
+    border: 1px solid rgba(16, 24, 40, 0.08);
+  }
+}
+
+/* ── Móvil ───────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .servicios-header {
+    margin-bottom: 2rem;
+  }
+
+  .svc-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.75rem;
+  }
+
+  .svc-card,
+  .svc-card--featured {
+    padding: 1.25rem;
+  }
+
+  .svc-card--featured {
+    display: flex;
+    gap: 0;
+    padding: 1.5rem 1.25rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .svc-card--featured .svc-title {
+    font-size: 1.375rem;
+  }
+
+  .svc-card--featured .svc-price strong {
+    font-size: 2.25rem;
+  }
+
+  .svc-card--featured .svc-detail {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .svc-card--featured .svc-detail-label {
+    display: none;
+  }
+
+  .svc-card--featured .svc-includes {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.16);
+    font-size: 0.9375rem;
+  }
+
+  .svc-card--featured .svc-meta {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.25rem 0.75rem;
+  }
+
+  /* Compactas: título a la izquierda, precio a la derecha. */
+  .svc-card:not(.svc-card--featured) .svc-main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "tag tag"
+      "title price"
+      "meta meta";
+    column-gap: 0.75rem;
+  }
+
+  .svc-card:not(.svc-card--featured) .svc-tag {
+    grid-area: tag;
+    justify-self: start;
+  }
+
+  .svc-card:not(.svc-card--featured) .svc-title {
+    grid-area: title;
+    min-height: 0;
+    margin-top: 0.75rem;
+    font-size: 1.125rem;
+  }
+
+  .svc-card:not(.svc-card--featured) .svc-price {
+    grid-area: price;
+    align-items: flex-end;
+    margin-top: 0.75rem;
+    padding-top: 0;
+    border-top: 0;
+    text-align: right;
+    line-height: 1.15;
+  }
+
+  .svc-card:not(.svc-card--featured) .svc-price strong {
+    font-size: 1.625rem;
+  }
+
+  .svc-card:not(.svc-card--featured) .svc-meta {
+    grid-area: meta;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  .svc-card:not(.svc-card--featured) .svc-billing {
+    color: var(--text-secondary);
+    opacity: 1;
+  }
+
+  .svc-card:not(.svc-card--featured) .svc-includes {
+    margin-top: 1rem;
+    padding-top: 1rem;
+  }
+
+  .svc-actions {
+    margin-top: 1rem;
+  }
+
+  .svc-card--featured .svc-actions {
+    margin-top: 1.25rem;
+  }
+
+  /* Plegado solo con JS activo (data-js lo pone Servicios.astro). */
+  .servicios[data-js] .svc-toggle {
+    display: flex;
+  }
+
+  .servicios[data-js] .svc-card:not(.svc-card--featured):not(.is-open) .svc-includes {
+    display: none;
+  }
+
+  .svc-btn,
+  .svc-toggle {
+    min-height: 46px;
+    font-size: 0.875rem;
+  }
+
+  .servicios-promises {
+    grid-template-columns: minmax(0, 1fr);
+    margin-top: 2rem;
+    padding: 1.25rem;
+    border-radius: 16px;
+  }
+}

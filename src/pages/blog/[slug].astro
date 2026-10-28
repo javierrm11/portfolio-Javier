@@ -4,6 +4,7 @@ import { Image } from 'astro:assets';
 import BaseHead from '../../components/BaseHead.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import WhatsAppButton from '../../components/WhatsAppButton.astro';
 import { CATEGORIES, formatDate } from '../../lib/blogCategories';
 import '../../styles/global.css';
 import '../../styles/header.css';
@@ -124,5 +125,6 @@ const related = allPosts
   </main>
 
   <Footer page="blog" />
+  <WhatsAppButton />
 </body>
 </html>
