@@ -1,0 +1,11 @@
+{
+  "name": "Javier Ruiz Molero",
+  "short_name": "Javier RM",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "theme_color": "#06142a",
+  "background_color": "#06142a",
+  "display": "browser"
+}

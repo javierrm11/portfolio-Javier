@@ -12,8 +12,12 @@ const { title, description, path } = Astro.props;
 const url = `https://www.javierm.dev${path}`;
 ---
 <meta charset="utf-8" />
-<link rel="icon" type="image/png" href="/logo.png" />
-<link rel="apple-touch-icon" href="/logo.png" />
+<!-- Mismos iconos que la home (ver la nota en index.astro). -->
+<link rel="icon" href="/favicon.ico" sizes="32x32" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
+<meta name="theme-color" content="#06142a" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="generator" content={Astro.generator} />
 <Analytics />

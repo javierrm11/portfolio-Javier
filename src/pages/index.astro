@@ -18,12 +18,15 @@ import "../styles/contacto.css";
 <html lang="es">
   <head>
   <meta charset="utf-8" />
-  <!-- El favicon.svg de Astro iba aquí y ganaba a los otros dos: los
-       navegadores prefieren SVG, y al ir el último también se imponía por
-       orden. Eliminado (fichero incluido) para que quede el logo propio. -->
   <link rel="preload" as="image" href="/hero-desk.webp" fetchpriority="high" />
-  <link rel="icon" type="image/png" href="/logo.png" />
-  <link rel="apple-touch-icon" href="/logo.png" />
+  <!-- Favicon propio (J en el anillo de marca, el mismo del retrato del
+       hero). El .ico va con sizes="32x32" para que los navegadores con
+       soporte SVG prefieran el .svg; el .ico queda para los que no. -->
+  <link rel="icon" href="/favicon.ico" sizes="32x32" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <meta name="theme-color" content="#06142a" />
   <!-- Sin initial-scale=1, el móvil no fija el zoom a 1:1: en cuanto algo
        en la página desborda aunque sea un poco, el navegador puede
        renderizar la página zoom-out (más ancha que el viewport real y
