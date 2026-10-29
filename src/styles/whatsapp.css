@@ -164,10 +164,55 @@
 
 .wa-send:hover { filter: brightness(0.96); }
 
+/* Móvil: botón y panel más compactos para que el mini-chat tape lo mínimo
+   (se abre solo al hacer scroll, ver WhatsAppButton.astro — mismo corte). */
 @media (max-width: 600px) {
+  .wa-widget { gap: 10px; }
+
   .wa-toggle {
     width: 56px;
     height: 56px;
+  }
+
+  .wa-panel {
+    width: min(280px, calc(100vw - 32px));
+    border-radius: 14px;
+  }
+
+  .wa-panel-head {
+    gap: 8px;
+    padding: 9px 12px;
+  }
+
+  .wa-panel-head img {
+    width: 30px;
+    height: 30px;
+  }
+
+  .wa-panel-who strong { font-size: 0.875rem; }
+  .wa-panel-who span { font-size: 0.75rem; }
+
+  .wa-panel-body {
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .wa-bubble {
+    padding: 8px 10px;
+    font-size: 0.8125rem;
+  }
+
+  .wa-topics { gap: 5px; }
+
+  .wa-topic {
+    min-height: 32px;
+    padding: 0 10px;
+    font-size: 0.75rem;
+  }
+
+  .wa-send {
+    min-height: 44px;
+    font-size: 0.875rem;
   }
 }
 

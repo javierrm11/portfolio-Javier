@@ -68,18 +68,57 @@ const first = topics[0];
   const send = document.getElementById('wa-send');
   const topicButtons = Array.from(document.querySelectorAll('.wa-topic'));
 
-  const setOpen = (open) => {
+  // focus=false en la apertura automática: no le quitamos el foco a quien
+  // está leyendo o escribiendo en la página.
+  const setOpen = (open, focus = true) => {
     panel.hidden = !open;
     widget.classList.toggle('is-open', open);
     toggle.setAttribute('aria-expanded', String(open));
     toggle.setAttribute('aria-label', open ? 'Cerrar chat de WhatsApp' : 'Abrir chat de WhatsApp');
-    if (open) {
+    if (open && focus) {
       const pressed = topicButtons.find((b) => b.getAttribute('aria-pressed') === 'true');
       (pressed || topicButtons[0]).focus();
     }
   };
 
-  toggle.addEventListener('click', () => setOpen(panel.hidden));
+  // Se abre solo una vez por visita: si el visitante ya lo ha abierto o
+  // cerrado, no vuelve a saltar al cambiar de página. En escritorio a los
+  // 2,5 s; en móvil (mismo corte de 600px que whatsapp.css) solo cuando ya
+  // ha bajado un poco, para no tapar el hero nada más entrar.
+  const AUTO_KEY = 'wa-auto-opened';
+  const alreadyShown = () => {
+    try { return sessionStorage.getItem(AUTO_KEY) === '1'; } catch { return false; }
+  };
+  const markShown = () => {
+    try { sessionStorage.setItem(AUTO_KEY, '1'); } catch {}
+  };
+
+  const autoOpen = () => {
+    if (alreadyShown() || !panel.hidden) return;
+    // Con el menú móvil abierto el panel quedaría tapado: se deja para otra visita.
+    if (document.getElementById('main-nav')?.classList.contains('open')) return;
+    markShown();
+    setOpen(true, false);
+  };
+
+  if (!alreadyShown()) {
+    if (window.matchMedia('(max-width: 600px)').matches) {
+      const threshold = Math.min(300, window.innerHeight * 0.4);
+      const onScroll = () => {
+        if (window.scrollY < threshold) return;
+        window.removeEventListener('scroll', onScroll);
+        autoOpen();
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+    } else {
+      setTimeout(autoOpen, 2500);
+    }
+  }
+
+  toggle.addEventListener('click', () => {
+    markShown();
+    setOpen(panel.hidden);
+  });
 
   topicButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
