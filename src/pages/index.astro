@@ -1,4 +1,5 @@
 ---
+import Analytics from "@vercel/analytics/astro";
 import Header from "../components/Header.astro";
 import Main from "../components/Main.astro";
 import Footer from "../components/Footer.astro";
@@ -31,6 +32,7 @@ import "../styles/contacto.css";
        iPhone. Con esto el zoom queda anclado a 1:1 desde el arranque. -->
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="generator" content={Astro.generator} />
+  <Analytics />
 
   <!-- Title optimizado -->
   <title>Javier Ruiz Molero | Desarrollador Web Full Stack & IA</title>

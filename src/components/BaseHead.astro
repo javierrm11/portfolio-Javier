@@ -6,6 +6,8 @@ interface Props {
   description: string;
   path: string; // ej. "/blog" o "/blog/mi-post"
 }
+import Analytics from '@vercel/analytics/astro';
+
 const { title, description, path } = Astro.props;
 const url = `https://www.javierm.dev${path}`;
 ---
@@ -14,6 +16,7 @@ const url = `https://www.javierm.dev${path}`;
 <link rel="apple-touch-icon" href="/logo.png" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="generator" content={Astro.generator} />
+<Analytics />
 
 <title>{title}</title>
 <meta name="description" content={description} />
