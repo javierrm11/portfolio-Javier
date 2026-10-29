@@ -219,3 +219,147 @@
 @media print {
   .wa-widget { display: none; }
 }
+
+/* ── Pestañas: Pregúntame (chatbot) / WhatsApp ───────────────── */
+.wa-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  background: var(--wa-teal);
+  padding: 0 8px;
+}
+
+.wa-tab {
+  min-height: 40px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.78);
+  font: 700 0.875rem/1 var(--font-sans);
+  cursor: pointer;
+}
+
+.wa-tab[aria-selected="true"] {
+  color: #fff;
+  border-bottom-color: var(--wa-green);
+}
+
+.wa-tab:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: -4px;
+}
+
+.wa-ask[hidden],
+.wa-direct[hidden],
+.wa-suggest[hidden] { display: none; }
+
+.wa-ask {
+  display: flex;
+  flex-direction: column;
+  background: #f3efe8;
+}
+
+.wa-log {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 260px;
+  overflow-y: auto;
+  padding: 14px 14px 6px;
+  overscroll-behavior: contain;
+}
+
+.wa-log .wa-bubble { white-space: pre-line; overflow-wrap: anywhere; }
+.wa-log .wa-bubble a { color: #075E54; font-weight: 700; }
+.wa-bubble--typing { color: #5b6472; font-style: italic; }
+
+.wa-suggest {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 4px 14px 8px;
+}
+
+.wa-chip {
+  min-height: 32px;
+  padding: 0 12px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--wa-teal);
+  background: #fff;
+  color: var(--wa-teal);
+  font: 600 0.8125rem/1.2 var(--font-sans);
+  cursor: pointer;
+}
+
+.wa-chip:focus-visible,
+.wa-form input:focus-visible,
+.wa-form-send:focus-visible {
+  outline: 3px solid var(--accent-from);
+  outline-offset: 2px;
+}
+
+.wa-form {
+  display: flex;
+  gap: 8px;
+  padding: 8px 14px;
+  border-top: 1px solid rgba(16, 24, 40, 0.08);
+  background: #fff;
+}
+
+.wa-form input {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(16, 24, 40, 0.2);
+  font: 400 0.9375rem var(--font-sans);
+  color: #111b21;
+}
+
+.wa-form-send {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--wa-green);
+  color: var(--wa-green-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.wa-form.is-busy .wa-form-send { opacity: 0.5; cursor: progress; }
+
+.wa-disclaimer {
+  padding: 0 14px 12px;
+  background: #fff;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: #5b6472;
+}
+
+.wa-disclaimer a { color: #075E54; font-weight: 700; }
+
+.wa-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Móvil (mismo corte que arriba): historial más bajo y campo a 16px para
+   que iOS no haga zoom al enfocarlo. */
+@media (max-width: 600px) {
+  .wa-tab { min-height: 36px; font-size: 0.8125rem; }
+  .wa-log { max-height: 190px; padding: 10px 10px 4px; }
+  .wa-suggest { padding: 2px 10px 6px; gap: 5px; }
+  .wa-chip { min-height: 30px; padding: 0 10px; font-size: 0.75rem; }
+  .wa-form { padding: 8px 10px; }
+  .wa-form input { font-size: 16px; min-height: 42px; }
+  .wa-form-send { width: 42px; height: 42px; }
+  .wa-disclaimer { padding: 0 10px 10px; font-size: 0.6875rem; }
+}

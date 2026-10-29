@@ -1,8 +1,9 @@
 ---
-// Botón flotante de WhatsApp con mini-chat (variante "D" del explorador de
-// diseño): el visitante elige un tema y el mensaje de WhatsApp sale ya
-// escrito. Se usa en la home y en el blog; el CSS va importado aquí para no
-// tener que repetirlo en cada página.
+// Botón flotante con mini-chat (variante "D" del explorador de diseño), con
+// dos pestañas: "Pregúntame" (chatbot con IA que responde con la información
+// de la web, ver src/pages/api/chat.ts) y "WhatsApp" (el visitante elige un
+// tema y el mensaje sale ya escrito). Se usa en la home, el blog y los
+// servicios; el CSS va importado aquí para no repetirlo en cada página.
 import '../styles/whatsapp.css';
 
 const PHONE = '34611434736';
@@ -15,11 +16,13 @@ const topics = [
   { id: 'app', label: 'Una app', msg: 'Hola Javier, vengo de tu web y quiero crear una app. ¿Hablamos?' },
 ];
 
+const suggestions = ['¿Cuánto cuesta una web?', '¿Qué hace el agente de WhatsApp?', '¿Cuánto tardas en hacerlo?'];
+
 const waHref = (msg: string) => `https://wa.me/${PHONE}?text=${encodeURIComponent(msg)}`;
 const first = topics[0];
 ---
 <div class="wa-widget" id="wa-widget">
-  <div class="wa-panel" id="wa-panel" role="dialog" aria-label="Escríbeme por WhatsApp" hidden>
+  <div class="wa-panel" id="wa-panel" role="dialog" aria-label="Chat con Javier" hidden>
     <div class="wa-panel-head">
       <img src="/javier.webp" alt="" width="36" height="36" />
       <span class="wa-panel-who">
@@ -27,24 +30,52 @@ const first = topics[0];
         <span>Desarrollador web e IA · Córdoba</span>
       </span>
     </div>
-    <div class="wa-panel-body">
-      <p class="wa-bubble wa-bubble--in">Hola, soy Javier. ¿Sobre qué quieres hablar?</p>
-      <div class="wa-topics" role="group" aria-label="Tema del mensaje">
-        {topics.map((t) => (
-          <button
-            type="button"
-            class="wa-topic"
-            data-msg={t.msg}
-            aria-pressed={t.id === first.id ? 'true' : 'false'}
-          >{t.label}</button>
-        ))}
-      </div>
-      <p class="wa-bubble wa-bubble--out" id="wa-preview">{first.msg}</p>
+
+    <div class="wa-tabs" role="tablist" aria-label="Cómo quieres hablar">
+      <button type="button" class="wa-tab" role="tab" id="wa-tab-ask" aria-selected="true" aria-controls="wa-ask">Pregúntame</button>
+      <button type="button" class="wa-tab" role="tab" id="wa-tab-direct" aria-selected="false" aria-controls="wa-direct" tabindex="-1">WhatsApp</button>
     </div>
-    <a class="wa-send" id="wa-send" href={waHref(first.msg)} target="_blank" rel="noopener noreferrer">
-      Abrir WhatsApp
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
-    </a>
+
+    <div class="wa-ask" id="wa-ask" role="tabpanel" aria-labelledby="wa-tab-ask">
+      <div class="wa-log" id="wa-log" aria-live="polite">
+        <p class="wa-bubble wa-bubble--in">Hola, soy el asistente de Javier. Pregúntame por sus servicios, precios o proyectos.</p>
+      </div>
+      <div class="wa-suggest" id="wa-suggest">
+        {suggestions.map((s) => <button type="button" class="wa-chip">{s}</button>)}
+      </div>
+      <form class="wa-form" id="wa-form">
+        <label class="wa-sr" for="wa-input">Tu pregunta</label>
+        <input id="wa-input" type="text" maxlength="500" placeholder="Escribe tu pregunta…" autocomplete="off" />
+        <button type="submit" class="wa-form-send" aria-label="Enviar pregunta">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+        </button>
+      </form>
+      <p class="wa-disclaimer">
+        Respuestas generadas con IA. No compartas datos personales.
+        <a id="wa-handoff" href={waHref('Hola Javier, vengo de tu web y tengo una pregunta.')} target="_blank" rel="noopener noreferrer">Prefiero hablar con Javier</a>
+      </p>
+    </div>
+
+    <div class="wa-direct" id="wa-direct" role="tabpanel" aria-labelledby="wa-tab-direct" hidden>
+      <div class="wa-panel-body">
+        <p class="wa-bubble wa-bubble--in">Hola, soy Javier. ¿Sobre qué quieres hablar?</p>
+        <div class="wa-topics" role="group" aria-label="Tema del mensaje">
+          {topics.map((t) => (
+            <button
+              type="button"
+              class="wa-topic"
+              data-msg={t.msg}
+              aria-pressed={t.id === first.id ? 'true' : 'false'}
+            >{t.label}</button>
+          ))}
+        </div>
+        <p class="wa-bubble wa-bubble--out" id="wa-preview">{first.msg}</p>
+      </div>
+      <a class="wa-send" id="wa-send" href={waHref(first.msg)} target="_blank" rel="noopener noreferrer">
+        Abrir WhatsApp
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+      </a>
+    </div>
   </div>
 
   <button
@@ -53,7 +84,7 @@ const first = topics[0];
     id="wa-toggle"
     aria-expanded="false"
     aria-controls="wa-panel"
-    aria-label="Abrir chat de WhatsApp"
+    aria-label="Abrir chat"
   >
     <svg class="wa-icon-open" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.4-4.2A8.5 8.5 0 1 1 8 19.3z"></path><path d="M9 8.6c.2 2.9 3 5.8 6.1 6.2l1.2-1.4-2-1-1 .8c-1-.5-2.2-1.6-2.7-2.7l.8-1-1-2z"></path></svg>
     <svg class="wa-icon-close" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
@@ -67,6 +98,36 @@ const first = topics[0];
   const preview = document.getElementById('wa-preview');
   const send = document.getElementById('wa-send');
   const topicButtons = Array.from(document.querySelectorAll('.wa-topic'));
+  const tabs = Array.from(document.querySelectorAll('.wa-tab'));
+  const askPanel = document.getElementById('wa-ask');
+  const directPanel = document.getElementById('wa-direct');
+  const log = document.getElementById('wa-log');
+  const suggest = document.getElementById('wa-suggest');
+  const form = document.getElementById('wa-form');
+  const input = document.getElementById('wa-input');
+  const handoff = document.getElementById('wa-handoff');
+
+  const waLink = (msg) => `https://wa.me/${PHONE}?text=${encodeURIComponent(msg)}`;
+
+  // ── Pestañas ─────────────────────────────────────────────────
+  const showTab = (id, focus = false) => {
+    tabs.forEach((t) => {
+      const on = t.getAttribute('aria-controls') === id;
+      t.setAttribute('aria-selected', String(on));
+      t.tabIndex = on ? 0 : -1;
+      if (on && focus) t.focus();
+    });
+    askPanel.hidden = id !== 'wa-ask';
+    directPanel.hidden = id !== 'wa-direct';
+  };
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => showTab(t.getAttribute('aria-controls')));
+    t.addEventListener('keydown', (e) => {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      const next = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+      showTab(next.getAttribute('aria-controls'), true);
+    });
+  });
 
   // focus=false en la apertura automática: no le quitamos el foco a quien
   // está leyendo o escribiendo en la página.
@@ -74,10 +135,14 @@ const first = topics[0];
     panel.hidden = !open;
     widget.classList.toggle('is-open', open);
     toggle.setAttribute('aria-expanded', String(open));
-    toggle.setAttribute('aria-label', open ? 'Cerrar chat de WhatsApp' : 'Abrir chat de WhatsApp');
+    toggle.setAttribute('aria-label', open ? 'Cerrar chat' : 'Abrir chat');
     if (open && focus) {
-      const pressed = topicButtons.find((b) => b.getAttribute('aria-pressed') === 'true');
-      (pressed || topicButtons[0]).focus();
+      if (!askPanel.hidden) {
+        input.focus();
+      } else {
+        const pressed = topicButtons.find((b) => b.getAttribute('aria-pressed') === 'true');
+        (pressed || topicButtons[0]).focus();
+      }
     }
   };
 
@@ -120,13 +185,84 @@ const first = topics[0];
     setOpen(panel.hidden);
   });
 
+  // ── Pestaña WhatsApp: tema → mensaje ya escrito ──────────────
   topicButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
       topicButtons.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
       const msg = btn.dataset.msg;
       preview.textContent = msg;
-      send.href = `https://wa.me/${PHONE}?text=${encodeURIComponent(msg)}`;
+      send.href = waLink(msg);
     });
+  });
+
+  // ── Pestaña Pregúntame: chatbot (/api/chat) ──────────────────
+  const history = [];
+  let busy = false;
+
+  // La respuesta del modelo se pinta como texto, nunca como HTML: las URL se
+  // convierten en enlaces creando nodos, no interpolando cadenas.
+  const addBubble = (text, who) => {
+    const p = document.createElement('p');
+    p.className = `wa-bubble wa-bubble--${who}`;
+    const parts = text.split(/(https?:\/\/[^\s)]+)/g);
+    parts.forEach((part, i) => {
+      if (i % 2 === 1) {
+        const url = part.replace(/[.,;:]+$/, '');
+        const a = document.createElement('a');
+        a.href = url;
+        a.textContent = url.replace(/^https?:\/\/(www\.)?/, '');
+        if (!url.startsWith(location.origin)) {
+          a.target = '_blank';
+          a.rel = 'noopener noreferrer nofollow';
+        }
+        p.append(a, part.slice(url.length));
+      } else {
+        p.append(part);
+      }
+    });
+    log.append(p);
+    log.scrollTop = log.scrollHeight;
+    return p;
+  };
+
+  const ask = async (question) => {
+    const text = question.trim().slice(0, 500);
+    if (!text || busy) return;
+    busy = true;
+    form.classList.add('is-busy');
+    suggest.hidden = true;
+    addBubble(text, 'out');
+    history.push({ role: 'user', text });
+    handoff.href = waLink(`Hola Javier, vengo de tu web. Te quería preguntar: ${text}`);
+
+    const typing = addBubble('Escribiendo…', 'in');
+    typing.classList.add('wa-bubble--typing');
+    let reply;
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: history }),
+      });
+      const data = await res.json().catch(() => ({}));
+      reply = data.reply;
+    } catch {}
+    typing.remove();
+    reply = reply || 'Ahora mismo no puedo responder. Escríbele a Javier por WhatsApp y te contesta él directamente.';
+    addBubble(reply, 'in');
+    history.push({ role: 'model', text: reply });
+    busy = false;
+    form.classList.remove('is-busy');
+  };
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const q = input.value;
+    input.value = '';
+    ask(q);
+  });
+  suggest.querySelectorAll('.wa-chip').forEach((chip) => {
+    chip.addEventListener('click', () => ask(chip.textContent));
   });
 
   // Escape y clic fuera cierran, como cualquier popover.

@@ -1,13 +1,7 @@
 ---
 // About.astro — cronología + tarjeta de cita (variante "B+6" del explorador
 // de diseño).
-const timeline = [
-    { title: 'DAW', desc: 'Formación de base en desarrollo de aplicaciones web.' },
-    { title: 'Signlab', desc: 'Experiencia construyendo producto de extremo a extremo.' },
-    { title: 'Especialización en IA y Big Data', desc: 'El giro: de construir productos a construir con IA.' },
-    { title: 'Weai', desc: 'Aplicando lo aprendido en proyectos full-stack reales.' },
-    { title: 'Ingeniería Informática', desc: 'Estudios en curso, compaginados con los proyectos.' },
-];
+import { timeline } from '../lib/profile';
 ---
 <section id="about-me">
     <div class="about-layout">
