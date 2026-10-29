@@ -13,6 +13,77 @@ import "../styles/about.css";
 import "../styles/tecnologias.css";
 import "../styles/proyectos.css";
 import "../styles/contacto.css";
+import { plans, faqs, PHONE, EMAIL } from "../lib/services";
+
+const SITE = "https://www.javierm.dev";
+
+// Negocio local (servicio sin dirección pública, con zona de servicio) +
+// la persona que lo lleva + las FAQ de Servicios. Generado desde los mismos
+// datos que pinta Servicios.astro, así un cambio de precio no se descuadra.
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "ProfessionalService",
+      "@id": `${SITE}/#negocio`,
+      name: "Javier Ruiz Molero · Diseño web e IA",
+      description:
+        "Desarrollador web freelance en Córdoba (España): páginas web para negocios, agentes IA para WhatsApp, chatbots, automatizaciones y apps a medida.",
+      url: `${SITE}/`,
+      image: `${SITE}/og-image.jpg`,
+      logo: `${SITE}/icon-512.png`,
+      telephone: `+${PHONE}`,
+      email: EMAIL,
+      priceRange: "€",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Córdoba",
+        addressRegion: "Andalucía",
+        addressCountry: "ES",
+      },
+      areaServed: [
+        { "@type": "City", name: "Córdoba", containedInPlace: { "@type": "AdministrativeArea", name: "Andalucía, España" } },
+        { "@type": "Country", name: "España" },
+      ],
+      founder: { "@id": `${SITE}/#javier` },
+      sameAs: ["https://github.com/javierrm11", "https://www.linkedin.com/in/javiermdev"],
+      hasOfferCatalog: {
+        "@type": "OfferCatalog",
+        name: "Servicios",
+        itemListElement: plans.map((p) => ({
+          "@type": "Offer",
+          itemOffered: { "@type": "Service", name: p.title, description: p.description, areaServed: "España" },
+          priceSpecification: { "@type": "PriceSpecification", minPrice: p.priceFrom, priceCurrency: "EUR" },
+        })),
+      },
+    },
+    {
+      "@type": "Person",
+      "@id": `${SITE}/#javier`,
+      name: "Javier Ruiz Molero",
+      jobTitle: "Desarrollador web freelance",
+      url: `${SITE}/`,
+      image: `${SITE}/javier.webp`,
+      worksFor: { "@id": `${SITE}/#negocio` },
+      sameAs: ["https://github.com/javierrm11", "https://www.linkedin.com/in/javiermdev"],
+      knowsAbout: ["Diseño web", "SEO local", "Inteligencia artificial", "WhatsApp Business API", "Next.js", "Astro", "Supabase"],
+      homeLocation: { "@type": "Place", address: { "@type": "PostalAddress", addressLocality: "Córdoba", addressCountry: "ES" } },
+    },
+    {
+      "@type": "FAQPage",
+      "@id": `${SITE}/#faq`,
+      mainEntity: faqs.map((f) => ({
+        "@type": "Question",
+        name: f.q,
+        acceptedAnswer: { "@type": "Answer", text: f.a },
+      })),
+    },
+  ],
+};
+
+const title = "Diseño web en Córdoba y agentes IA | Javier Ruiz Molero";
+const description =
+  "Páginas web para negocios en Córdoba desde 349 € y agentes IA que atienden tu WhatsApp. Precio cerrado, entrega en 2–3 semanas. Pide presupuesto.";
 ---
 
 <html lang="es">
@@ -37,99 +108,33 @@ import "../styles/contacto.css";
   <meta name="generator" content={Astro.generator} />
   <Analytics />
 
-  <!-- Title optimizado -->
-  <title>Javier Ruiz Molero | Desarrollador Web Full Stack & IA</title>
-
-  <!-- Meta descriptions mejorada (150-160 caracteres) -->
-  <meta
-    name="description"
-    content="Desarrollador web Full Stack especializado en React, Next.js e integración de IA. Construyo SaaS y aplicaciones modernas con foco en rendimiento y automatización."
-  />
-
-  <!-- Keywords más específicas -->
-  <meta
-    name="keywords"
-    content="Javier Ruiz Molero, desarrollador full stack, React, Astro, Node.js, TypeScript, JavaScript, portfolio desarrollador, desarrollo web Madrid, front-end developer, back-end developer"
-  />
-
+  <!-- Pensado para los clientes (búsquedas tipo "diseño web Córdoba",
+       "página web para mi negocio"), no para reclutadores: la ciudad, el
+       servicio y el precio de partida van en lo que Google enseña. -->
+  <title>{title}</title>
+  <meta name="description" content={description} />
   <meta name="author" content="Javier Ruiz Molero" />
 
-  <!-- Canonical URL -->
-  <link rel="canonical" href="https://www.javierm.dev" />
+  <link rel="canonical" href="https://www.javierm.dev/" />
 
-  <!-- Open Graph mejorado -->
-  <meta
-    property="og:title"
-    content="Javier Ruiz Molero | Desarrollador Web Full Stack"
-  />
-  <meta
-    property="og:description"
-    content="Desarrollador web full stack especializado en crear aplicaciones modernas con React, Astro y Node.js. Código limpio y rendimiento óptimo."
-  />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
   <meta property="og:image" content="https://www.javierm.dev/og-image.jpg" />
-  <meta
-    property="og:image:alt"
-    content="Javier Ruiz Molero - Desarrollador Web"
-  />
+  <meta property="og:image:alt" content="Javier Ruiz Molero, diseño web e IA en Córdoba" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://www.javierm.dev" />
+  <meta property="og:url" content="https://www.javierm.dev/" />
   <meta property="og:site_name" content="Javier Ruiz Molero" />
   <meta property="og:locale" content="es_ES" />
 
-  <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta
-    name="twitter:title"
-    content="Javier Ruiz Molero | Desarrollador Web Full Stack"
-  />
-  <meta
-    name="twitter:description"
-    content="Desarrollador web full stack especializado en crear aplicaciones modernas con React, Astro y Node.js."
-  />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
   <meta name="twitter:image" content="https://www.javierm.dev/og-image.jpg" />
-  <meta
-    name="twitter:image:alt"
-    content="Javier Ruiz Molero - Desarrollador Web"
-  />
+  <meta name="twitter:image:alt" content="Javier Ruiz Molero, diseño web e IA en Córdoba" />
 
-  <!-- Datos estructurados JSON-LD -->
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Person",
-      "name": "Javier Ruiz Molero",
-      "jobTitle": "Desarrollador Web Full Stack",
-      "url": "https://www.javierm.dev",
-      "image": "https://www.javierm.dev/javier.webp",
-      "sameAs": [
-        "https://github.com/javierrm11",
-        "https://www.linkedin.com/in/javiermdev"
-      ],
-      "knowsAbout": [
-        "Desarrollo Web",
-        "React",
-        "Next.js",
-        "Astro",
-        "Node.js",
-        "TypeScript",
-        "JavaScript",
-        "Python",
-        "Supabase",
-        "Inteligencia Artificial",
-        "Integración de IA"
-      ],
-      "workLocation": {
-        "@type": "Place",
-        "address": {
-          "@type": "PostalAddress",
-          "addressLocality": "Córdoba",
-          "addressCountry": "ES"
-        }
-      }
-    }
-  </script>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
   <!-- Preconnect para optimización de fuentes -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />

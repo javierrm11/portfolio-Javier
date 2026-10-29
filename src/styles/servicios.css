@@ -506,3 +506,91 @@
     border-radius: 16px;
   }
 }
+
+/* ── Preguntas frecuentes ────────────────────────────────────────
+   Recogen las búsquedas reales de clientes locales; el mismo texto va
+   como FAQPage en el JSON-LD de index.astro (src/lib/services.ts). */
+.servicios-faq {
+  max-width: 860px;
+  margin: 4rem auto 0;
+}
+
+.servicios-faq h3 {
+  margin-bottom: 1rem;
+  font-family: 'Poppins', var(--font-sans);
+  font-weight: 800;
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
+  letter-spacing: -0.02em;
+  text-align: center;
+}
+
+.servicios-faq details {
+  border-bottom: 1px solid rgba(16, 24, 40, 0.12);
+}
+
+.servicios-faq summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 64px;
+  padding: 0.75rem 0;
+  font-weight: 700;
+  font-size: 1.0625rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.servicios-faq summary::-webkit-details-marker { display: none; }
+
+.servicios-faq summary::after {
+  content: '+';
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid rgba(16, 24, 40, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--accent-from);
+}
+
+.servicios-faq details[open] summary::after { content: '−'; }
+
+.servicios-faq summary:focus-visible {
+  outline: 3px solid var(--accent-from);
+  outline-offset: 2px;
+}
+
+.servicios-faq details p {
+  padding: 0 0 1.25rem;
+  max-width: 720px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 640px) {
+  .servicios-faq { margin-top: 3rem; }
+  .servicios-faq summary { font-size: 1rem; }
+}
+
+/* El título de cada tarjeta enlaza a su página (/servicios/<slug>). */
+.svc-title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.svc-title a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.svc-title a:focus-visible {
+  outline: 3px solid var(--accent-from);
+  outline-offset: 2px;
+  border-radius: 4px;
+}

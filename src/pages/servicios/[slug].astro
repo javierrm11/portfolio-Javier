@@ -1,0 +1,221 @@
+---
+// Página de cada servicio (variante "01 · Clásica clara" del explorador de
+// diseño). Precio, plazo y enlace de WhatsApp vienen de src/lib/services.ts;
+// los textos propios de cada página, de src/lib/servicePages.ts.
+import { Image } from 'astro:assets';
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import WhatsAppButton from '../../components/WhatsAppButton.astro';
+import { plans, formatPrice, type Plan } from '../../lib/services';
+import { servicePages, steps, type ServicePage } from '../../lib/servicePages';
+import '../../styles/global.css';
+import '../../styles/header.css';
+import '../../styles/footer.css';
+import '../../styles/servicio.css';
+
+export function getStaticPaths() {
+  return plans.map((plan) => ({
+    params: { slug: plan.slug },
+    props: { plan, page: servicePages[plan.slug] },
+  }));
+}
+
+interface Props {
+  plan: Plan;
+  page: ServicePage;
+}
+
+const { plan, page } = Astro.props;
+const SITE = 'https://www.javierm.dev';
+const path = `/servicios/${plan.slug}/`;
+const others = plans.filter((p) => p.slug !== plan.slug);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Service',
+      '@id': `${SITE}${path}#servicio`,
+      name: plan.title,
+      description: page.metaDescription,
+      url: `${SITE}${path}`,
+      provider: { '@id': `${SITE}/#negocio` },
+      areaServed: [
+        { '@type': 'City', name: 'Córdoba' },
+        { '@type': 'Country', name: 'España' },
+      ],
+      offers: {
+        '@type': 'Offer',
+        priceSpecification: { '@type': 'PriceSpecification', minPrice: plan.priceFrom, priceCurrency: 'EUR' },
+      },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${SITE}/` },
+        { '@type': 'ListItem', position: 2, name: 'Servicios', item: `${SITE}/#servicios` },
+        { '@type': 'ListItem', position: 3, name: plan.title, item: `${SITE}${path}` },
+      ],
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: page.faqs.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+    },
+  ],
+};
+---
+
+<html lang="es">
+<head>
+  <BaseHead title={page.metaTitle} description={page.metaDescription} path={path} type="website" />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+</head>
+<body>
+  <Header page="servicio" />
+  <main class="servicio-main">
+
+    <section class="srv-hero">
+      <div class="srv-wrap srv-hero-grid">
+        <div>
+          <nav class="srv-breadcrumb" aria-label="Migas de pan">
+            <a href="/">Inicio</a> / <a href="/#servicios">Servicios</a> / <span aria-current="page">{plan.title}</span>
+          </nav>
+          <h1>{page.h1}</h1>
+          <p class="srv-lead">{page.lead}</p>
+          <div class="srv-cta-row">
+            <a class="srv-btn srv-btn--wa" href={plan.href} target="_blank" rel="noopener noreferrer">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.4-4.2A8.5 8.5 0 1 1 8 19.3z"></path><path d="M9 8.6c.2 2.9 3 5.8 6.1 6.2l1.2-1.4-2-1-1 .8c-1-.5-2.2-1.6-2.7-2.7l.8-1-1-2z"></path></svg>
+              Pedir presupuesto por WhatsApp
+            </a>
+            <a class="srv-btn srv-btn--ghost" href="#incluye">Ver qué incluye</a>
+          </div>
+          {page.stats && (
+            <div class="srv-stats">
+              {page.stats.map((s) => <span><strong>{s.value}</strong> {s.label}</span>)}
+            </div>
+          )}
+        </div>
+        <figure class="srv-shot">
+          <div class="srv-shot-bar" aria-hidden="true"><span></span><span></span><span></span></div>
+          <Image src={page.caseStudy.image} alt={page.caseStudy.alt} widths={[480, 720, 960]} sizes="(min-width: 1024px) 560px, 100vw" loading="eager" />
+        </figure>
+      </div>
+    </section>
+
+    <section class="srv-section srv-section--tight">
+      <div class="srv-wrap">
+        <h2>{page.sectorsTitle}</h2>
+        <ul class="srv-sectors">
+          {page.sectors.map((s) => <li>{s}</li>)}
+        </ul>
+      </div>
+    </section>
+
+    <section id="incluye" class="srv-section srv-section--tint">
+      <div class="srv-wrap">
+        <h2>Qué incluye</h2>
+        <div class="srv-includes">
+          {page.includes.map((i) => (
+            <article>
+              <span class="srv-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={i.icon}></path></svg>
+              </span>
+              <h3>{i.title}</h3>
+              <p>{i.desc}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="srv-section">
+      <div class="srv-wrap">
+        <h2>Cómo trabajamos</h2>
+        <ol class="srv-steps">
+          {steps.map((st) => (
+            <li>
+              <span class="srv-step-n">{st.n}</span>
+              <strong>{st.title}</strong>
+              <span>{st.desc}</span>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <section class="srv-section srv-section--flush">
+      <div class="srv-wrap">
+        <div class="srv-case">
+          <Image src={page.caseStudy.image} alt={page.caseStudy.alt} widths={[480, 720]} sizes="(min-width: 1024px) 520px, 100vw" />
+          <div>
+            <span class="srv-kicker">{page.caseStudy.kicker}</span>
+            <h2>{page.caseStudy.title}</h2>
+            <p>{page.caseStudy.text}</p>
+            {page.caseStudy.link && <a href={page.caseStudy.link.href}>{page.caseStudy.link.label} →</a>}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="srv-section srv-section--tint">
+      <div class="srv-wrap srv-price-faq">
+        <div class="srv-price">
+          <span class="srv-launch">Precio de lanzamiento</span>
+          <p class="srv-from">Desde</p>
+          <strong>{formatPrice(plan.priceFrom)}</strong>
+          <p class="srv-billing">{plan.billing} · {plan.time}</p>
+          <ul>
+            {plan.includes.map((inc) => (
+              <li>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+                {inc}
+              </li>
+            ))}
+          </ul>
+          <a class="srv-btn srv-btn--primary" href={plan.href} target="_blank" rel="noopener noreferrer">Pedir presupuesto cerrado</a>
+          {plan.maintenance && (
+            <p class="srv-note"><strong>Mantenimiento opcional: {plan.maintenance.price} €/mes.</strong> {plan.maintenance.includes}</p>
+          )}
+          {page.priceNote && <p class="srv-note">{page.priceNote}</p>}
+        </div>
+        <div class="srv-faq">
+          <h2>Preguntas frecuentes</h2>
+          {page.faqs.map((f) => (
+            <details>
+              <summary>{f.q}</summary>
+              <p>{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="srv-section">
+      <div class="srv-wrap">
+        <div class="srv-final">
+          <div>
+            <h2>¿Hablamos de tu proyecto?</h2>
+            <p>Cuéntame tu negocio en un mensaje y te digo precio y plazo.</p>
+          </div>
+          <a class="srv-btn srv-btn--light" href={plan.href} target="_blank" rel="noopener noreferrer">Escribir por WhatsApp</a>
+        </div>
+        <nav class="srv-others" aria-label="Otros servicios">
+          <h2>Otros servicios</h2>
+          <ul>
+            {others.map((o) => (
+              <li><a href={`/servicios/${o.slug}/`}><span>{o.title}</span><span>desde {formatPrice(o.priceFrom)}</span></a></li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+    </section>
+  </main>
+  <Footer page="servicio" />
+  <WhatsAppButton />
+</body>
+</html>

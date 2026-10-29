@@ -3,7 +3,7 @@
 // Igual que en Header.astro: page="blog" antepone "/" a los enlaces de
 // sección, que si no apuntarían a un id que no existe en esa página.
 interface Props {
-  page?: 'home' | 'blog';
+  page?: 'home' | 'blog' | 'servicio';
 }
 const { page = 'home' } = Astro.props;
 const base = page === 'home' ? '' : '/';

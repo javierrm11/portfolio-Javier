@@ -6,7 +6,7 @@
 // header.css) ya es siempre opaco, así que se lee igual en cualquier página,
 // no solo flotando sobre la foto del Hero.
 interface Props {
-  page?: 'home' | 'blog';
+  page?: 'home' | 'blog' | 'servicio';
 }
 const { page = 'home' } = Astro.props;
 const base = page === 'home' ? '' : '/';

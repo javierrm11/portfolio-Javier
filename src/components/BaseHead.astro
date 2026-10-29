@@ -1,14 +1,18 @@
 ---
-// Cabecera <head> compartida por las páginas del blog (index.astro tiene la
-// suya propia, más larga, con el JSON-LD de la home — no se toca aquí).
+// Cabecera <head> compartida por el blog y las páginas de servicio
+// (index.astro tiene la suya propia, más larga, con el JSON-LD de la home —
+// no se toca aquí).
+import Analytics from '@vercel/analytics/astro';
+
 interface Props {
   title: string;
   description: string;
   path: string; // ej. "/blog" o "/blog/mi-post"
+  // Las páginas de servicio no son artículos (og:type website).
+  type?: 'article' | 'website';
 }
-import Analytics from '@vercel/analytics/astro';
 
-const { title, description, path } = Astro.props;
+const { title, description, path, type = 'article' } = Astro.props;
 const url = `https://www.javierm.dev${path}`;
 ---
 <meta charset="utf-8" />
@@ -26,7 +30,7 @@ const url = `https://www.javierm.dev${path}`;
 <meta name="description" content={description} />
 <link rel="canonical" href={url} />
 
-<meta property="og:type" content="article" />
+<meta property="og:type" content={type} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={url} />

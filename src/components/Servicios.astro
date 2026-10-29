@@ -3,71 +3,13 @@
 // marcado para los tres tamaños: en escritorio 5 columnas iguales, en tablet
 // la tarjeta destacada a todo el ancho partida en dos + cuadrícula 2×2, y en
 // móvil tarjetas compactas con "Qué incluye" desplegable (ver servicios.css).
-const PHONE = '34611434736';
-const waHref = (topic: string) =>
-  `https://wa.me/${PHONE}?text=${encodeURIComponent(`Hola Javier, vengo de tu web y me interesa ${topic}`)}`;
-
-const plans = [
-  {
-    title: 'Agente IA para WhatsApp',
-    label: 'Recomendado',
-    featured: true,
-    price: '590 €',
-    billing: '+ 29 €/mes de mantenimiento',
-    time: '2–4 semanas',
-    includes: ['API oficial de WhatsApp Business', 'IA entrenada con tu negocio', 'Agenda de citas y recordatorios', 'Panel de conversaciones'],
-    href: waHref('un agente IA para WhatsApp.'),
-  },
-  {
-    title: 'Web profesional',
-    label: 'Web + SEO',
-    price: '349 €',
-    billing: 'pago único',
-    time: '2–3 semanas',
-    includes: ['Diseño a medida y móvil', 'SEO técnico y local', 'Ficha de Google Business', 'Botón de WhatsApp'],
-    href: waHref('una página web para mi negocio.'),
-  },
-  {
-    title: 'Chatbot IA con tus documentos',
-    label: 'IA',
-    price: '449 €',
-    billing: '+ uso de IA según volumen',
-    time: '2–3 semanas',
-    includes: ['Entrenado con tus PDFs y web', 'Solo responde con datos reales', 'Aviso de clientes interesados', 'Integrado en tu web'],
-    href: waHref('un chatbot IA para mi web.'),
-  },
-  {
-    title: 'Automatizaciones',
-    label: 'Ahorro de tiempo',
-    price: '149 €',
-    billing: 'por automatización',
-    time: '1–2 semanas',
-    includes: ['Análisis de tus procesos', 'Conexión de herramientas', 'Avisos e informes automáticos', 'Documentación para tu equipo'],
-    href: waHref('automatizar tareas de mi negocio.'),
-  },
-  {
-    title: 'Apps a medida',
-    label: 'Startups',
-    price: '1.490 €',
-    billing: 'por proyecto',
-    time: '4–8 semanas',
-    includes: ['Login y roles de usuario', 'Pagos y suscripciones', 'Panel de administración', 'Entregas cada semana'],
-    href: waHref('crear una app.'),
-  },
-];
-
-const promises = [
-  'Llamada inicial sin compromiso',
-  'Presupuesto cerrado antes de empezar',
-  'Código y dominio a tu nombre',
-  '30 días de soporte tras la entrega',
-];
+import { plans, promises, faqs, formatPrice } from '../lib/services';
 ---
 <section id="servicios" class="servicios">
   <div class="servicios-inner">
     <header class="servicios-header">
       <span class="section-eyebrow">Servicios y tarifas</span>
-      <h2>Precios claros desde el principio</h2>
+      <h2>Páginas web y automatización con IA para tu negocio</h2>
       <p>
         <span class="servicios-launch">Precios de lanzamiento</span>
         Estoy empezando a ofrecer estos servicios, así que ahora salen más baratos. El presupuesto final es cerrado y por escrito: sin sorpresas.
@@ -79,10 +21,10 @@ const promises = [
         <article class:list={['svc-card', { 'svc-card--featured': p.featured }]}>
           <div class="svc-main">
             <span class="svc-tag">{p.label}</span>
-            <h3 class="svc-title">{p.title}</h3>
+            <h3 class="svc-title"><a href={`/servicios/${p.slug}/`}>{p.title}</a></h3>
             <div class="svc-price">
               <span class="svc-from">Desde</span>
-              <strong>{p.price}</strong>
+              <strong>{formatPrice(p.priceFrom)}</strong>
             </div>
             <div class="svc-meta">
               <span class="svc-billing">{p.billing}</span>
@@ -129,6 +71,16 @@ const promises = [
         </li>
       ))}
     </ul>
+
+    <div class="servicios-faq">
+      <h3>Preguntas frecuentes</h3>
+      {faqs.map((f) => (
+        <details>
+          <summary>{f.q}</summary>
+          <p>{f.a}</p>
+        </details>
+      ))}
+    </div>
   </div>
 </section>
 
