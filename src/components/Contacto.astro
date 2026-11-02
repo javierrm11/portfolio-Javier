@@ -1,5 +1,7 @@
 ---
 // Contacto.astro
+import ContactForm from './ContactForm.astro';
+import { callHref } from '../lib/services';
 ---
 <section id="contact">
     <div class="contact-container">
@@ -8,6 +10,13 @@
 
         <div class="contact-content">
             <div class="contact-info">
+                <a href={callHref} class="contact-info-item" target="_blank" rel="noopener noreferrer">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 6h16v15H4z M4 10h16 M9 3v4 M15 3v4"></path>
+                    </svg>
+                    <span>Reservar llamada de 20 min</span>
+                </a>
+
                 <a href="mailto:javiermdevweb@gmail.com" class="contact-info-item">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
@@ -47,35 +56,7 @@
                 </div>
             </div>
 
-            <div class="contact-form-container">
-                <span class="form-bubble-badge">Envíame un mensaje</span>
-                <form class="contact-form" id="contactForm" action="https://formspree.io/f/mqaybdwj" method="POST">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="nombre">Nombre</label>
-                            <input id="nombre" type="text" class="form-input" placeholder="Tu nombre" name="nombre" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input id="email" type="email" class="form-input" placeholder="Tu email" name="email" required>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="asunto">Asunto</label>
-                        <input id="asunto" type="text" class="form-input" placeholder="Asunto" name="asunto" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="mensaje">Mensaje</label>
-                        <textarea id="mensaje" class="form-input" placeholder="Tu mensaje" name="mensaje" required></textarea>
-                    </div>
-                    <button type="submit" class="submit-btn">
-                        Enviar mensaje
-                    </button>
-                </form>
-                <div class="success-message" id="successMessage">
-                    ¡Mensaje enviado con éxito! Te responderé pronto.
-                </div>
-            </div>
+            <ContactForm />
         </div>
     </div>
 </section>

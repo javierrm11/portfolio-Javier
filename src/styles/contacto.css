@@ -107,6 +107,12 @@
   margin-top: 0.75rem;
 }
 
+/* El display:flex de arriba le ganaría al atributo hidden que pone el script
+   de ContactForm.astro al enviar. */
+.contact-form[hidden] {
+  display: none;
+}
+
 .form-row {
   display: flex;
   gap: 1.125rem;
@@ -152,6 +158,22 @@ textarea.form-input {
   resize: vertical;
   min-height: 120px;
   font-family: var(--font-sans);
+}
+
+select.form-input {
+  cursor: pointer;
+}
+
+/* La lista desplegable la pinta el sistema con su propio fondo claro: sin
+   esto, el texto blanco de la home oscura no se leería en ella. */
+select.form-input option {
+  color: #0a0a0a;
+  background: #fff;
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: wait;
 }
 
 .submit-btn {
@@ -285,7 +307,9 @@ textarea.form-input {
     white-space: nowrap;
   }
 
-  .contact-form-container {
+  /* Con #contact delante: el mismo formulario va también en las páginas de
+     servicio, que son claras y no ocupan una pantalla fija. */
+  #contact .contact-form-container {
     flex: 1;
     min-height: 0;
     display: flex;
@@ -295,47 +319,47 @@ textarea.form-input {
     border-radius: 0;
   }
 
-  .form-bubble-badge {
+  #contact .form-bubble-badge {
     display: none;
   }
 
-  .contact-form {
+  #contact .contact-form {
     flex: 1;
     min-height: 0;
     margin-top: 0;
     gap: clamp(0.5rem, 1.4vh, 0.75rem);
   }
 
-  .form-row {
+  #contact .form-row {
     gap: clamp(0.5rem, 1.4vh, 0.75rem);
   }
 
-  .form-group label {
+  #contact .form-group label {
     margin-bottom: 0.25rem;
     font-size: 0.71875rem;
     font-weight: 700;
     color: rgba(255, 255, 255, 0.75);
   }
 
-  .form-input {
+  #contact .form-input {
     padding: 0.6875rem 0.75rem;
     border-color: rgba(255, 255, 255, 0.18);
   }
 
-  .contact-form > .form-group:nth-of-type(3) {
+  #contact .contact-form > .form-group:nth-of-type(3) {
     flex: 1;
     min-height: 0;
     display: flex;
     flex-direction: column;
   }
 
-  textarea.form-input {
+  #contact textarea.form-input {
     flex: 1;
     min-height: 56px;
     resize: none;
   }
 
-  .submit-btn {
+  #contact .submit-btn {
     flex: 0 0 auto;
     min-height: 46px;
     padding-block: 0.75rem;

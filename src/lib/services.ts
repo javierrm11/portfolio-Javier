@@ -9,6 +9,11 @@ export const waHref = (msg: string) =>
 
 const waTopic = (topic: string) => waHref(`Hola Javier, vengo de tu web y me interesa ${topic}`);
 
+// Enlace de reserva de la llamada de 20 minutos (Cal.com, Calendly…). Mientras
+// esté vacío, el botón abre WhatsApp con la petición ya escrita.
+const BOOKING_URL = '';
+export const callHref = BOOKING_URL || waHref('Hola Javier, vengo de tu web y me gustaría reservar la llamada de 20 minutos.');
+
 export interface Plan {
   /** Ruta de su página: /servicios/<slug> (ver src/lib/servicePages.ts). */
   slug: string;

@@ -109,6 +109,24 @@ const first = topics[0];
 
   const waLink = (msg) => `https://wa.me/${PHONE}?text=${encodeURIComponent(msg)}`;
 
+  // ── Página de origen ─────────────────────────────────────────
+  // Todos los enlaces a WhatsApp de la página (botones, artículos del blog,
+  // este widget y los que escribe el chatbot) añaden al mensaje desde qué
+  // página se escribe: es la forma de saber qué páginas traen contactos sin
+  // meter otra herramienta. Se hace al pulsar para cubrirlos todos en un solo
+  // sitio; este componente está en la home, el blog y los servicios.
+  const ORIGIN_MARK = '(Página: ';
+  const tagOrigin = (e) => {
+    const link = e.target.closest?.('a[href^="https://wa.me/"]');
+    if (!link) return;
+    const text = new URL(link.href).searchParams.get('text') || 'Hola Javier, vengo de tu web.';
+    if (text.includes(ORIGIN_MARK)) return;
+    const page = location.pathname === '/' ? 'inicio' : location.pathname;
+    link.href = waLink(`${text}\n\n${ORIGIN_MARK}${page})`);
+  };
+  document.addEventListener('click', tagOrigin);
+  document.addEventListener('auxclick', tagOrigin);
+
   // ── Pestañas ─────────────────────────────────────────────────
   const showTab = (id, focus = false) => {
     tabs.forEach((t) => {

@@ -372,19 +372,45 @@ main.servicio-main {
 .srv-faq details p { padding-bottom: 1.25rem; line-height: 1.6; color: var(--text-secondary); }
 
 /* ── Cierre ──────────────────────────────────────────────────── */
-.srv-final {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.5rem;
-  padding: 3rem;
-  border-radius: var(--radius-lg);
-  background: var(--accent-from);
-  color: #fff;
+.srv-contact {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: 3.5rem;
+  align-items: start;
+  scroll-margin-top: 6rem;
 }
 
-.srv-final h2 { color: #fff; }
-.srv-final p { margin-top: 0.625rem; font-size: 1.0625rem; color: rgba(255, 255, 255, 0.9); }
+.srv-contact-info p { margin-top: 0.875rem; font-size: 1.0625rem; line-height: 1.6; color: var(--text-secondary); }
+
+.srv-contact-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+}
+
+.srv-contact-actions .srv-btn { width: 100%; margin-top: 0; }
+
+.srv-contact-direct {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  margin-top: 1.25rem;
+  list-style: none;
+}
+
+.srv-contact-direct a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* global.css deja --bg-surface translúcido en blanco para las secciones
+   oscuras de la home; aquí el formulario va sobre una página clara. */
+.srv-contact .contact-form-container { --bg-surface: var(--srv-tint); --text-tertiary: #6b7280; }
+.srv-contact .form-input { background: #fff; }
 
 .srv-others { margin-top: 4rem; }
 .srv-others h2 { font-size: clamp(1.375rem, 2.2vw, 1.75rem); }
@@ -418,7 +444,10 @@ main.servicio-main {
 @media (max-width: 1023px) {
   .srv-hero-grid,
   .srv-price-faq,
+  .srv-contact,
   .srv-case { grid-template-columns: minmax(0, 1fr); }
+
+  .srv-contact { gap: 2.75rem; }
 
   .srv-shot img { height: 380px; }
   .srv-case { padding: 2.25rem; }
@@ -439,11 +468,9 @@ main.servicio-main {
   .srv-steps,
   .srv-others ul { grid-template-columns: minmax(0, 1fr); }
 
-  .srv-case,
-  .srv-final { padding: 1.5rem; }
+  .srv-case { padding: 1.5rem; }
   .srv-case img { height: 200px; }
 
-  .srv-final { flex-direction: column; align-items: stretch; }
   .srv-price { padding: 1.5rem; }
   .srv-price > strong { font-size: 2.75rem; }
   .srv-others { margin-top: 3rem; }

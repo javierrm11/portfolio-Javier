@@ -1,0 +1,88 @@
+---
+// Formulario de contacto corto, compartido por la home (Contacto.astro) y las
+// páginas de servicio. `selected` deja marcado el servicio de esa página.
+// Sin JS sigue funcionando como un POST normal a Formspree; con JS se envía
+// sin salir de la web y enseña el mensaje de éxito aquí mismo.
+import { plans } from '../lib/services';
+import '../styles/contacto.css';
+
+interface Props {
+  /** Slug del servicio (ver src/lib/services.ts) que sale ya elegido. */
+  selected?: string;
+}
+
+const { selected } = Astro.props;
+---
+<div class="contact-form-container">
+    <span class="form-bubble-badge">Envíame un mensaje</span>
+    <form class="contact-form" id="contactForm" action="https://formspree.io/f/mqaybdwj" method="POST">
+        <input type="hidden" name="pagina" id="contactPage" value="">
+        <input type="hidden" name="_subject" id="contactSubject" value="Contacto desde javierm.dev">
+        <!-- Trampa para bots: Formspree descarta el envío si llega relleno. -->
+        <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="nombre">Nombre</label>
+                <input id="nombre" type="text" class="form-input" placeholder="Tu nombre" name="nombre" autocomplete="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input id="email" type="email" class="form-input" placeholder="Tu email" name="email" autocomplete="email" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="servicio">¿Qué necesitas?</label>
+            <select id="servicio" class="form-input" name="servicio" required>
+                <option value="" disabled selected={!selected}>Elige un servicio</option>
+                {plans.map((p) => <option value={p.title} selected={p.slug === selected}>{p.title}</option>)}
+                <option value="Aún no lo tengo claro">Aún no lo tengo claro</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="mensaje">Mensaje</label>
+            <textarea id="mensaje" class="form-input" placeholder="Cuéntame tu empresa y qué quieres resolver, en dos líneas" name="mensaje" required></textarea>
+        </div>
+        <button type="submit" class="submit-btn">
+            Enviar mensaje
+        </button>
+    </form>
+    <div class="success-message" id="successMessage" role="status" tabindex="-1">
+        ¡Mensaje enviado con éxito! Te responderé pronto.
+    </div>
+</div>
+
+<script>
+    const form = document.getElementById('contactForm') as HTMLFormElement | null;
+    const success = document.getElementById('successMessage');
+    const page = document.getElementById('contactPage') as HTMLInputElement | null;
+    const subject = document.getElementById('contactSubject') as HTMLInputElement | null;
+    const service = document.getElementById('servicio') as HTMLSelectElement | null;
+    const button = form?.querySelector<HTMLButtonElement>('.submit-btn');
+
+    // La página de origen viaja con el mensaje: es lo que dice qué página trae
+    // contactos, igual que el texto de los enlaces de WhatsApp.
+    if (page) page.value = location.pathname;
+
+    form?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (subject && service) subject.value = `Contacto web: ${service.value} (${location.pathname})`;
+        if (button) button.disabled = true;
+
+        try {
+            const res = await fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: { Accept: 'application/json' },
+            });
+            if (!res.ok) throw new Error(String(res.status));
+            form.hidden = true;
+            success?.classList.add('show');
+            success?.focus();
+        } catch {
+            // Si el envío en segundo plano falla (red, reCAPTCHA activo en
+            // Formspree…), se recurre al POST normal para no perder el
+            // mensaje: submit() no vuelve a disparar este listener.
+            form.submit();
+        }
+    });
+</script>
