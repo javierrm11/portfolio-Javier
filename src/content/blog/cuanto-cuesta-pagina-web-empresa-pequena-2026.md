@@ -85,7 +85,7 @@ Y [estas señales me harían desconfiar](https://takum.io/cuanto-cuesta-una-pagi
 | Vendes producto por internet | Tienda: mejor un sistema probado que algo a medida |
 | Tienes un proceso propio que quieres digitalizar | [Herramienta a medida](/blog/sustituir-saas-por-herramienta-a-medida/), si las cuentas salen |
 
-Una pista: empieza por la pregunta "¿qué quiero que haga el visitante?". Si la respuesta es "que me llame", una web de cinco páginas bien hecha puede dar más resultado que una de veinte.
+Una pista: empieza por la pregunta "¿qué quiero que haga el visitante?". Si la respuesta es "que me llame", una web de cinco páginas bien hecha puede dar más resultado que una de veinte. Y si ya tienes una y dudas entre mejorarla o rehacerla, [analiza gratis su velocidad y su SEO](/analizador-web/) antes de decidir.
 
 ## ¿Y si la hago yo con IA?
 

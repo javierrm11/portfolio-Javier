@@ -2,6 +2,8 @@
 // Footer.astro — "Ubicación" (variante Footer 9 del explorador de diseño).
 // Igual que en Header.astro: page="blog" antepone "/" a los enlaces de
 // sección, que si no apuntarían a un id que no existe en esa página.
+import Analytics from '@vercel/analytics/astro';
+
 interface Props {
   page?: 'home' | 'blog' | 'servicio';
 }
@@ -24,6 +26,7 @@ const base = page === 'home' ? '' : '/';
           <li><a href={`${base}#tecnologias`}>Tecnologías</a></li>
           <li><a href={`${base}#proyectos`}>Proyectos</a></li>
           <li><a href="/blog">Blog</a></li>
+          <li><a href="/analizador-web/">Analizador web gratis</a></li>
           <li><a href={`${base}#contact`}>Contacto</a></li>
         </ul>
         <div class="footer-contact">
@@ -51,6 +54,12 @@ const base = page === 'home' ? '' : '/';
     </div>
   </div>
 </footer>
+
+<!-- Aquí y no en <head>: Analytics pinta <vercel-analytics>, una etiqueta que el
+     <head> no admite. El navegador lo cierra al encontrarla y Google deja de
+     leer: el título, la descripción y la canonical que vinieran detrás se
+     perdían. El pie está en todas las páginas, así que basta con ponerlo aquí. -->
+<Analytics />
 
 <script>
   document.getElementById("backToTop")?.addEventListener("click", () => {

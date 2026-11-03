@@ -6,6 +6,13 @@
 // servicios; el CSS va importado aquí para no repetirlo en cada página.
 import '../styles/whatsapp.css';
 
+interface Props {
+  /** false en páginas donde el panel abierto solo taparía lo importante (el analizador). */
+  autoOpen?: boolean;
+}
+
+const { autoOpen: AUTO_OPEN = true } = Astro.props;
+
 const PHONE = '34611434736';
 
 const topics = [
@@ -91,7 +98,7 @@ const first = topics[0];
   </button>
 </div>
 
-<script define:vars={{ PHONE }}>
+<script define:vars={{ PHONE, AUTO_OPEN }}>
   const widget = document.getElementById('wa-widget');
   const panel = document.getElementById('wa-panel');
   const toggle = document.getElementById('wa-toggle');
@@ -184,7 +191,7 @@ const first = topics[0];
     setOpen(true, false);
   };
 
-  if (!alreadyShown()) {
+  if (AUTO_OPEN && !alreadyShown()) {
     if (window.matchMedia('(max-width: 600px)').matches) {
       const threshold = Math.min(300, window.innerHeight * 0.4);
       const onScroll = () => {

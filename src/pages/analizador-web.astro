@@ -1,0 +1,300 @@
+---
+// Analizador web gratuito: atrae búsquedas como "test de velocidad web" o
+// "analizar SEO de mi página" y acaba en el formulario de contacto. La página
+// en sí es estática (todo el texto llega en el HTML, para Google); el análisis
+// lo pinta src/scripts/analizador.ts a partir de /api/analizar.
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+import ContactForm from '../components/ContactForm.astro';
+import { callHref, EMAIL, PHONE } from '../lib/services';
+import '../styles/global.css';
+import '../styles/header.css';
+import '../styles/footer.css';
+import '../styles/servicio.css';
+import '../styles/analizador.css';
+
+const SITE = 'https://www.javierm.dev';
+const path = '/analizador-web/';
+const title = 'Analizador web gratis: test de velocidad y SEO de tu página';
+const description = 'Analiza gratis la velocidad y el SEO de tu página web con datos de Google PageSpeed: Core Web Vitals y una lista clara de qué arreglar. Sin registro.';
+
+const scoreCards = [
+  { id: 'mobile-performance', label: 'Velocidad en móvil' },
+  { id: 'desktop-performance', label: 'Velocidad en ordenador' },
+  { id: 'seo', label: 'SEO técnico' },
+  { id: 'accessibility', label: 'Accesibilidad' },
+  { id: 'best-practices', label: 'Buenas prácticas' },
+];
+
+const steps = [
+  { id: 'page', label: 'Leyendo tu página y revisando el SEO' },
+  { id: 'mobile', label: 'Midiendo la velocidad en móvil' },
+  { id: 'desktop', label: 'Midiendo la velocidad en ordenador' },
+];
+
+const covers = [
+  {
+    title: 'Velocidad de carga',
+    desc: 'La nota de Google PageSpeed en móvil y en ordenador, y los Core Web Vitals: LCP, INP y CLS.',
+    icon: 'M13 3L5 14h6l-1 7 8-11h-6z',
+  },
+  {
+    title: 'SEO técnico',
+    desc: 'Título, descripción, H1, canonical, indexación, robots.txt, sitemap, datos estructurados y etiquetas para redes.',
+    icon: 'M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z M21 21l-4.3-4.3',
+  },
+  {
+    title: 'Móvil y accesibilidad',
+    desc: 'Si se adapta a la pantalla, si indica su idioma y si las imágenes tienen texto alternativo.',
+    icon: 'M7 2h10a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z M11 18h2',
+  },
+  {
+    title: 'Seguridad básica',
+    desc: 'Si usa HTTPS, si la versión sin él redirige bien y si tu web está hecha con WordPress, que hay que mantener al día.',
+    icon: 'M6 10V7a6 6 0 0 1 12 0v3 M5 10h14v11H5z',
+  },
+  {
+    title: 'Lo que pide una empresa',
+    desc: 'Si es fácil contactar contigo desde la página y si hay enlaces a los textos legales. Esto no lo mira PageSpeed.',
+    icon: 'M3 21h18 M5 21V7l7-4 7 4v14 M9 21v-6h6v6',
+  },
+  {
+    title: 'Qué arreglar primero',
+    desc: 'Los problemas ordenados de más a menos graves, explicados sin tecnicismos y con lo que está frenando tu web.',
+    icon: 'M9 6h11 M9 12h11 M9 18h11 M4 6l1 1 2-2 M4 12l1 1 2-2 M4 18l1 1 2-2',
+  },
+];
+
+const faqs = [
+  {
+    q: '¿Cómo puedo saber la velocidad de mi página web?',
+    a: 'Escribe su dirección en el analizador de arriba y pulsa «Analizar mi web». En menos de un minuto verás la nota de velocidad en móvil y en ordenador, con los tiempos de carga reales de la medición de Google.',
+  },
+  {
+    q: '¿Es lo mismo que Google PageSpeed Insights?',
+    a: 'La velocidad se mide con PageSpeed Insights, la herramienta oficial de Google (hay quien la busca como «speed page» o «page speed»), así que las cifras son las suyas. La diferencia es lo que añadimos: una revisión SEO del HTML, comprobaciones pensadas para webs de empresa y una explicación sin tecnicismos.',
+  },
+  {
+    q: '¿Qué puntuación de PageSpeed es buena?',
+    a: 'Google considera buena una nota de 90 a 100, mejorable de 50 a 89 y mala por debajo de 50. En móvil es normal sacar menos que en ordenador, porque se simula un teléfono y una conexión más lentos. Además, importan más los Core Web Vitals que la nota en sí.',
+  },
+  {
+    q: '¿Cómo analizo el SEO de mi web gratis?',
+    a: 'Con este mismo analizador: revisa el título, la descripción, el H1, la canonical, si Google puede indexar la página, el robots.txt, el sitemap, los datos estructurados y el texto alternativo de las imágenes. Es gratis y no pide registro. Eso sí, es una revisión técnica de una página: no mide tus posiciones en Google ni tus palabras clave.',
+  },
+  {
+    q: '¿La velocidad de una web influye en el SEO?',
+    a: 'Sí, pero es un factor entre muchos. Google recomienda tener buenos Core Web Vitals y los usa como parte de la experiencia en la página, aunque el contenido relevante pesa más. Lo que sí se nota siempre es que una web lenta pierde visitantes antes de que lleguen a leer nada.',
+  },
+  {
+    q: '¿Por qué la nota cambia cada vez que analizo mi web?',
+    a: 'Porque cada medición es una carga real, y varían la red, el servidor y lo que carguen terceros como anuncios o analítica. Unos puntos arriba o abajo son normales: fíjate en la tendencia y no en una sola medición.',
+  },
+  {
+    q: '¿Es gratis? ¿Tengo que registrarme?',
+    a: 'Es gratis y sin registro. La dirección que escribes se envía a Google para medirla y nuestro servidor lee esa página una vez. No guardamos el informe: si recargas la página sin el enlace, desaparece.',
+  },
+  {
+    q: '¿Me puedes arreglar lo que salga en el análisis?',
+    a: 'Sí, es a lo que me dedico. Puedes escribirme con el resultado y te digo qué merece la pena arreglar y cuánto costaría, con el presupuesto cerrado y por escrito antes de empezar.',
+  },
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebApplication',
+      '@id': `${SITE}${path}#app`,
+      name: 'Analizador web gratis de velocidad y SEO',
+      description,
+      url: `${SITE}${path}`,
+      applicationCategory: 'BusinessApplication',
+      operatingSystem: 'Cualquiera (funciona en el navegador)',
+      browserRequirements: 'Requiere JavaScript',
+      inLanguage: 'es',
+      isAccessibleForFree: true,
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
+      provider: { '@id': `${SITE}/#negocio` },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${SITE}/` },
+        { '@type': 'ListItem', position: 2, name: 'Analizador web', item: `${SITE}${path}` },
+      ],
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: faqs.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+    },
+  ],
+};
+---
+
+<html lang="es">
+<head>
+  <BaseHead title={title} description={description} path={path} type="website" />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+</head>
+<body>
+  <Header page="servicio" />
+  <main class="servicio-main">
+
+    <section class="an-hero">
+      <div class="srv-wrap an-hero-inner">
+        <nav class="srv-breadcrumb" aria-label="Migas de pan">
+          <a href="/">Inicio</a> / <span aria-current="page">Analizador web</span>
+        </nav>
+        <h1>Analizador web gratis: mide la velocidad y el SEO de tu página</h1>
+        <p class="srv-lead">Escribe la dirección de tu web y verás cómo carga en móvil y en ordenador, cómo la ve Google y qué arreglar primero. Sin registro.</p>
+
+        <form id="an-form" class="an-form" novalidate>
+          <label for="an-url">Dirección de tu web</label>
+          <div class="an-form-row">
+            <input id="an-url" name="url" type="text" inputmode="url" autocomplete="url" autocapitalize="off" spellcheck="false" placeholder="tuempresa.es" required />
+            <button type="submit" id="an-submit" class="srv-btn srv-btn--primary">Analizar mi web</button>
+          </div>
+          <p id="an-error" class="an-form-error" role="alert" hidden></p>
+          <noscript><p class="an-form-error">El analizador necesita JavaScript para funcionar. Actívalo o escríbeme y te paso el informe.</p></noscript>
+          <p class="an-form-note">La velocidad se mide con <a href="https://pagespeed.web.dev/" target="_blank" rel="noopener noreferrer">Google PageSpeed Insights</a>, así que la dirección se envía a Google. No guardamos tu informe.</p>
+        </form>
+      </div>
+    </section>
+
+    <section id="an-results" class="srv-section srv-section--tint an-results" aria-labelledby="an-results-title" tabindex="-1" hidden>
+      <div class="srv-wrap">
+        <h2 id="an-results-title">Resultado de <span id="an-host" class="an-host"></span></h2>
+        <p id="an-page-title" class="an-page-title" hidden></p>
+
+        <ol id="an-progress" class="an-progress" aria-live="polite">
+          {steps.map((s) => <li data-step={s.id} data-state="pending">{s.label}</li>)}
+        </ol>
+        <p id="an-wait" class="an-wait" hidden>Google suele tardar entre 20 y 60 segundos en medir la velocidad. Mientras, puedes ir revisando lo que aparece abajo.</p>
+
+        <div class="an-scores" id="an-scores">
+          {scoreCards.map((c) => (
+            <div class="an-score" data-score={c.id} data-state="pending">
+              <div class="an-ring"><span class="an-ring-value">–</span></div>
+              <strong>{c.label}</strong>
+              <span class="an-score-label">Midiendo…</span>
+            </div>
+          ))}
+        </div>
+        <p class="an-source">Notas de 0 a 100 de Google PageSpeed Insights. Verde: 90 o más. Ámbar: de 50 a 89. Rojo: menos de 50.</p>
+
+        <div id="an-speed-error" class="an-notice" role="status" hidden></div>
+        <div id="an-vitals" class="an-block" hidden></div>
+        <div id="an-opportunities" class="an-block" hidden></div>
+        <div id="an-checks" class="an-block" hidden></div>
+
+        <div id="an-cta" class="an-cta" hidden>
+          <div>
+            <h3>¿Quieres que te ayude a arreglarlo?</h3>
+            <p>Mándame el resultado y te digo qué merece la pena tocar y cuánto costaría, con el presupuesto cerrado antes de empezar.</p>
+          </div>
+          <div class="an-cta-actions">
+            <a id="an-cta-wa" class="srv-btn srv-btn--wa" href="#contacto" target="_blank" rel="noopener noreferrer">Enviármelo por WhatsApp</a>
+            <a class="srv-btn srv-btn--light" href="#contacto">Prefiero el formulario</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="srv-section">
+      <div class="srv-wrap">
+        <h2>Qué mide este analizador de páginas web</h2>
+        <p class="an-intro">Comprueba una página cada vez, normalmente la de inicio, y reúne en un solo informe lo que suele estar repartido en varias herramientas.</p>
+        <div class="srv-includes">
+          {covers.map((c) => (
+            <article>
+              <span class="srv-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={c.icon}></path></svg>
+              </span>
+              <h3>{c.title}</h3>
+              <p>{c.desc}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="srv-section srv-section--tint">
+      <div class="srv-wrap an-prose">
+        <h2>Test de velocidad web: cómo leer el resultado</h2>
+        <p>La nota de PageSpeed resume la prueba, pero lo que de verdad cuenta son tres medidas que Google llama <strong>Core Web Vitals</strong>. Estos son los <a href="https://developers.google.com/speed/docs/insights/v5/about" target="_blank" rel="noopener noreferrer">umbrales que publica</a>:</p>
+        <div class="an-table-wrap">
+          <table class="an-table">
+            <thead>
+              <tr><th>Medida</th><th>Qué significa</th><th>Bien</th><th>Mejorable</th><th>Mal</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>LCP</strong></td><td>Cuánto tarda en verse el contenido principal</td><td>Hasta 2,5 s</td><td>Hasta 4 s</td><td>Más de 4 s</td></tr>
+              <tr><td><strong>INP</strong></td><td>Cuánto tarda en reaccionar al tocar o hacer clic</td><td>Hasta 200 ms</td><td>Hasta 500 ms</td><td>Más de 500 ms</td></tr>
+              <tr><td><strong>CLS</strong></td><td>Cuánto se mueve el contenido mientras carga</td><td>Hasta 0,1</td><td>Hasta 0,25</td><td>Más de 0,25</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Verás dos tipos de datos. La <strong>prueba de Google</strong> es una carga simulada, en un móvil y una red lentos, y sirve para detectar problemas. Los <strong>visitantes reales</strong> vienen de usuarios de Chrome durante los últimos 28 días, y solo aparecen si tu web tiene tráfico suficiente. Si tienes los dos, los segundos son los que cuentan. El INP solo sale en estos últimos, porque hace falta alguien que toque la página.</p>
+
+        <h2>Por qué tu página va lenta y cómo mejorarla</h2>
+        <p>En webs de empresas pequeñas casi siempre se repiten las mismas causas:</p>
+        <ul>
+          <li><strong>Imágenes demasiado pesadas.</strong> Es lo más habitual y lo más fácil de arreglar: formato WebP y el tamaño justo para cada pantalla.</li>
+          <li><strong>Demasiados plugins y scripts.</strong> Cada widget, chat o píxel de publicidad suma tiempo de carga, y muchos ya no se usan.</li>
+          <li><strong>Un alojamiento lento o sin caché.</strong> Si el servidor tarda en responder, todo lo demás llega tarde.</li>
+          <li><strong>Fuentes y estilos que bloquean la carga.</strong> Hacen que la página tarde en pintarse aunque pese poco.</li>
+        </ul>
+        <p>Si quieres ejemplos, en <a href="/blog/core-web-vitals-astro-lighthouse/">Core Web Vitals en Astro</a> cuento cómo pasé una web de 62 a 98 en Lighthouse, y en <a href="/blog/canalplad-seo-tecnico-nextjs/">el caso de Canalplad</a> cómo el SEO técnico y la velocidad ayudaron a subir un 35 % el tráfico orgánico. Si tu web es un WordPress, mira también <a href="/blog/wordpress-vulnerabilidades-incibe-empresas/">qué revisar para mantenerla segura</a>.</p>
+
+        <h2>Analizador SEO: lo que puede decirte y lo que no</h2>
+        <p>Este análisis revisa si tu página está bien construida para que Google la entienda. No mide en qué posición sales, cuántas visitas tienes ni qué tal van tus palabras clave: para eso está <a href="https://search.google.com/search-console/about" target="_blank" rel="noopener noreferrer">Google Search Console</a>, que es gratis y usa tus datos reales. Un resultado perfecto aquí tampoco garantiza aparecer el primero, porque el contenido y la reputación de tu web pesan mucho más.</p>
+      </div>
+    </section>
+
+    <section class="srv-section">
+      <div class="srv-wrap srv-faq an-faq">
+        <h2>Preguntas frecuentes</h2>
+        {faqs.map((f) => (
+          <details>
+            <summary>{f.q}</summary>
+            <p>{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <section class="srv-section srv-section--flush">
+      <div class="srv-wrap">
+        <div id="contacto" class="srv-contact">
+          <div class="srv-contact-info">
+            <h2>¿Te ayudo a mejorar tu web?</h2>
+            <p>Cuéntame qué te ha salido y te digo qué merece la pena arreglar, con precio y plazo cerrados.</p>
+            <div class="srv-contact-actions">
+              <a class="srv-btn srv-btn--primary" href={callHref} target="_blank" rel="noopener noreferrer">Reservar llamada de 20 min</a>
+            </div>
+            <ul class="srv-contact-direct">
+              <li><a href={`mailto:${EMAIL}`}>{EMAIL}</a></li>
+              <li><a href={`tel:+${PHONE}`}>+34 611 43 47 36</a></li>
+              <li><a href="/servicios/diseno-web-cordoba/">Ver el servicio de diseño web</a></li>
+            </ul>
+          </div>
+          <ContactForm selected="diseno-web-cordoba" />
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer page="servicio" />
+  <WhatsAppButton autoOpen={false} />
+</body>
+</html>
+
+<script>
+  import '../scripts/analizador';
+</script>

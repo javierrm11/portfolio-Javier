@@ -107,6 +107,6 @@ Lo que no haría es pagar a nadie por "preparar tu web para agentes" como si ya 
 
 ## ¿Tu web está lista para lo básico?
 
-Si quieres saber si tu web se entiende bien, para personas, buscadores e IA, pásame la dirección y te digo qué le falta. [Escríbeme por WhatsApp](https://wa.me/34611434736?text=Hola%20Javier%2C%20vengo%20de%20tu%20blog%20y%20quiero%20preparar%20la%20web%20de%20mi%20empresa%20para%20buscadores%20e%20IA), mira la [web profesional](/servicios/diseno-web-cordoba/), desde 349 € con precio de lanzamiento, o usa el [formulario de contacto](/#contact).
+Si quieres saber si tu web se entiende bien, para personas, buscadores e IA, empieza por mi [analizador web gratuito](/analizador-web/). Si prefieres que la mire yo, pásame la dirección y te digo qué le falta. [Escríbeme por WhatsApp](https://wa.me/34611434736?text=Hola%20Javier%2C%20vengo%20de%20tu%20blog%20y%20quiero%20preparar%20la%20web%20de%20mi%20empresa%20para%20buscadores%20e%20IA), mira la [web profesional](/servicios/diseno-web-cordoba/), desde 349 € con precio de lanzamiento, o usa el [formulario de contacto](/#contact).
 
 *Foto de portada: [osde8info](https://commons.wikimedia.org/wiki/File:Google_chrome_store_%287527514626%29.jpg), [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0/), redimensionada.*

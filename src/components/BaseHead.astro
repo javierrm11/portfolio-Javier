@@ -2,8 +2,6 @@
 // Cabecera <head> compartida por el blog y las páginas de servicio
 // (index.astro tiene la suya propia, más larga, con el JSON-LD de la home —
 // no se toca aquí).
-import Analytics from '@vercel/analytics/astro';
-
 interface Props {
   title: string;
   description: string;
@@ -24,7 +22,6 @@ const url = `https://www.javierm.dev${path}`;
 <meta name="theme-color" content="#06142a" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="generator" content={Astro.generator} />
-<Analytics />
 
 <title>{title}</title>
 <meta name="description" content={description} />

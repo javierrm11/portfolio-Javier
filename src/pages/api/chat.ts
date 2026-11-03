@@ -8,28 +8,14 @@ import { getCollection } from 'astro:content';
 import { GEMINI_API_KEY } from 'astro:env/server';
 import { ApiError, GoogleGenAI, type Content } from '@google/genai';
 import { buildSystemPrompt } from '../../lib/chatKnowledge';
+import { createRateLimiter, isAllowedOrigin, json } from '../../lib/apiGuard';
 
 export const prerender = false;
 
 const MODEL = 'gemini-3.5-flash-lite';
 const MAX_TURNS = 12; // mensajes de historial que se reenvían
 const MAX_CHARS = 500; // por mensaje del visitante
-const RATE_LIMIT = 8; // mensajes por minuto e IP
-
-// Orígenes desde los que se acepta el chat: evita que otra web use esta ruta
-// (y la cuota gratuita de Gemini) como su propio chatbot.
-const ALLOWED_ORIGINS = [/^https:\/\/(www\.)?javierm\.dev$/, /^https:\/\/[\w-]+\.vercel\.app$/, /^http:\/\/localhost:\d+$/];
-
-// Límite por IP en memoria: aproximado (cada instancia de la función tiene el
-// suyo y se reinicia en frío), pero basta para frenar un abuso puntual.
-const hits = new Map<string, number[]>();
-function rateLimited(ip: string): boolean {
-  const now = Date.now();
-  const recent = (hits.get(ip) ?? []).filter((t) => now - t < 60_000);
-  recent.push(now);
-  hits.set(ip, recent);
-  return recent.length > RATE_LIMIT;
-}
+const rateLimited = createRateLimiter(8); // mensajes por minuto e IP
 
 let systemPrompt: string | undefined;
 async function getSystemPrompt(): Promise<string> {
@@ -42,14 +28,10 @@ async function getSystemPrompt(): Promise<string> {
   return systemPrompt;
 }
 
-const json = (body: unknown, status = 200) =>
-  new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
-
 const FALLBACK = 'Ahora mismo no puedo responder. Escríbele a Javier por WhatsApp y te contesta él directamente.';
 
 export const POST: APIRoute = async ({ request, clientAddress }) => {
-  const origin = request.headers.get('origin') ?? '';
-  if (!ALLOWED_ORIGINS.some((re) => re.test(origin))) return json({ error: 'forbidden' }, 403);
+  if (!isAllowedOrigin(request)) return json({ error: 'forbidden' }, 403);
 
   if (!GEMINI_API_KEY) return json({ reply: FALLBACK }, 503);
   if (rateLimited(clientAddress ?? 'unknown')) {

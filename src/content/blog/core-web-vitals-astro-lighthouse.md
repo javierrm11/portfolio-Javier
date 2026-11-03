@@ -29,3 +29,5 @@ Con esto, el navegador empieza a descargarla en paralelo desde el primer instant
 Astro ya ayuda aquí por defecto: sin un framework de UI, no hay que hidratar nada. Los únicos scripts son los imprescindibles — el desplazamiento suave, el menú móvil, las animaciones de scroll — cargados como módulos nativos, sin bundle de runtime de por medio.
 
 Con estos tres cambios la puntuación pasó de 62 a 98, y lo más importante: la página se siente instantánea, no solo puntúa bien.
+
+Si quieres saber cómo está la tuya, pásala por mi [analizador web gratuito](/analizador-web/): mide su velocidad con PageSpeed y revisa su SEO técnico en menos de un minuto.

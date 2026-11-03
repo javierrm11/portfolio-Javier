@@ -78,6 +78,6 @@ Una web estática, como la que hago con Astro, reduce mucho lo que se puede atac
 
 ## ¿Quieres que le eche un vistazo?
 
-Pásame la dirección de tu web y te digo qué me preocuparía. [Escríbeme por WhatsApp](https://wa.me/34611434736?text=Hola%20Javier%2C%20vengo%20de%20tu%20blog%20y%20quiero%20revisar%20la%20seguridad%20de%20la%20web%20de%20mi%20empresa) o usa el [formulario de contacto](/#contact). Si toca rehacerla, la [web profesional](/servicios/diseno-web-cordoba/) empieza en 349 € con precio de lanzamiento, con mantenimiento opcional de 19 €/mes.
+Para una primera revisión, pásala por mi [analizador web gratuito](/analizador-web/), que detecta si usa WordPress y comprueba lo básico. Si prefieres que la mire yo, pásame la dirección y te digo qué me preocuparía. [Escríbeme por WhatsApp](https://wa.me/34611434736?text=Hola%20Javier%2C%20vengo%20de%20tu%20blog%20y%20quiero%20revisar%20la%20seguridad%20de%20la%20web%20de%20mi%20empresa) o usa el [formulario de contacto](/#contact). Si toca rehacerla, la [web profesional](/servicios/diseno-web-cordoba/) empieza en 349 € con precio de lanzamiento, con mantenimiento opcional de 19 €/mes.
 
 *Foto de portada: [Victorgrigas](https://commons.wikimedia.org/wiki/File:Wikimedia_Foundation_Servers-8055_15.jpg), [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/), redimensionada.*

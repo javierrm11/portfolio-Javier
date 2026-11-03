@@ -209,6 +209,7 @@ const jsonLd = {
             <ul class="srv-contact-direct">
               <li><a href={`mailto:${EMAIL}`}>{EMAIL}</a></li>
               <li><a href={`tel:+${PHONE}`}>+34 611 43 47 36</a></li>
+              {plan.slug === 'diseno-web-cordoba' && <li><a href="/analizador-web/">Analiza gratis la velocidad y el SEO de tu web</a></li>}
             </ul>
           </div>
           <ContactForm selected={plan.slug} />

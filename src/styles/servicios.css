@@ -298,6 +298,18 @@
   color: var(--svc-check);
 }
 
+.servicios-tool {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.9375rem;
+  color: #374151;
+}
+
+.servicios-tool a {
+  color: var(--accent-from);
+  font-weight: 700;
+}
+
 /* ── Tablet ──────────────────────────────────────────────────── */
 @media (max-width: 1179px) {
   .svc-grid {

@@ -1,0 +1,520 @@
+/* Analizador web (/analizador-web/, ver src/pages/analizador-web.astro). Se
+   apoya en servicio.css (mismas secciones, botones y FAQ); aquí solo va lo
+   propio de la herramienta. Los colores de estado son los de PageSpeed, siempre
+   acompañados de texto, y oscurecidos para que se lean sobre fondo claro. */
+main.servicio-main {
+  --an-good: #146c3c;
+  --an-good-bg: #dcfce7;
+  --an-average: #8a5300;
+  --an-average-bg: #fef3c7;
+  --an-poor: #b42318;
+  --an-poor-bg: #fee4e2;
+  --an-info: #0b5cad;
+  --an-info-bg: #e0efff;
+  --an-track: #e4e9f0;
+}
+
+/* ── Formulario ──────────────────────────────────────────────── */
+.an-hero {
+  padding: clamp(2.25rem, 6vw, 4.5rem) clamp(1rem, 5vw, 5rem) clamp(2.5rem, 6vw, 4.5rem);
+}
+
+/* El ancho se limita en los hijos y no en el contenedor: así el bloque arranca
+   en el mismo margen que las secciones de debajo. */
+.an-hero-inner > * { max-width: 860px; }
+
+.an-hero h1 {
+  font-family: 'Poppins', var(--font-sans);
+  font-weight: 800;
+  font-size: clamp(2rem, 4.4vw, 3.25rem);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.an-form { margin-top: 2rem; }
+
+.an-form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+  font-size: 0.9375rem;
+}
+
+.an-form-row {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.an-form input {
+  flex: 1;
+  min-width: 0;
+  min-height: 54px;
+  padding: 0 1.125rem;
+  border: 1.5px solid rgba(16, 24, 40, 0.24);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 1.0625rem;
+}
+
+.an-form input::placeholder { color: #6b7280; }
+
+.an-form input:focus {
+  outline: none;
+  border-color: var(--accent-from);
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.15);
+}
+
+.an-form .srv-btn {
+  width: auto;
+  margin-top: 0;
+  flex: none;
+  border: none;
+  font-family: var(--font-sans);
+  cursor: pointer;
+}
+
+.an-form .srv-btn:disabled { opacity: 0.65; cursor: wait; transform: none; }
+
+.an-form-error {
+  margin-top: 0.75rem;
+  color: var(--an-poor);
+  font-weight: 600;
+}
+
+.an-form-note {
+  margin-top: 0.875rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.an-form-note a { color: inherit; }
+
+/* ── Resultado ───────────────────────────────────────────────── */
+.an-results { scroll-margin-top: 4.5rem; }
+.an-results:focus { outline: none; }
+
+.an-host { color: var(--accent-from); overflow-wrap: anywhere; }
+
+.an-page-title {
+  margin-top: 0.5rem;
+  color: var(--text-secondary);
+  overflow-wrap: anywhere;
+}
+
+.an-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  list-style: none;
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+
+.an-progress li {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.an-progress li::before {
+  content: '';
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid var(--an-track);
+}
+
+.an-progress li[data-state='pending'] { color: var(--text-secondary); }
+
+.an-progress li[data-state='running']::before {
+  border-color: var(--an-track);
+  border-top-color: var(--accent-from);
+  animation: an-spin 0.8s linear infinite;
+}
+
+.an-progress li[data-state='done']::before { border-color: var(--an-good); background: var(--an-good); }
+.an-progress li[data-state='error']::before { border-color: var(--an-poor); background: var(--an-poor); }
+
+@keyframes an-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Sin animación el círculo parcial sigue indicando "en curso". */
+@media (prefers-reduced-motion: reduce) {
+  .an-progress li[data-state='running']::before { animation: none; }
+}
+
+.an-wait {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+/* ── Notas ───────────────────────────────────────────────────── */
+.an-scores {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+}
+
+.an-score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 1.25rem 0.75rem;
+  border-radius: 18px;
+  border: 1px solid rgba(16, 24, 40, 0.08);
+  background: #fff;
+  text-align: center;
+}
+
+.an-score strong { margin-top: 0.5rem; font-size: 0.9375rem; line-height: 1.25; }
+
+.an-score-label {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.an-ring {
+  --an-score: 0;
+  --an-color: var(--an-track);
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: conic-gradient(var(--an-color) calc(var(--an-score) * 1%), var(--an-track) 0);
+}
+
+.an-ring::after {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.an-ring-value {
+  position: relative;
+  z-index: 1;
+  font-family: 'Poppins', var(--font-sans);
+  font-weight: 800;
+  font-size: 1.625rem;
+  color: var(--an-color);
+}
+
+.an-score[data-state='pending'] .an-ring-value,
+.an-score[data-state='empty'] .an-ring-value { color: var(--text-secondary); }
+
+.an-score[data-state='good'] .an-ring { --an-color: var(--an-good); }
+.an-score[data-state='average'] .an-ring { --an-color: var(--an-average); }
+.an-score[data-state='poor'] .an-ring { --an-color: var(--an-poor); }
+.an-score[data-state='good'] .an-score-label { color: var(--an-good); }
+.an-score[data-state='average'] .an-score-label { color: var(--an-average); }
+.an-score[data-state='poor'] .an-score-label { color: var(--an-poor); }
+
+.an-source {
+  margin-top: 0.75rem;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.an-notice {
+  margin-top: 1.25rem;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-md);
+  background: var(--an-average-bg);
+  color: #5c3700;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+/* ── Bloques del informe ─────────────────────────────────────── */
+.an-block {
+  margin-top: 2.25rem;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border-radius: 18px;
+  background: #fff;
+  border: 1px solid rgba(16, 24, 40, 0.08);
+}
+
+.an-block h3,
+.an-cta h3 {
+  font-family: 'Poppins', var(--font-sans);
+  font-weight: 800;
+  font-size: clamp(1.1875rem, 2vw, 1.375rem);
+  line-height: 1.25;
+}
+
+.an-block h4 {
+  margin-top: 1.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.an-table-wrap {
+  margin-top: 1rem;
+  overflow-x: auto;
+}
+
+.an-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+  line-height: 1.45;
+}
+
+.an-table th,
+.an-table td {
+  padding: 0.75rem 0.875rem;
+  border-bottom: 1px solid var(--border-subtle);
+  text-align: left;
+  vertical-align: top;
+}
+
+.an-table th { font-weight: 700; white-space: nowrap; }
+.an-table th:first-child,
+.an-table td:first-child { padding-left: 0; }
+
+.an-table--results th:first-child { width: 42%; }
+.an-table--results td { white-space: nowrap; }
+.an-table--results td:first-child { white-space: normal; min-width: 170px; }
+
+.an-metric-hint {
+  display: block;
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+}
+
+.an-metric-value {
+  display: block;
+  font-weight: 700;
+}
+
+.an-cell-empty { color: var(--text-secondary); }
+
+.an-pill {
+  display: inline-block;
+  margin-top: 0.125rem;
+  padding: 0.0625rem 0.5rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.an-pill--good { background: var(--an-good-bg); color: var(--an-good); }
+.an-pill--average { background: var(--an-average-bg); color: var(--an-average); }
+.an-pill--poor { background: var(--an-poor-bg); color: var(--an-poor); }
+
+.an-opps {
+  display: flex;
+  flex-direction: column;
+  margin-top: 0.75rem;
+  list-style: none;
+}
+
+.an-opps li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border-subtle);
+  line-height: 1.45;
+}
+
+.an-opp-saving {
+  flex: none;
+  max-width: 45%;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-align: right;
+  color: var(--text-secondary);
+}
+
+.an-checks-summary { margin-top: 0.5rem; color: var(--text-secondary); }
+
+.an-checks {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.125rem;
+  list-style: none;
+}
+
+.an-check {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.an-check strong { display: block; overflow-wrap: anywhere; }
+
+.an-check p {
+  margin-top: 0.125rem;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  overflow-wrap: anywhere;
+}
+
+.an-check a {
+  display: inline-block;
+  margin-top: 0.25rem;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--accent-from);
+}
+
+.an-check-icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  font-size: 0.8125rem;
+  font-weight: 800;
+}
+
+.an-check--error .an-check-icon { background: var(--an-poor-bg); color: var(--an-poor); }
+.an-check--warn .an-check-icon { background: var(--an-average-bg); color: var(--an-average); }
+.an-check--info .an-check-icon { background: var(--an-info-bg); color: var(--an-info); }
+.an-check--ok .an-check-icon { background: var(--an-good-bg); color: var(--an-good); }
+
+.an-google-issues {
+  margin-top: 0.5rem;
+  padding-left: 1.25rem;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.an-passed { margin-top: 1.5rem; }
+
+.an-passed summary {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  font-weight: 700;
+  color: var(--accent-from);
+  cursor: pointer;
+}
+
+.an-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-top: 2.25rem;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  border-radius: var(--radius-lg);
+  background: var(--srv-navy);
+  color: #fff;
+}
+
+.an-cta h3 { color: #fff; }
+.an-cta p { margin-top: 0.5rem; line-height: 1.55; color: rgba(255, 255, 255, 0.82); }
+
+.an-cta-actions {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+/* El [hidden] debe ganar a los display de arriba. */
+.an-cta[hidden],
+.an-progress[hidden],
+.an-results[hidden] { display: none; }
+
+/* ── Texto para Google y para quien quiera entender el resultado ── */
+.an-intro {
+  max-width: 760px;
+  margin-top: 0.75rem;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.an-prose h2:not(:first-child) { margin-top: 3rem; }
+
+.an-prose p,
+.an-prose ul {
+  max-width: 820px;
+  margin-top: 1rem;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+.an-prose ul { padding-left: 1.25rem; }
+.an-prose li { margin-top: 0.5rem; }
+.an-prose strong { color: var(--text-primary); }
+.an-prose a { color: var(--accent-from); font-weight: 600; }
+
+.an-prose .an-table-wrap {
+  padding: 0 1.25rem;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.an-prose .an-table tr:last-child td { border-bottom: none; }
+
+.an-faq { max-width: 860px; }
+
+/* ── Tablet y móvil ──────────────────────────────────────────── */
+@media (max-width: 1023px) {
+  .an-scores { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .an-cta { flex-direction: column; align-items: stretch; }
+  .an-cta-actions .srv-btn { width: 100%; }
+}
+
+@media (max-width: 640px) {
+  .an-form-row { flex-direction: column; }
+  .an-form .srv-btn { width: 100%; }
+  .an-scores { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .an-ring { width: 72px; height: 72px; }
+  .an-ring-value { font-size: 1.375rem; }
+  .an-opps li { flex-direction: column; gap: 0.25rem; }
+  .an-opp-saving { max-width: none; text-align: left; }
+
+  /* Cuatro columnas no caben: cada medida pasa a ser una tarjeta, con el nombre
+     arriba y debajo los tres valores, cada uno con su etiqueta (data-label). */
+  .an-table--results thead { display: none; }
+
+  .an-table--results tr {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.625rem 0.5rem;
+    padding: 0.875rem 0;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .an-table--results td {
+    display: block;
+    padding: 0;
+    border-bottom: none;
+    white-space: normal;
+  }
+
+  .an-table--results td:first-child { grid-column: 1 / -1; min-width: 0; }
+
+  .an-table--results td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 0.125rem;
+    font-size: 0.75rem;
+    line-height: 1.25;
+    color: var(--text-secondary);
+  }
+}

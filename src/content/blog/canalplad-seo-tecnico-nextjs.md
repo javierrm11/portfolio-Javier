@@ -44,3 +44,5 @@ Las imágenes de los trabajos se servían en PNG sin optimizar, algunas de más 
 ## Resultado a los tres meses
 
 El tráfico orgánico subió un 35% y las páginas de servicio empezaron a aparecer para búsquedas locales como "canalones aluminio Córdoba", que antes ni indexaban. Nada de esto fue magia: fueron tres cambios técnicos concretos, medibles uno por uno en Search Console.
+
+¿Quieres ver si tu web tiene estos mismos problemas? Puedes [analizar gratis su velocidad y su SEO](/analizador-web/).
