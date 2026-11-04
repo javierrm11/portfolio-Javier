@@ -8,6 +8,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
 import ContactForm from '../components/ContactForm.astro';
+import ScoreRing from '../components/ScoreRing.astro';
 import { callHref, EMAIL, PHONE } from '../lib/services';
 import '../styles/global.css';
 import '../styles/header.css';
@@ -20,18 +21,12 @@ const path = '/analizador-web/';
 const title = 'Analizador web gratis: test de velocidad y SEO de tu página';
 const description = 'Analiza gratis la velocidad y el SEO de tu página web con datos de Google PageSpeed: Core Web Vitals y una lista clara de qué arreglar. Sin registro.';
 
-const scoreCards = [
-  { id: 'mobile-performance', label: 'Velocidad en móvil' },
-  { id: 'desktop-performance', label: 'Velocidad en ordenador' },
-  { id: 'seo', label: 'SEO técnico' },
-  { id: 'accessibility', label: 'Accesibilidad' },
-  { id: 'best-practices', label: 'Buenas prácticas' },
-];
-
-const steps = [
-  { id: 'page', label: 'Leyendo tu página y revisando el SEO' },
-  { id: 'mobile', label: 'Midiendo la velocidad en móvil' },
-  { id: 'desktop', label: 'Midiendo la velocidad en ordenador' },
+const categories = [
+  { id: 'velocidad', name: 'Velocidad', intro: 'Cuánto tarda tu página en verse y en responder. La nota sale de estas medidas y cambia un poco en cada análisis.' },
+  { id: 'seo', name: 'SEO', intro: 'Si Google puede encontrar y entender tu página. No mide en qué posición sales.' },
+  { id: 'accesibilidad', name: 'Accesibilidad', intro: 'Si todo el mundo puede usar tu web, también con un lector de pantalla o con dificultades de visión.' },
+  { id: 'practicas', name: 'Buenas prácticas', intro: 'Si tu web sigue los estándares técnicos actuales y da buena imagen.' },
+  { id: 'empresa', name: 'Tu empresa', intro: 'Lo que PageSpeed no mira y pesa en una web de empresa. No lleva nota: son comprobaciones nuestras.' },
 ];
 
 const covers = [
@@ -168,42 +163,71 @@ const jsonLd = {
       </div>
     </section>
 
-    <section id="an-results" class="srv-section srv-section--tint an-results" aria-labelledby="an-results-title" tabindex="-1" hidden>
-      <div class="srv-wrap">
-        <h2 id="an-results-title">Resultado de <span id="an-host" class="an-host"></span></h2>
-        <p id="an-page-title" class="an-page-title" hidden></p>
-
-        <ol id="an-progress" class="an-progress" aria-live="polite">
-          {steps.map((s) => <li data-step={s.id} data-state="pending">{s.label}</li>)}
-        </ol>
-        <p id="an-wait" class="an-wait" hidden>Google suele tardar entre 20 y 60 segundos en medir la velocidad. Mientras, puedes ir revisando lo que aparece abajo.</p>
-
-        <div class="an-scores" id="an-scores">
-          {scoreCards.map((c) => (
-            <div class="an-score" data-score={c.id} data-state="pending">
-              <div class="an-ring"><span class="an-ring-value">–</span></div>
-              <strong>{c.label}</strong>
-              <span class="an-score-label">Midiendo…</span>
+    <section id="an-results" class="an-results" aria-labelledby="an-host" tabindex="-1" hidden>
+      <div class="srv-wrap an-report">
+        <header class="an-summary">
+          <div class="an-summary-text">
+            <p id="an-date" class="an-summary-date"></p>
+            <h2 id="an-host" class="an-summary-host"></h2>
+            <p id="an-verdict" class="an-verdict" aria-live="polite"></p>
+            <div class="an-summary-actions">
+              <div class="an-device" role="group" aria-label="Dispositivo analizado">
+                <button type="button" data-device="mobile" aria-pressed="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2"></rect><path d="M11 18h2"></path></svg>
+                  Móvil
+                </button>
+                <button type="button" data-device="desktop" aria-pressed="false">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"></rect><path d="M8 20h8M12 16v4"></path></svg>
+                  Ordenador
+                </button>
+              </div>
+              <button type="button" id="an-copy" class="an-copy">Copiar enlace</button>
             </div>
+          </div>
+          <a href="#an-velocidad" class="an-summary-score">
+            <ScoreRing ring="velocidad" class="an-ring--hero" />
+            <span id="an-hero-label" class="an-summary-score-label"></span>
+          </a>
+        </header>
+
+        <nav class="an-bento" aria-label="Otras categorías del informe">
+          {categories.filter((c) => c.id !== 'velocidad').map((c) => (
+            <a href={`#an-${c.id}`}>
+              <ScoreRing ring={c.id} class="an-ring--small" />
+              <span class="an-bento-text">
+                <span class="an-bento-name">{c.name}</span>
+                <span class="an-tone-text" data-status={c.id}></span>
+              </span>
+            </a>
           ))}
-        </div>
-        <p class="an-source">Notas de 0 a 100 de Google PageSpeed Insights. Verde: 90 o más. Ámbar: de 50 a 89. Rojo: menos de 50.</p>
+        </nav>
 
-        <div id="an-speed-error" class="an-notice" role="status" hidden></div>
-        <div id="an-vitals" class="an-block" hidden></div>
-        <div id="an-opportunities" class="an-block" hidden></div>
-        <div id="an-checks" class="an-block" hidden></div>
+        {categories.map((c) => (
+          <section id={`an-${c.id}`} class="an-card" aria-labelledby={`an-title-${c.id}`}>
+            <div class="an-card-head">
+              <ScoreRing ring={c.id} class="an-ring--medium" />
+              <div class="an-card-title">
+                <div class="an-card-name">
+                  <h3 id={`an-title-${c.id}`}>{c.name}</h3>
+                  <span class="an-chip" data-status={c.id}></span>
+                </div>
+                <p>{c.intro}</p>
+              </div>
+            </div>
+            <div class="an-card-body" data-body={c.id}></div>
+          </section>
+        ))}
 
-        <div id="an-cta" class="an-cta" hidden>
-          <div>
-            <h3>¿Quieres que te ayude a arreglarlo?</h3>
-            <p>Mándame el resultado y te digo qué merece la pena tocar y cuánto costaría, con el presupuesto cerrado antes de empezar.</p>
+        <aside id="an-cta" class="an-cta" hidden>
+          <div class="an-cta-text">
+            <h3 id="an-cta-title"></h3>
+            <p id="an-cta-body"></p>
           </div>
           <div class="an-cta-actions">
             <a id="an-cta-wa" class="srv-btn srv-btn--wa" href="#contacto" target="_blank" rel="noopener noreferrer">Enviármelo por WhatsApp</a>
             <a class="srv-btn srv-btn--light" href="#contacto">Prefiero el formulario</a>
           </div>
-        </div>
+        </aside>
       </div>
     </section>
 

@@ -1,0 +1,18 @@
+---
+// Anillo de nota del analizador. Lo rellena src/scripts/analizador.ts por su
+// data-ring: el arco es un trazo de SVG para que tenga los extremos redondeados
+// y se anime al cambiar de móvil a ordenador. Tamaño y colores, en analizador.css.
+interface Props {
+  ring: string;
+  class?: string;
+}
+
+const { ring, class: className } = Astro.props;
+---
+<span class:list={['an-ring', className]} data-ring={ring} data-state="pending" role="img" aria-label="Midiendo">
+  <svg viewBox="0 0 120 120" aria-hidden="true">
+    <circle class="an-ring-track" cx="60" cy="60" r="52"></circle>
+    <circle class="an-ring-arc" cx="60" cy="60" r="52"></circle>
+  </svg>
+  <span class="an-ring-text" aria-hidden="true">–</span>
+</span>

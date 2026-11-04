@@ -3,8 +3,59 @@
 // (hasta un minuto) para ver el SEO. Lo que devuelve el servidor viene de webs
 // ajenas, así que se pinta siempre como texto (textContent), nunca como HTML.
 import { waHref } from '../lib/services';
-import type { Metric, PageSpeedResult, Strategy } from '../lib/pageSpeed';
-import type { Check, CheckStatus, SiteAudit } from '../lib/siteAudit';
+import type { Finding, Metric, PageSpeedCategory, PageSpeedResult, Strategy } from '../lib/pageSpeed';
+import type { Check, SiteAudit } from '../lib/siteAudit';
+
+type Category = PageSpeedCategory | 'empresa';
+type Severity = 'error' | 'warn' | 'info';
+type Tone = 'good' | 'average' | 'poor';
+
+/** Un fallo tal como se enseña, venga de nuestras comprobaciones o de Google. */
+interface Item {
+  id: string;
+  severity: Severity;
+  title: string;
+  why: string;
+  fix: string | null;
+  savings: string | null;
+  link?: { href: string; label: string };
+}
+
+type ApiResult<T> = { ok: true; data: T } | { ok: false; error: string; fatal: boolean };
+
+const CATEGORIES: Category[] = ['velocidad', 'seo', 'accesibilidad', 'practicas', 'empresa'];
+const SCORE_OF: Record<PageSpeedCategory, keyof PageSpeedResult['scores']> = {
+  velocidad: 'performance',
+  seo: 'seo',
+  accesibilidad: 'accessibility',
+  practicas: 'bestPractices',
+};
+const TONE_LABEL: Record<Tone, string> = { good: 'Bien', average: 'Mejorable', poor: 'Mal' };
+const SEVERITY: Record<Severity, { label: string; glyph: string }> = {
+  error: { label: 'Grave', glyph: '✕' },
+  warn: { label: 'Mejorable', glyph: '!' },
+  info: { label: 'A tener en cuenta', glyph: 'i' },
+};
+const SEVERITY_ORDER: Severity[] = ['error', 'warn', 'info'];
+
+const METRIC_NAMES: Record<string, string> = {
+  lcp: 'Se ve el contenido principal (LCP)',
+  inp: 'Reacciona al tocar (INP)',
+  fcp: 'Se ve lo primero (FCP)',
+  tbt: 'Tiempo sin responder (TBT)',
+  cls: 'Cuánto se mueve al cargar (CLS)',
+  si: 'Rapidez al llenar la pantalla',
+};
+// Los umbrales de Lighthouse para una nota verde: más exigentes en ordenador.
+const LAB_TARGETS: Record<Strategy, Record<string, string>> = {
+  mobile: { lcp: 'hasta 2,5 s', fcp: 'hasta 1,8 s', tbt: 'hasta 200 ms', cls: 'hasta 0,1', si: 'hasta 3,4 s' },
+  desktop: { lcp: 'hasta 1,2 s', fcp: 'hasta 0,9 s', tbt: 'hasta 150 ms', cls: 'hasta 0,1', si: 'hasta 1,3 s' },
+};
+const FIELD_TARGETS: Record<string, string> = { lcp: 'hasta 2,5 s', inp: 'hasta 200 ms', fcp: 'hasta 1,8 s', cls: 'hasta 0,1' };
+
+const RING_LENGTH = 326.73; // 2π · 52, el radio del círculo en ScoreRing.astro
+const CLIENT_TIMEOUT_MS = 70_000;
+const GENERIC_ERROR = 'No hemos podido completar esta parte del análisis. Vuelve a intentarlo en un momento.';
 
 const form = document.getElementById('an-form') as HTMLFormElement | null;
 const input = document.getElementById('an-url') as HTMLInputElement | null;
@@ -12,27 +63,8 @@ const submit = document.getElementById('an-submit') as HTMLButtonElement | null;
 const errorBox = document.getElementById('an-error');
 const results = document.getElementById('an-results');
 
-type Part = 'page' | Strategy;
-type ApiResult<T> = { ok: true; data: T } | { ok: false; error: string; fatal: boolean };
-
-const CLIENT_TIMEOUT_MS = 70_000;
-const GENERIC_ERROR = 'No hemos podido completar esta parte del análisis. Vuelve a intentarlo en un momento.';
-
-async function requestPart<T>(url: string, part: Part): Promise<ApiResult<T>> {
-  try {
-    const res = await fetch('/api/analizar', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ url, part }),
-      signal: AbortSignal.timeout(CLIENT_TIMEOUT_MS),
-    });
-    const data = await res.json().catch(() => null);
-    if (res.ok && data) return { ok: true, data: data as T };
-    return { ok: false, error: data?.error ?? GENERIC_ERROR, fatal: !!data?.fatal };
-  } catch {
-    return { ok: false, error: GENERIC_ERROR, fatal: false };
-  }
-}
+const byId = (id: string) => document.getElementById(id) as HTMLElement;
+const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
 
 function el<K extends keyof HTMLElementTagNameMap>(tag: K, className = '', text?: string): HTMLElementTagNameMap[K] {
   const node = document.createElement(tag);
@@ -41,195 +73,302 @@ function el<K extends keyof HTMLElementTagNameMap>(tag: K, className = '', text?
   return node;
 }
 
-const byId = (id: string) => document.getElementById(id) as HTMLElement;
+// ── Estado del informe ────────────────────────────────────────
+const report = {
+  device: 'mobile' as Strategy,
+  audit: null as SiteAudit | null,
+  auditError: null as string | null,
+  speed: { mobile: null, desktop: null } as Record<Strategy, PageSpeedResult | null>,
+  speedError: { mobile: null, desktop: null } as Record<Strategy, string | null>,
+  finished: false,
+};
+// Lo que se ha abierto o cerrado a mano; lo demás sigue la regla de itemIsOpen.
+const toggled = new Map<string, boolean>();
+// Lo último pintado en cada tarjeta: sin cambios no se toca, y así no se pierde
+// el foco de quien esté leyendo cuando llega la medición de Google.
+const painted = new Map<Category, string>();
 
-function setStep(part: Part, state: 'pending' | 'running' | 'done' | 'error') {
-  byId('an-progress').querySelector<HTMLElement>(`[data-step="${part}"]`)?.setAttribute('data-state', state);
+const speedNow = () => report.speed[report.device];
+const speedErrorNow = () => report.speedError[report.device];
+const speedPending = () => !speedNow() && !speedErrorNow();
+
+function requestPart<T>(url: string, part: 'page' | Strategy): Promise<ApiResult<T>> {
+  return fetch('/api/analizar', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ url, part }),
+    signal: AbortSignal.timeout(CLIENT_TIMEOUT_MS),
+  })
+    .then(async (res) => {
+      const data = await res.json().catch(() => null);
+      return res.ok && data ? { ok: true as const, data: data as T } : { ok: false as const, error: data?.error ?? GENERIC_ERROR, fatal: !!data?.fatal };
+    })
+    .catch(() => ({ ok: false as const, error: GENERIC_ERROR, fatal: false }));
 }
 
-const scoreLabel = (score: number) => (score >= 90 ? 'Bien' : score >= 50 ? 'Mejorable' : 'Mal');
-const scoreState = (score: number) => (score >= 90 ? 'good' : score >= 50 ? 'average' : 'poor');
+// ── De los datos a lo que se enseña ───────────────────────────
+const fromCheck = (c: Check): Item => ({
+  id: c.id,
+  severity: c.status === 'ok' ? 'info' : c.status,
+  title: c.title,
+  why: c.detail,
+  fix: c.fix ?? null,
+  savings: null,
+  link: c.link,
+});
 
-function setScore(id: string, score: number | null, pendingText?: string) {
-  const card = byId('an-scores').querySelector<HTMLElement>(`[data-score="${id}"]`);
-  if (!card) return;
-  const value = card.querySelector('.an-ring-value') as HTMLElement;
-  const label = card.querySelector('.an-score-label') as HTMLElement;
-  const ring = card.querySelector('.an-ring') as HTMLElement;
+const fromFinding = (f: Finding): Item => ({ id: f.id, severity: f.severity, title: f.title, why: f.why, fix: f.fix, savings: f.savings });
+
+const checksOf = (cat: Category) => report.audit?.checks.filter((c) => c.category === cat) ?? [];
+const findingsOf = (cat: Category) => (cat === 'empresa' ? [] : speedNow()?.findings[cat] ?? []);
+
+// Si nosotros ya señalamos algo, no se repite lo de Google. Si lo damos por bueno
+// y Google no, gana Google, que ve la página como un navegador de verdad.
+const googleOverrides = (check: Check) => findingsOf(check.category).some((f) => f.ownCheck === check.id);
+
+function itemsOf(cat: Category): Item[] {
+  const checks = checksOf(cat);
+  const own = checks.filter((c) => c.status !== 'ok').map(fromCheck);
+  const google = findingsOf(cat)
+    .filter((f) => !f.ownCheck || !checks.some((c) => c.id === f.ownCheck && c.status !== 'ok'))
+    .map(fromFinding);
+  const items = [...own, ...google];
+  return SEVERITY_ORDER.flatMap((severity) => items.filter((i) => i.severity === severity));
+}
+
+const passedOf = (cat: Category) => checksOf(cat).filter((c) => c.status === 'ok' && !googleOverrides(c)).map((c) => c.title);
+
+const toneOfScore = (score: number): Tone => (score >= 90 ? 'good' : score >= 50 ? 'average' : 'poor');
+
+function statusOf(cat: Category): { state: Tone | 'pending' | 'empty'; ringValue: number; ringText: string; label: string; aria: string } {
+  const name = byId(`an-title-${cat}`).textContent ?? cat;
+  if (cat === 'empresa') {
+    if (!report.audit) {
+      return report.auditError
+        ? { state: 'empty', ringValue: 0, ringText: '–', label: 'Sin datos', aria: `${name}: sin datos` }
+        : { state: 'pending', ringValue: 0, ringText: '–', label: 'Midiendo…', aria: `${name}: revisando` };
+    }
+    const pending = itemsOf(cat).filter((i) => i.severity !== 'info').length;
+    return pending
+      ? { state: 'average', ringValue: 100, ringText: String(pending), label: 'Por revisar', aria: `${name}: ${plural(pending, 'punto', 'puntos')} por revisar` }
+      : { state: 'good', ringValue: 100, ringText: '✓', label: 'Todo bien', aria: `${name}: todo bien` };
+  }
+  const score = speedNow()?.scores[SCORE_OF[cat]] ?? null;
   if (score === null) {
-    card.dataset.state = pendingText ? 'pending' : 'empty';
-    value.textContent = '–';
-    label.textContent = pendingText ?? 'Sin datos';
-    ring.style.removeProperty('--an-score');
-    return;
+    return speedPending()
+      ? { state: 'pending', ringValue: 0, ringText: '–', label: 'Midiendo…', aria: `${name}: midiendo` }
+      : { state: 'empty', ringValue: 0, ringText: '–', label: 'Sin datos', aria: `${name}: sin datos` };
   }
-  card.dataset.state = scoreState(score);
-  value.textContent = String(score);
-  label.textContent = scoreLabel(score);
-  ring.style.setProperty('--an-score', String(score));
+  const tone = toneOfScore(score);
+  return { state: tone, ringValue: score, ringText: String(score), label: TONE_LABEL[tone], aria: `${name}: ${score} de 100, ${TONE_LABEL[tone]}` };
 }
 
-// ── Core Web Vitals ───────────────────────────────────────────
-const METRICS: { id: string; label: string; hint: string }[] = [
-  { id: 'lcp', label: 'LCP', hint: 'Cuánto tarda en verse el contenido principal' },
-  { id: 'inp', label: 'INP', hint: 'Cuánto tarda en reaccionar al tocar' },
-  { id: 'cls', label: 'CLS', hint: 'Cuánto se mueve el contenido al cargar' },
-  { id: 'fcp', label: 'FCP', hint: 'Cuánto tarda en verse lo primero' },
-  { id: 'tbt', label: 'TBT', hint: 'Tiempo que la página no responde mientras carga' },
-  { id: 'si', label: 'Speed Index', hint: 'Lo rápido que se va llenando la pantalla' },
-];
-
-const STATUS_TEXT: Record<Metric['status'], string> = { good: 'Bien', average: 'Mejorable', poor: 'Mal' };
-
-function metricCell(metric: Metric | undefined, label: string): HTMLTableCellElement {
-  const cell = el('td');
-  cell.dataset.label = label; // en móvil sustituye a la cabecera (analizador.css)
-  if (!metric) {
-    cell.className = 'an-cell-empty';
-    cell.append('–');
-    return cell;
-  }
-  cell.append(el('span', 'an-metric-value', metric.value), el('span', `an-pill an-pill--${metric.status}`, STATUS_TEXT[metric.status]));
-  return cell;
+// ── Pintar ────────────────────────────────────────────────────
+function paintStatus(cat: Category) {
+  const status = statusOf(cat);
+  document.querySelectorAll<HTMLElement>(`[data-ring="${cat}"]`).forEach((ring) => {
+    ring.dataset.state = status.state;
+    ring.setAttribute('aria-label', status.aria);
+    ring.style.setProperty('--an-dash', String((status.ringValue / 100) * RING_LENGTH));
+    (ring.querySelector('.an-ring-text') as HTMLElement).textContent = status.ringText;
+  });
+  document.querySelectorAll<HTMLElement>(`[data-status="${cat}"]`).forEach((label) => {
+    label.dataset.state = status.state;
+    label.textContent = status.label;
+  });
 }
 
-function renderVitals(mobile: PageSpeedResult | null, desktop: PageSpeedResult | null) {
-  const box = byId('an-vitals');
-  box.replaceChildren();
-  const source = mobile ?? desktop;
-  if (!source) {
-    box.hidden = true;
-    return;
-  }
-  const field = mobile?.field ?? desktop?.field ?? [];
-  const find = (list: Metric[] | undefined, id: string) => list?.find((m) => m.id === id);
-  const rows = METRICS.filter((m) => find(mobile?.lab, m.id) || find(desktop?.lab, m.id) || find(field, m.id));
+function metricTile(metric: Metric, target: string | undefined): HTMLElement {
+  const tile = el('div', `an-metric an-metric--${metric.status}`);
+  tile.append(
+    el('span', 'an-metric-name', METRIC_NAMES[metric.id] ?? metric.id),
+    el('strong', 'an-metric-value', metric.value),
+    el('span', 'an-metric-note', target ? `${TONE_LABEL[metric.status]} · ${target}` : TONE_LABEL[metric.status]),
+  );
+  return tile;
+}
 
-  box.append(el('h3', '', 'Core Web Vitals y tiempos de carga'));
-  const wrap = el('div', 'an-table-wrap');
-  const table = el('table', 'an-table an-table--results');
-  const headRow = el('tr');
-  headRow.append(el('th', '', 'Medida'), el('th', '', 'Móvil'), el('th', '', 'Ordenador'), el('th', '', 'Visitantes reales'));
-  const thead = el('thead');
-  thead.append(headRow);
-  const tbody = el('tbody');
-  for (const metric of rows) {
-    const row = el('tr');
-    const name = el('td');
-    name.append(el('strong', '', metric.label), el('span', 'an-metric-hint', metric.hint));
-    row.append(
-      name,
-      metricCell(find(mobile?.lab, metric.id), 'Móvil'),
-      metricCell(find(desktop?.lab, metric.id), 'Ordenador'),
-      metricCell(find(field, metric.id), 'Visitantes reales'),
+function speedBlock(): HTMLElement[] {
+  const speed = speedNow();
+  if (!speed) {
+    const error = speedErrorNow();
+    return [el('p', error ? 'an-notice' : 'an-waiting', error ?? 'Google está midiendo la velocidad: suele tardar entre 20 y 60 segundos.')];
+  }
+  const blocks: HTMLElement[] = [];
+  const lab = el('div', 'an-metrics');
+  speed.lab.forEach((m) => lab.append(metricTile(m, LAB_TARGETS[speed.strategy][m.id])));
+  blocks.push(lab);
+  if (speed.field.length) {
+    const scope = speed.fieldIsOrigin ? 'de toda tu web, no solo de esta página' : 'de esta página';
+    const field = el('div', 'an-metrics');
+    speed.field.forEach((m) => field.append(metricTile(m, FIELD_TARGETS[m.id])));
+    blocks.push(
+      el('p', 'an-note', 'Esto es una carga de prueba de Google. Los visitantes reales, debajo, son los datos que cuentan.'),
+      el('h4', '', 'Visitantes reales'),
+      field,
+      el('p', 'an-note', `Usuarios de Chrome durante los últimos 28 días, ${scope}.`),
     );
-    tbody.append(row);
+  } else {
+    blocks.push(el('p', 'an-note', 'Carga de prueba de Google. Aún no hay datos de visitantes reales de esta web: hace falta más tráfico para tenerlos.'));
   }
-  table.append(thead, tbody);
-  wrap.append(table);
-  box.append(wrap);
-
-  const note = field.length
-    ? `Los visitantes reales son usuarios de Chrome durante los últimos 28 días${(mobile ?? desktop)?.fieldIsOrigin ? ', de toda la web y no solo de esta página' : ''}. Si hay diferencias, esos son los datos que cuentan.`
-    : 'Google aún no tiene datos de visitantes reales de esta web: es normal si tiene poco tráfico. Móvil y ordenador son la prueba simulada de Google.';
-  box.append(el('p', 'an-source', note));
-  box.hidden = false;
+  return blocks;
 }
 
-function renderOpportunities(result: PageSpeedResult | null) {
-  const box = byId('an-opportunities');
-  box.replaceChildren();
-  if (!result?.opportunities.length) {
-    box.hidden = true;
-    return;
-  }
-  box.append(el('h3', '', 'Lo que más está frenando tu página'));
-  const list = el('ul', 'an-opps');
-  for (const opportunity of result.opportunities) {
-    const item = el('li');
-    item.append(el('span', '', opportunity.title));
-    if (opportunity.savings) item.append(el('span', 'an-opp-saving', opportunity.savings));
-    list.append(item);
-  }
-  box.append(list, el('p', 'an-source', 'Según la prueba de Google en móvil. Los ahorros son estimaciones.'));
-  box.hidden = false;
-}
+const itemIsOpen = (item: Item) => toggled.get(item.id) ?? item.severity === 'error';
 
-// ── Comprobaciones SEO ────────────────────────────────────────
-const CHECK_ICON: Record<CheckStatus, string> = { error: '✕', warn: '!', info: 'i', ok: '✓' };
-const CHECK_NAME: Record<CheckStatus, string> = { error: 'Error', warn: 'Aviso', info: 'Información', ok: 'Correcto' };
+function itemRow(item: Item): HTMLElement {
+  const row = el('div', 'an-item');
+  const button = el('button', 'an-item-head');
+  button.type = 'button';
+  const panelId = `an-panel-${item.id}`;
+  button.setAttribute('aria-controls', panelId);
 
-function checkItem(check: Check): HTMLLIElement {
-  const item = el('li', `an-check an-check--${check.status}`);
-  const icon = el('span', 'an-check-icon', CHECK_ICON[check.status]);
-  icon.title = CHECK_NAME[check.status];
+  const icon = el('span', `an-glyph an-glyph--${item.severity}`, SEVERITY[item.severity].glyph);
   icon.setAttribute('role', 'img');
-  icon.setAttribute('aria-label', CHECK_NAME[check.status]);
-  const body = el('div');
-  body.append(el('strong', '', check.title), el('p', '', check.detail));
-  if (check.link) {
-    const link = el('a', '', `${check.link.label} →`);
-    link.href = check.link.href;
-    body.append(link);
+  icon.setAttribute('aria-label', SEVERITY[item.severity].label);
+  button.append(icon, el('span', 'an-item-title', item.title));
+  if (item.savings) button.append(el('span', `an-saving an-saving--${item.severity}`, item.savings));
+
+  const chevron = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  chevron.setAttribute('viewBox', '0 0 24 24');
+  chevron.setAttribute('class', 'an-chevron');
+  chevron.setAttribute('aria-hidden', 'true');
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttribute('d', 'M6 9l6 6 6-6');
+  chevron.append(path);
+  button.append(chevron);
+
+  const panel = el('div', 'an-item-panel');
+  panel.id = panelId;
+  const why = el('div', 'an-explain');
+  why.append(el('strong', '', 'Por qué importa'), el('p', '', item.why));
+  panel.append(why);
+  if (item.fix || item.link) {
+    const fix = el('div', 'an-explain');
+    fix.append(el('strong', '', 'Cómo se arregla'));
+    if (item.fix) fix.append(el('p', '', item.fix));
+    if (item.link) {
+      const link = el('a', '', `${item.link.label} →`);
+      link.href = item.link.href;
+      fix.append(link);
+    }
+    panel.append(fix);
   }
-  item.append(icon, body);
-  return item;
+
+  const setOpen = (open: boolean) => {
+    button.setAttribute('aria-expanded', String(open));
+    panel.hidden = !open;
+    row.classList.toggle('is-open', open);
+  };
+  setOpen(itemIsOpen(item));
+  // Se abre y cierra aquí mismo, sin repintar la tarjeta, para no perder el foco.
+  button.addEventListener('click', () => {
+    const open = button.getAttribute('aria-expanded') !== 'true';
+    toggled.set(item.id, open);
+    setOpen(open);
+  });
+
+  row.append(button, panel);
+  return row;
 }
 
-function plural(n: number, one: string, many: string) {
-  return `${n} ${n === 1 ? one : many}`;
+function paintCard(cat: Category) {
+  const items = itemsOf(cat);
+  const passed = passedOf(cat);
+  const passedByGoogle = cat === 'empresa' ? 0 : speedNow()?.passed[cat] ?? 0;
+  const waitingForGoogle = cat !== 'empresa' && speedPending();
+  const googleFailed = cat !== 'empresa' && !speedNow() && !!speedErrorNow();
+  // "Nada que arreglar" solo si esta parte se ha podido medir entera: sin la
+  // medición de Google no lo sabemos, por bien que salga lo nuestro.
+  const fullyMeasured = cat === 'empresa' ? !!report.audit : !!speedNow();
+
+  // Lo único que depende del dispositivo o de los datos: si no cambia, no se repinta.
+  const signature = JSON.stringify({ items, passed, passedByGoogle, waitingForGoogle, googleFailed, fullyMeasured, speed: cat === 'velocidad' ? speedNow() : null, error: speedErrorNow(), auditError: report.auditError });
+  if (painted.get(cat) === signature) return;
+  painted.set(cat, signature);
+
+  const body = document.querySelector<HTMLElement>(`[data-body="${cat}"]`) as HTMLElement;
+  const blocks: HTMLElement[] = [];
+
+  if (cat === 'velocidad') blocks.push(...speedBlock());
+  if (report.auditError && (cat === 'seo' || cat === 'empresa')) blocks.push(el('p', 'an-notice', report.auditError));
+
+  if (items.length) {
+    const list = el('div', 'an-items');
+    // WordPress, por ejemplo, es un aviso y no un fallo.
+    const onlyNotes = items.every((i) => i.severity === 'info');
+    list.append(el('h4', '', onlyNotes ? 'A tener en cuenta' : 'Qué falla'), ...items.map(itemRow));
+    blocks.push(list);
+  } else if (fullyMeasured) {
+    blocks.push(el('p', 'an-all-good', 'Nada que arreglar en esta parte.'));
+  }
+  if (cat !== 'velocidad') {
+    if (waitingForGoogle) blocks.push(el('p', 'an-waiting', 'Google sigue midiendo esta parte.'));
+    if (googleFailed) blocks.push(el('p', 'an-waiting', 'Google no ha podido medir esta parte: aquí solo está lo que hemos comprobado nosotros.'));
+  }
+
+  if (passed.length || passedByGoogle) {
+    const list = el('div', 'an-passed');
+    list.append(el('h4', '', 'Lo que está bien'));
+    const chips = el('ul', 'an-passed-list');
+    for (const title of passed) chips.append(el('li', '', title));
+    if (passedByGoogle) chips.append(el('li', 'an-passed-more', plural(passedByGoogle, 'comprobación más de Google', 'comprobaciones más de Google')));
+    list.append(chips);
+    blocks.push(list);
+  }
+
+  body.replaceChildren(...blocks);
 }
 
-function renderChecks(audit: SiteAudit, seoIssues: string[]) {
-  const box = byId('an-checks');
-  box.replaceChildren();
-  const of = (status: CheckStatus) => audit.checks.filter((c) => c.status === status);
-  const errors = of('error');
-  const warnings = of('warn');
-  const notes = of('info');
-  const passed = of('ok');
-
-  box.append(el('h3', '', 'Revisión SEO y de tu página'));
-  box.append(el('p', 'an-checks-summary', `${plural(errors.length, 'error', 'errores')}, ${plural(warnings.length, 'aviso', 'avisos')} y ${plural(passed.length, 'comprobación correcta', 'comprobaciones correctas')}.`));
-
-  const pending = [...errors, ...warnings, ...notes];
-  if (pending.length) {
-    const list = el('ul', 'an-checks');
-    pending.forEach((c) => list.append(checkItem(c)));
-    box.append(list);
+function verdictText(): string {
+  if (!report.audit && !report.auditError) return 'Leyendo tu página…';
+  if (speedPending() && !report.finished) return 'Ya hemos revisado tu página. Google está midiendo la velocidad: suele tardar entre 20 y 60 segundos.';
+  const all = CATEGORIES.flatMap(itemsOf);
+  const graves = all.filter((i) => i.severity === 'error').length;
+  const warns = all.filter((i) => i.severity === 'warn').length;
+  const noSpeed = !speedNow();
+  if (!report.audit && noSpeed) return 'No hemos podido analizar esta página.';
+  // "Todo en orden" solo si se ha podido medir todo: si no, sería una falsa buena noticia.
+  if (!graves && !warns) {
+    if (noSpeed) return 'No hemos encontrado fallos en lo que hemos podido revisar, pero falta medir la velocidad.';
+    if (!report.audit) return 'Google no ha encontrado fallos, pero nosotros no hemos podido leer tu página.';
+    return 'Todo en orden: no hemos encontrado nada que arreglar.';
   }
-  if (seoIssues.length) {
-    box.append(el('h4', '', 'Google señala además'));
-    const list = el('ul', 'an-google-issues');
-    seoIssues.forEach((issue) => list.append(el('li', '', issue)));
-    box.append(list);
-  }
-  if (passed.length) {
-    const details = el('details', 'an-passed');
-    details.append(el('summary', '', `Ver lo que está bien (${passed.length})`));
-    const list = el('ul', 'an-checks');
-    passed.forEach((c) => list.append(checkItem(c)));
-    details.append(list);
-    box.append(details);
-  }
-  box.hidden = false;
+  const missing = noSpeed ? ' Falta medir la velocidad.' : '';
+  if (!graves) return `No hay problemas graves, pero sí ${plural(warns, 'cosa que mejorar', 'cosas que mejorar')}.${missing}`;
+  if (!warns) return `Hemos encontrado ${plural(graves, 'problema grave', 'problemas graves')}.${missing}`;
+  return `Hemos encontrado ${plural(graves, 'problema grave', 'problemas graves')} y ${plural(warns, 'cosa que mejorar', 'cosas que mejorar')}.${missing}`;
 }
 
-function renderPageError(message: string) {
-  const box = byId('an-checks');
-  box.replaceChildren(el('h3', '', 'Revisión SEO y de tu página'), el('p', 'an-notice', message));
-  box.hidden = false;
+function paint() {
+  byId('an-verdict').textContent = verdictText();
+  byId('an-hero-label').textContent = `Velocidad en ${report.device === 'mobile' ? 'móvil' : 'ordenador'}`;
+  document.querySelectorAll<HTMLButtonElement>('[data-device]').forEach((button) => {
+    button.setAttribute('aria-pressed', String(button.dataset.device === report.device));
+  });
+  CATEGORIES.forEach((cat) => {
+    paintStatus(cat);
+    paintCard(cat);
+  });
 }
 
 // ── Llamada a la acción ───────────────────────────────────────
-function showCta(url: string, mobile: PageSpeedResult | null, audit: SiteAudit | null) {
+function showCta(url: string) {
+  const measured = report.speed.mobile ?? report.speed.desktop;
   const facts: string[] = [];
-  if (mobile?.scores.performance != null) facts.push(`velocidad en móvil ${mobile.scores.performance}/100`);
-  if (mobile?.scores.seo != null) facts.push(`SEO ${mobile.scores.seo}/100`);
-  const problems = audit?.checks.filter((c) => c.status === 'error' || c.status === 'warn').length ?? 0;
+  if (measured?.scores.performance != null) facts.push(`velocidad en ${measured.strategy === 'mobile' ? 'móvil' : 'ordenador'} ${measured.scores.performance}/100`);
+  if (measured?.scores.seo != null) facts.push(`SEO ${measured.scores.seo}/100`);
+  const problems = CATEGORIES.flatMap(itemsOf).filter((i) => i.severity !== 'info').length;
   if (problems) facts.push(plural(problems, 'punto por revisar', 'puntos por revisar'));
   const summary = facts.length ? ` (${facts.join(', ')})` : '';
-  const message = `He analizado ${url} con tu analizador${summary}. ¿Me ayudas a mejorarla?`;
+  const message = `He analizado ${url} con tu analizador${summary}. ${problems ? '¿Me ayudas a mejorarla?' : '¿Hablamos?'}`;
+
+  // Con todo correcto no hay nada que arreglar: el mensaje tiene que decir otra cosa.
+  byId('an-cta-title').textContent = problems ? '¿Quieres que te ayude a arreglarlo?' : '¿Necesitas algo más para tu empresa?';
+  byId('an-cta-body').textContent = problems
+    ? 'Mándame el resultado y te digo qué merece la pena tocar y cuánto costaría, con el presupuesto cerrado antes de empezar.'
+    : 'Tu web va bien. Si quieres automatizar tareas o una herramienta a medida, cuéntamelo y te digo precio y plazo.';
+  byId('an-cta-wa').textContent = problems ? 'Enviármelo por WhatsApp' : 'Escribirme por WhatsApp';
 
   (byId('an-cta-wa') as HTMLAnchorElement).href = waHref(`Hola Javier, ${message.charAt(0).toLowerCase()}${message.slice(1)}`);
   const textarea = document.getElementById('mensaje') as HTMLTextAreaElement | null;
@@ -238,14 +377,6 @@ function showCta(url: string, mobile: PageSpeedResult | null, audit: SiteAudit |
 }
 
 // ── Análisis ──────────────────────────────────────────────────
-function resetResults() {
-  for (const step of ['page', 'mobile', 'desktop'] as Part[]) setStep(step, 'pending');
-  byId('an-scores').querySelectorAll<HTMLElement>('[data-score]').forEach((card) => setScore(card.dataset.score as string, null, 'Midiendo…'));
-  for (const id of ['an-vitals', 'an-opportunities', 'an-checks', 'an-cta', 'an-speed-error', 'an-page-title']) byId(id).hidden = true;
-  byId('an-progress').hidden = false;
-  byId('an-wait').hidden = true;
-}
-
 const showFormError = (message: string) => {
   if (!errorBox) return;
   errorBox.textContent = message;
@@ -260,6 +391,34 @@ function hostOf(url: string) {
   }
 }
 
+// El largo del dominio decide el tamaño del titular (ver .an-summary-host): así
+// uno largo cabe en una línea en lugar de partirse a mitad de palabra.
+function setHost(url: string) {
+  const host = hostOf(url);
+  const heading = byId('an-host');
+  heading.textContent = host;
+  heading.style.setProperty('--an-host-chars', String(host.length));
+}
+
+function setBusy(busy: boolean, label: string) {
+  if (!submit) return;
+  submit.disabled = busy;
+  submit.textContent = label;
+}
+
+function resetReport() {
+  report.audit = null;
+  report.auditError = null;
+  report.speed = { mobile: null, desktop: null };
+  report.speedError = { mobile: null, desktop: null };
+  report.finished = false;
+  toggled.clear();
+  painted.clear();
+  byId('an-cta').hidden = true;
+}
+
+const REPORT_DATE = new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+
 async function analyze(rawUrl: string) {
   const value = rawUrl.trim();
   if (errorBox) errorBox.hidden = true;
@@ -269,25 +428,20 @@ async function analyze(rawUrl: string) {
     return;
   }
 
-  if (submit) {
-    submit.disabled = true;
-    submit.textContent = 'Analizando…';
-  }
-
-  resetResults();
-  byId('an-host').textContent = hostOf(value);
+  setBusy(true, 'Analizando…');
+  resetReport();
+  setHost(value);
+  byId('an-date').textContent = `Informe del ${REPORT_DATE.format(new Date())}`;
   if (results) results.hidden = false;
-  setStep('page', 'running');
+  paint();
+
   const pageResult = await requestPart<SiteAudit>(value, 'page');
 
   // Dominio inexistente o dirección no válida: no hay nada que medir, y es más
   // claro decirlo junto al campo que abrir un informe vacío.
   if (!pageResult.ok && pageResult.fatal) {
     showFormError(pageResult.error);
-    if (submit) {
-      submit.disabled = false;
-      submit.textContent = 'Analizar mi web';
-    }
+    setBusy(false, 'Analizar mi web');
     if (results) results.hidden = true;
     input?.focus();
     return;
@@ -296,73 +450,50 @@ async function analyze(rawUrl: string) {
   // El enlace queda listo para compartir el informe o enviárselo a alguien.
   history.replaceState(null, '', `${location.pathname}?url=${encodeURIComponent(value)}`);
 
-  const audit = pageResult.ok ? pageResult.data : null;
-  const finalUrl = audit?.url ?? value;
-  byId('an-host').textContent = hostOf(finalUrl);
-  if (audit?.title) {
-    const pageTitle = byId('an-page-title');
-    pageTitle.textContent = audit.title;
-    pageTitle.hidden = false;
-  }
+  if (pageResult.ok) report.audit = pageResult.data;
+  else report.auditError = pageResult.error;
+  const finalUrl = report.audit?.url ?? value;
+  setHost(finalUrl);
+  paint();
+
   if (results) {
     const smooth = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     results.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' });
     results.focus({ preventScroll: true });
   }
 
-  setStep('page', pageResult.ok ? 'done' : 'error');
-  if (pageResult.ok) renderChecks(pageResult.data, []);
-  else renderPageError(pageResult.error);
-
-  setStep('mobile', 'running');
-  setStep('desktop', 'running');
-  byId('an-wait').hidden = false;
-
-  const speed: Record<Strategy, PageSpeedResult | null> = { mobile: null, desktop: null };
-  const speedErrors = new Set<string>();
-
   const measure = async (strategy: Strategy) => {
     const res = await requestPart<PageSpeedResult>(finalUrl, strategy);
-    setStep(strategy, res.ok ? 'done' : 'error');
-    if (!res.ok) {
-      speedErrors.add(res.error);
-      setScore(`${strategy}-performance`, null);
-      return;
-    }
-    speed[strategy] = res.data;
-    setScore(`${strategy}-performance`, res.data.scores.performance);
-    renderVitals(speed.mobile, speed.desktop);
-    // Google evalúa la versión móvil: el resto del informe sale de esa medición,
-    // y de la de ordenador solo mientras no haya otra.
-    if (strategy === 'mobile' || !speed.mobile) {
-      setScore('seo', res.data.scores.seo);
-      setScore('accessibility', res.data.scores.accessibility);
-      setScore('best-practices', res.data.scores.bestPractices);
-      renderOpportunities(res.data);
-      if (audit) renderChecks(audit, res.data.seoIssues);
-    }
+    if (res.ok) report.speed[strategy] = res.data;
+    else report.speedError[strategy] = res.error;
+    paint();
   };
 
   await Promise.all([measure('mobile'), measure('desktop')]);
 
-  const measured = speed.mobile ?? speed.desktop;
-  if (!measured) {
-    for (const id of ['seo', 'accessibility', 'best-practices']) setScore(id, null);
-  }
-  if (speedErrors.size) {
-    const notice = byId('an-speed-error');
-    notice.textContent = [...speedErrors].join(' ');
-    notice.hidden = false;
-  }
-  byId('an-wait').hidden = true;
-  byId('an-progress').hidden = true;
-  showCta(finalUrl, measured, audit);
-
-  if (submit) {
-    submit.disabled = false;
-    submit.textContent = 'Analizar otra vez';
-  }
+  report.finished = true;
+  paint();
+  showCta(finalUrl);
+  setBusy(false, 'Analizar otra vez');
 }
+
+document.querySelectorAll<HTMLButtonElement>('[data-device]').forEach((button) => {
+  button.addEventListener('click', () => {
+    report.device = button.dataset.device as Strategy;
+    paint();
+  });
+});
+
+const copy = byId('an-copy');
+let copyTimer: ReturnType<typeof setTimeout>;
+copy?.addEventListener('click', () => {
+  navigator.clipboard?.writeText(location.href).catch(() => {});
+  copy.textContent = 'Enlace copiado';
+  clearTimeout(copyTimer);
+  copyTimer = setTimeout(() => {
+    copy.textContent = 'Copiar enlace';
+  }, 2000);
+});
 
 form?.addEventListener('submit', (e) => {
   e.preventDefault();
