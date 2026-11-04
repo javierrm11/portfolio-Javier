@@ -3,6 +3,7 @@ import Header from "../components/Header.astro";
 import Main from "../components/Main.astro";
 import Footer from "../components/Footer.astro";
 import WhatsAppButton from "../components/WhatsAppButton.astro";
+import FontPreloads from "../components/FontPreloads.astro";
 import "../styles/global.css";
 import "../styles/header.css";
 import "../styles/main.css";
@@ -88,7 +89,21 @@ const description =
 <html lang="es">
   <head>
   <meta charset="utf-8" />
-  <link rel="preload" as="image" href="/hero-desk.webp" fetchpriority="high" />
+  <!-- Sin initial-scale=1, el móvil no fija el zoom a 1:1: en cuanto algo
+       en la página desborda aunque sea un poco, el navegador puede
+       renderizar la página zoom-out (más ancha que el viewport real y
+       escalada para caber), dejando franjas del fondo del propio SO/
+       navegador a los lados — el "se sale del body" que se veía en
+       iPhone. Con esto el zoom queda anclado a 1:1 desde el arranque.
+       Va antes que los preload: con él detrás, el móvil evalúa sus media
+       como si midiera 980px y descarga también la foto de escritorio. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Antes que cualquier hoja de estilos: sin esta clase, las fotos de debajo
+       de la primera pantalla se piden todas al cargar (ver main.css). -->
+  <script is:inline>document.documentElement.classList.add('lazy-bg')</script>
+  <FontPreloads />
+  <link rel="preload" as="image" href="/hero-desk-m.webp" media="(max-width: 819px)" fetchpriority="high" />
+  <link rel="preload" as="image" href="/hero-desk.webp" media="(min-width: 820px)" fetchpriority="high" />
   <!-- Favicon propio (J en el anillo de marca, el mismo del retrato del
        hero). El .ico va con sizes="32x32" para que los navegadores con
        soporte SVG prefieran el .svg; el .ico queda para los que no. -->
@@ -97,13 +112,6 @@ const description =
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <link rel="manifest" href="/site.webmanifest" />
   <meta name="theme-color" content="#06142a" />
-  <!-- Sin initial-scale=1, el móvil no fija el zoom a 1:1: en cuanto algo
-       en la página desborda aunque sea un poco, el navegador puede
-       renderizar la página zoom-out (más ancha que el viewport real y
-       escalada para caber), dejando franjas del fondo del propio SO/
-       navegador a los lados — el "se sale del body" que se veía en
-       iPhone. Con esto el zoom queda anclado a 1:1 desde el arranque. -->
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="generator" content={Astro.generator} />
 
   <!-- Pensado para los clientes (búsquedas tipo "diseño web Córdoba",
@@ -133,14 +141,6 @@ const description =
   <meta name="twitter:image:alt" content="Javier Ruiz Molero, diseño web e IA en Córdoba" />
 
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
-
-  <!-- Preconnect para optimización de fuentes -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Karla:wght@400;500;600;700&display=swap"
-    rel="stylesheet"
-  />
 
   <!-- Robots -->
   <meta name="robots" content="index, follow" />
@@ -189,5 +189,21 @@ const description =
       { root: null, rootMargin: "-20% 0px -80% 0px", threshold: 0 }
     );
     sections.forEach((s) => observer.observe(s));
+
+    // Pide la foto de fondo de cada sección una pantalla antes de llegar a ella
+    // (la regla que la retiene está en main.css, con la clase lazy-bg).
+    const photoObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("bg-in");
+          photoObserver.unobserve(entry.target);
+        });
+      },
+      { rootMargin: "100% 0px" }
+    );
+    document
+      .querySelectorAll("#about-me, #tecnologias, #proyectos, #contact, #footer")
+      .forEach((el) => photoObserver.observe(el));
   });
 </script>

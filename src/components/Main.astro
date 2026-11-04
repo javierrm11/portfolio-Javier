@@ -4,7 +4,14 @@ import Tecnologias from './Tecnologias.astro';
 import Proyectos from './Proyectos.astro';
 import Contacto from './Contacto.astro';
 import Servicios from './Servicios.astro';
+import { plans, formatPrice } from '../lib/services';
 
+// Precios del hero sacados de los planes para que no se descuadren si cambian.
+const heroOffers = [
+  { label: 'Web', slug: 'diseno-web-cordoba' },
+  { label: 'App o SaaS', slug: 'apps-a-medida' },
+  { label: 'Automatización', slug: 'automatizaciones' },
+].map((offer) => ({ ...offer, price: formatPrice(plans.find((p) => p.slug === offer.slug)!.priceFrom) }));
 ---
 <main>
     <section id="hero" class="hero">
@@ -20,23 +27,24 @@ import Servicios from './Servicios.astro';
 
             <div class="hero-text">
                 <div id="info">
-                    <span class="hero-eyebrow">Diseño web e IA · Córdoba</span>
-                    <h1>Javier Ruiz<br><span class="hero-outline">Molero</span></h1>
-                    <p class="hero-tagline">Desarrollador web freelance en Córdoba (España): páginas web, apps y agentes de IA para negocios, también en remoto.</p>
+                    <span class="hero-eyebrow">Javier Ruiz Molero · Córdoba</span>
+                    <h1>Webs, apps y automatizaciones para <span class="hero-accent">empresas pequeñas</span></h1>
+                    <p class="hero-tagline">Soy freelance: hablas directamente conmigo y sabes el precio antes de empezar. En Córdoba y, en remoto, en toda España.</p>
+                    <ul class="hero-offers">
+                        {heroOffers.map((offer) => (
+                            <li><a href={`/servicios/${offer.slug}/`}>{offer.label} <span>desde {offer.price}</span></a></li>
+                        ))}
+                    </ul>
                 </div>
             </div>
         </div>
 
-        <!-- Sobre 1000px se ancla abajo a la derecha del hero (separado del
-             bloque de texto, ver .hero-cta-row en main.css); por debajo se
-             queda en flujo normal bajo la frase, alineada a la izquierda
-             como el resto del bloque. -->
         <div class="hero-cta-row">
-            <a href="#proyectos" class="hero-link">Ver proyectos</a>
-            <a href="#servicios" class="hero-cta">
+            <a href="#contact" class="hero-cta">
                 Pide presupuesto
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
             </a>
+            <a href="/analizador-web/" class="hero-link">Analiza tu web gratis</a>
         </div>
     </section>
 
@@ -71,18 +79,9 @@ import Servicios from './Servicios.astro';
     const DURATION = 0.7;
     const STAGGER = 0.08;
 
-    // ── Hero entrance ──────────────────────────────────────────────
-    const heroTl = gsap.timeline({ defaults: { ease: ease.out } });
-    heroTl
-        // .header-innFer, NO #header: el transform que deja esta animación
-        // convertiría al header en bloque contenedor de sus descendientes
-        // fixed, y el overlay del menú móvil (#main-nav, hermano de
-        // .header-inner) quedaría recortado a la franja del header.
-        .from(".header-inner",         { y: -60, opacity: 0, duration: 0.8 })
-        .from(".hero-eyebrow",         { y: 16,  opacity: 0, duration: 0.5 }, "-=0.3")
-        .from("#info h1",             { y: 32,  opacity: 0, duration: 0.7 }, "-=0.35")
-        .from(".hero-tagline",         { y: 20,  opacity: 0, duration: 0.6 }, "-=0.4")
-        .from(".hero-cta-row",         { y: 16,  opacity: 0, duration: 0.5 }, "-=0.35");
+    // La entrada del hero va en CSS (main.css), no aquí: con GSAP el titular
+    // seguía oculto hasta descargar y ejecutar este script, y en móvil eso
+    // retrasaba 3 s lo primero que se lee de la página.
 
     // ── Scroll reveal utility ─────────────────────────────────────
     function revealOn(trigger: string, targets: string, stagger = STAGGER) {

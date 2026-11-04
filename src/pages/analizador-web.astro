@@ -9,7 +9,7 @@ import Footer from '../components/Footer.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
 import ContactForm from '../components/ContactForm.astro';
 import ScoreRing from '../components/ScoreRing.astro';
-import { callHref, EMAIL, PHONE } from '../lib/services';
+import { waHref, TEL_HREF, PHONE_DISPLAY, EMAIL } from '../lib/services';
 import '../styles/global.css';
 import '../styles/header.css';
 import '../styles/footer.css';
@@ -301,11 +301,11 @@ const jsonLd = {
             <h2>¿Te ayudo a mejorar tu web?</h2>
             <p>Cuéntame qué te ha salido y te digo qué merece la pena arreglar, con precio y plazo cerrados.</p>
             <div class="srv-contact-actions">
-              <a class="srv-btn srv-btn--primary" href={callHref} target="_blank" rel="noopener noreferrer">Reservar llamada de 20 min</a>
+              <a class="srv-btn srv-btn--wa" href={waHref('Hola Javier, he usado tu analizador y me gustaría que me ayudaras a mejorar mi web.')} target="_blank" rel="noopener noreferrer">Escribir por WhatsApp</a>
+              <a class="srv-btn srv-btn--primary" href={TEL_HREF}>Llamar al {PHONE_DISPLAY}</a>
             </div>
             <ul class="srv-contact-direct">
               <li><a href={`mailto:${EMAIL}`}>{EMAIL}</a></li>
-              <li><a href={`tel:+${PHONE}`}>+34 611 43 47 36</a></li>
               <li><a href="/servicios/diseno-web-cordoba/">Ver el servicio de diseño web</a></li>
             </ul>
           </div>

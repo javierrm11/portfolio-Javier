@@ -2,6 +2,8 @@
 // Cabecera <head> compartida por el blog y las páginas de servicio
 // (index.astro tiene la suya propia, más larga, con el JSON-LD de la home —
 // no se toca aquí).
+import FontPreloads from './FontPreloads.astro';
+
 interface Props {
   title: string;
   description: string;
@@ -14,13 +16,13 @@ const { title, description, path, type = 'article' } = Astro.props;
 const url = `https://www.javierm.dev${path}`;
 ---
 <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <!-- Mismos iconos que la home (ver la nota en index.astro). -->
 <link rel="icon" href="/favicon.ico" sizes="32x32" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 <link rel="manifest" href="/site.webmanifest" />
 <meta name="theme-color" content="#06142a" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="generator" content={Astro.generator} />
 
 <title>{title}</title>
@@ -43,9 +45,4 @@ const url = `https://www.javierm.dev${path}`;
 <meta name="robots" content="index, follow" />
 <meta http-equiv="content-language" content="es" />
 
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link
-  href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Karla:wght@400;500;600;700&display=swap"
-  rel="stylesheet"
-/>
+<FontPreloads />

@@ -37,7 +37,8 @@ const categoryCounts = Object.fromEntries(
   <!-- Misma foto de fondo que el Hero de la home: se adelanta su descarga
        igual que allí (ver la nota en index.astro), porque aquí también es
        la imagen más grande de la primera pantalla. -->
-  <link rel="preload" as="image" href="/hero-desk.webp" fetchpriority="high" />
+  <link rel="preload" as="image" href="/hero-desk-m.webp" media="(max-width: 819px)" fetchpriority="high" />
+  <link rel="preload" as="image" href="/hero-desk.webp" media="(min-width: 820px)" fetchpriority="high" />
 </head>
 <body>
   <Header page="blog" />

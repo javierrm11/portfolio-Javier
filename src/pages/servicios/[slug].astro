@@ -8,7 +8,7 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import WhatsAppButton from '../../components/WhatsAppButton.astro';
 import ContactForm from '../../components/ContactForm.astro';
-import { plans, formatPrice, callHref, PHONE, EMAIL, type Plan } from '../../lib/services';
+import { plans, formatPrice, TEL_HREF, PHONE_DISPLAY, EMAIL, type Plan } from '../../lib/services';
 import { servicePages, steps, type ServicePage } from '../../lib/servicePages';
 import '../../styles/global.css';
 import '../../styles/header.css';
@@ -203,12 +203,11 @@ const jsonLd = {
             <h2>¿Hablamos de tu proyecto?</h2>
             <p>Cuéntame tu empresa y te digo precio y plazo, como te venga mejor.</p>
             <div class="srv-contact-actions">
-              <a class="srv-btn srv-btn--primary" href={callHref} target="_blank" rel="noopener noreferrer">Reservar llamada de 20 min</a>
               <a class="srv-btn srv-btn--wa" href={plan.href} target="_blank" rel="noopener noreferrer">Escribir por WhatsApp</a>
+              <a class="srv-btn srv-btn--primary" href={TEL_HREF}>Llamar al {PHONE_DISPLAY}</a>
             </div>
             <ul class="srv-contact-direct">
               <li><a href={`mailto:${EMAIL}`}>{EMAIL}</a></li>
-              <li><a href={`tel:+${PHONE}`}>+34 611 43 47 36</a></li>
               {plan.slug === 'diseno-web-cordoba' && <li><a href="/analizador-web/">Analiza gratis la velocidad y el SEO de tu web</a></li>}
             </ul>
           </div>

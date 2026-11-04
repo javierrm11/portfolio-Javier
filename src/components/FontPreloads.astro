@@ -1,0 +1,8 @@
+---
+// Las dos fuentes de la primera pantalla: el peso de los titulares y el texto.
+// Adelantarlas evita ver el titular con la fuente de reserva y que luego salte.
+import poppins800 from '../assets/fonts/poppins-800.woff2?url';
+import karla from '../assets/fonts/karla-variable.woff2?url';
+---
+<link rel="preload" as="font" type="font/woff2" href={poppins800} crossorigin />
+<link rel="preload" as="font" type="font/woff2" href={karla} crossorigin />

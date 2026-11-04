@@ -41,8 +41,8 @@ export interface ServicePage {
 }
 
 export const steps = [
-  { n: '01', title: 'Me escribes', desc: 'Por WhatsApp o el formulario, en dos líneas.' },
-  { n: '02', title: 'Llamada de 20 min', desc: 'Entiendo tu negocio y lo que necesitas.' },
+  { n: '01', title: 'Me escribes o me llamas', desc: 'Por WhatsApp, por teléfono o con el formulario.' },
+  { n: '02', title: 'Hablamos de tu negocio', desc: 'Entiendo lo que necesitas, sin compromiso.' },
   { n: '03', title: 'Presupuesto cerrado', desc: 'Precio, plazo y entregables por escrito.' },
   { n: '04', title: 'Desarrollo y lanzamiento', desc: 'Ves avances cada semana y lo publicamos.' },
 ];
@@ -110,7 +110,7 @@ export const servicePages: Record<string, ServicePage> = {
     priceNote: 'Meta cobra aparte algunos mensajes (en España, desde 0,0166 € por mensaje a octubre de 2026). Te lo detallo en el presupuesto.',
     faqs: [
       { q: '¿Cuánto cuesta un agente IA para WhatsApp?', a: 'Desde 590 € de puesta en marcha más 29 €/mes de mantenimiento. Los mensajes que cobra Meta van aparte y te los calculo en el presupuesto según tu volumen.' },
-      { q: '¿Tengo que cambiar de número?', a: 'Depende de tu caso: se puede usar tu número actual o uno nuevo. Lo vemos en la primera llamada.' },
+      { q: '¿Tengo que cambiar de número?', a: 'Depende de tu caso: se puede usar tu número actual o uno nuevo. Lo vemos cuando hablemos.' },
       { q: '¿Y si la IA no sabe qué responder?', a: 'No se lo inventa: te avisa y te pasa la conversación para que sigas tú.' },
       { q: '¿Cuánto se tarda en tenerlo funcionando?', a: 'Entre 2 y 4 semanas, según las integraciones que necesites (agenda, pagos, CRM…).' },
     ],

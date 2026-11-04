@@ -9,10 +9,11 @@ export const waHref = (msg: string) =>
 
 const waTopic = (topic: string) => waHref(`Hola Javier, vengo de tu web y me interesa ${topic}`);
 
-// Enlace de reserva de la llamada de 20 minutos (Cal.com, Calendly…). Mientras
-// esté vacío, el botón abre WhatsApp con la petición ya escrita.
-const BOOKING_URL = '';
-export const callHref = BOOKING_URL || waHref('Hola Javier, vengo de tu web y me gustaría reservar la llamada de 20 minutos.');
+// Las dos vías directas de contacto: quien prefiere escribir y quien prefiere
+// llamar. Van siempre juntas, sin reservas ni calendarios de por medio.
+export const contactWa = waHref('Hola Javier, vengo de tu web y me gustaría hablar contigo.');
+export const TEL_HREF = `tel:+${PHONE}`;
+export const PHONE_DISPLAY = '+34 611 43 47 36';
 
 export interface Plan {
   /** Ruta de su página: /servicios/<slug> (ver src/lib/servicePages.ts). */
@@ -98,7 +99,7 @@ export const plans: Plan[] = [
 export const formatPrice = (n: number) => `${n.toLocaleString('es-ES', { useGrouping: 'always' })} €`;
 
 export const promises = [
-  'Llamada inicial sin compromiso',
+  'Primera charla sin compromiso',
   'Presupuesto cerrado antes de empezar',
   'Código y dominio a tu nombre',
   '30 días de soporte tras la entrega',
@@ -118,7 +119,7 @@ export const faqs = [
   },
   {
     q: '¿Eres desarrollador web freelance o una agencia?',
-    a: 'Soy desarrollador web freelance en Córdoba (España): hablas directamente conmigo desde la primera llamada hasta la entrega, sin intermediarios.',
+    a: 'Soy desarrollador web freelance en Córdoba (España): hablas directamente conmigo desde el primer mensaje hasta la entrega, sin intermediarios.',
   },
   {
     q: '¿Cuánto se tarda en tener la web lista?',

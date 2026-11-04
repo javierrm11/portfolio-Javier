@@ -1,0 +1,24 @@
+---
+// Bloque del final de cada artículo, justo cuando se termina de leer. Qué ofrece
+// se decide en src/lib/postCta.ts; WhatsApp y teléfono están siempre.
+import { TEL_HREF, PHONE_DISPLAY } from '../lib/services';
+import type { PostCta as Cta } from '../lib/postCta';
+
+interface Props {
+  cta: Cta;
+}
+
+const { cta } = Astro.props;
+---
+<aside class="post-cta" aria-label="Contacto">
+  <div class="post-cta-copy">
+    <p class="post-cta-title">{cta.title}</p>
+    <p>{cta.text}</p>
+    {cta.serviceHref && <a class="post-cta-more" href={cta.serviceHref}>Ver qué incluye</a>}
+  </div>
+  <div class="post-cta-actions">
+    {cta.analyzerHref && <a class="post-cta-btn post-cta-btn--main" href={cta.analyzerHref}>Analizar mi web gratis</a>}
+    <a class="post-cta-btn post-cta-btn--wa" href={cta.whatsappHref} target="_blank" rel="noopener noreferrer">Escribir por WhatsApp</a>
+    <a class="post-cta-btn post-cta-btn--tel" href={TEL_HREF}>Llamar al {PHONE_DISPLAY}</a>
+  </div>
+</aside>

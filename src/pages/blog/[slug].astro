@@ -5,7 +5,9 @@ import BaseHead from '../../components/BaseHead.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import WhatsAppButton from '../../components/WhatsAppButton.astro';
+import PostCta from '../../components/PostCta.astro';
 import { CATEGORIES, formatDate } from '../../lib/blogCategories';
+import { ctaForPost } from '../../lib/postCta';
 import '../../styles/global.css';
 import '../../styles/header.css';
 import '../../styles/footer.css';
@@ -22,6 +24,7 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await render(post);
 const cat = CATEGORIES[post.data.category];
+const cta = ctaForPost(post.id, post.data.category);
 
 const allPosts = await getCollection('blog');
 const related = allPosts
@@ -71,6 +74,8 @@ const related = allPosts
         <div class="prose">
           <Content />
         </div>
+
+        {cta && <PostCta cta={cta} />}
 
         <div class="post-tags-share">
           <div class="post-tags">

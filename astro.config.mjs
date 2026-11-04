@@ -7,6 +7,9 @@ import vercel from '@astrojs/vercel';
 export default defineConfig({
   site: 'https://www.javierm.dev', // 👈 muy importante para que el sitemap funcione
   integrations: [sitemap()],
+  // El CSS va dentro del HTML en vez de en archivos aparte: cada hoja externa
+  // bloqueaba el primer pintado en móvil mientras se descargaba.
+  build: { inlineStylesheets: 'always' },
   // El sitio sigue siendo estático: el adaptador solo convierte en función
   // de Vercel las rutas con `prerender = false` (hoy, /api/chat del chatbot y
   // /api/analizar del analizador). PageSpeed tarda hasta un minuto en responder,

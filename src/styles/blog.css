@@ -103,11 +103,12 @@ main.blog-main.has-hero {
   /* Misma foto y mismo viraje oscuro que #hero en la home (ver main.css) —
      así el blog se reconoce como la misma web. background-color de reserva
      por si la imagen tarda: mismo azul marino que antes. */
+  --bg-photo: url('/hero-desk.webp');
   background-color: #050f22;
   background-image:
     linear-gradient(100deg, rgba(6, 20, 40, 0.9) 0%, rgba(8, 40, 80, 0.7) 45%, rgba(10, 60, 110, 0.5) 100%),
     linear-gradient(rgba(0, 60, 140, 0.18), rgba(0, 60, 140, 0.18)),
-    url('/hero-desk.webp');
+    var(--bg-photo);
   background-size: cover;
   background-position: center;
   background-blend-mode: normal, color, normal;
@@ -117,6 +118,9 @@ main.blog-main.has-hero {
    de fondo del sitio — ver la nota en main.css). */
 @media (hover: none) and (pointer: coarse) {
   .blog-hero { background-attachment: scroll; }
+}
+@media (max-width: 819px) {
+  .blog-hero { --bg-photo: url('/hero-desk-m.webp'); }
 }
 .blog-hero::before,
 .blog-hero::after {
@@ -346,6 +350,36 @@ main.blog-main.has-hero {
   display: block; margin-top: 0.625rem;
   font-size: 0.8125rem; line-height: 1.5; font-style: normal; color: var(--text-secondary);
 }
+
+/* Bloque del final del artículo (PostCta.astro). */
+.post-cta {
+  max-width: 1100px; margin: 3rem auto 0; padding: clamp(1.5rem, 4vw, 2.5rem);
+  display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.5rem;
+  background: #06142a; border-radius: var(--radius-lg); color: #fff;
+}
+@media (min-width: 820px) {
+  .post-cta { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 2.5rem; align-items: center; }
+}
+.post-cta-title {
+  font-family: 'Poppins', var(--font-sans); font-weight: 800; font-size: clamp(1.25rem, 2.4vw, 1.625rem);
+  line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 0.75rem;
+}
+.post-cta-copy > p:not(.post-cta-title) { font-size: 1.0625rem; line-height: 1.55; color: rgba(255, 255, 255, 0.85); }
+.post-cta-more {
+  display: inline-flex; align-items: center; min-height: 44px; margin-top: 0.25rem;
+  color: #4fc3ff; font-weight: 700; text-underline-offset: 3px;
+}
+.post-cta-actions { display: flex; flex-direction: column; gap: 0.625rem; }
+.post-cta-btn {
+  display: flex; align-items: center; justify-content: center; min-height: 50px; padding: 0.5rem 1.25rem;
+  border-radius: var(--radius-sm); font-weight: 700; font-size: 1rem; text-align: center; text-decoration: none;
+  transition: opacity var(--transition-base), transform var(--transition-base);
+}
+.post-cta-btn:hover { opacity: 0.92; transform: translateY(-2px); }
+.post-cta-btn:focus-visible { outline: 3px solid #4fc3ff; outline-offset: 3px; }
+.post-cta-btn--main { background: var(--accent-from); color: #fff; }
+.post-cta-btn--wa { background: #25D366; color: #0b2a17; }
+.post-cta-btn--tel { border: 1px solid rgba(255, 255, 255, 0.35); color: #fff; }
 
 .post-tags-share {
   max-width: 1100px; margin: 2.75rem auto 2.5rem; padding-top: 2rem; border-top: 1px solid var(--border-subtle);
