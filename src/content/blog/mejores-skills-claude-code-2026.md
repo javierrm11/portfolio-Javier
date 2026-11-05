@@ -4,12 +4,14 @@ description: "Las skills de Claude Code que de verdad aportan en desarrollo web:
 pubDate: 2026-10-27
 category: claude
 tags: ["Claude Code", "Agent Skills", "Plugins", "Productividad"]
-readTime: 7
+readTime: 9
 cover: ./covers/mejores-skills-claude-code-2026.jpg
 featured: true
 ---
 
-Si solo quieres la lista: para desarrollo web, las skills que más merecen la pena a octubre de 2026 son **Superpowers** (método de trabajo con planificación y TDD), **frontend-design** (interfaces que no parecen plantilla), **skill-creator** (para crear las tuyas), las skills de documentos y **webapp-testing** del repositorio oficial de Anthropic, los plugins de seguridad de **Trail of Bits** y **Context7** para documentación actualizada. Abajo explico qué hace cada una y cómo instalarla, con el comando exacto.
+Si solo quieres la lista: para desarrollo web, las skills que más merecen la pena en noviembre de 2026 son **Superpowers** (método de trabajo con planificación y TDD), **frontend-design** (interfaces que no parecen plantilla), **skill-creator** (para crear las tuyas), las skills de documentos y **webapp-testing** del repositorio oficial de Anthropic, los plugins de seguridad de **Trail of Bits**, **Context7** para documentación actualizada y las **skills de Matt Pocock**, el repositorio de skills más popular de GitHub ahora mismo. Abajo explico qué hace cada una y cómo instalarla, con el comando exacto.
+
+*Actualizado el 5 de noviembre de 2026: añadidas las skills de Matt Pocock y una nota sobre las de Scenario, que están en tendencia estas semanas.*
 
 ## Qué es una skill (en 30 segundos)
 
@@ -124,6 +126,41 @@ npx ctx7 setup --claude
 
 No es una skill "pura" en el primer caso, pero en la práctica cumple el mismo papel y lo pongo en la lista porque es de lo que más errores tontos ahorra con Astro, Next.js o Supabase, que cambian rápido.
 
+## 7. Skills de Matt Pocock: el método de un ingeniero, empaquetado
+
+[mattpocock/skills](https://github.com/mattpocock/skills) es el repositorio de skills más popular de GitHub en este momento: unas 315.000 estrellas a 5 de noviembre de 2026. Son las 27 skills que Matt Pocock, conocido por sus cursos de TypeScript, usa en su día a día, y su descripción lo resume: "Skills for Real Engineers".
+
+Se instalan como plugin del marketplace oficial y, después, se configuran una vez por repositorio:
+
+```bash
+claude plugin install mattpocock-skills@claude-plugins-official
+```
+
+```text
+/setup-matt-pocock-skills
+```
+
+La configuración pregunta por tu gestor de incidencias, las etiquetas y dónde va la documentación. Las que más uso yo en proyectos web:
+
+- **`grill-me`**: te entrevista sobre un plan hasta que no quedan decisiones abiertas. Ideal antes de empezar una funcionalidad.
+- **`to-spec`** y **`to-tickets`**: convierten la conversación en una especificación y la parten en tareas. Es la versión ligera de [Spec Kit](/blog/spec-kit-spec-driven-development-claude-code/).
+- **`implement`**: programa a partir de la especificación o las tareas, con TDD y una revisión antes del commit.
+- **`diagnosing-bugs`**: un proceso ordenado para bugs difíciles y problemas de rendimiento.
+- **`handoff`**: resume la conversación en un documento para que otro agente o tú mañana podáis seguir.
+
+Hay otras para arquitectura y modelado del dominio (`improve-codebase-architecture`, `domain-modeling`) que compensan más en proyectos grandes. Si no sabes cuál usar, `ask-matt` te lo dice.
+
+Mi consejo: no las actives todas. Empieza por `grill-me` y `to-spec`, que son las que más cambian la calidad de lo que pides.
+
+### ¿Y las skills de Scenario?
+
+[scenario-labs/skills](https://github.com/scenario-labs/skills) también está en tendencia (unas 3.000 estrellas), pero es otra cosa: enseña al agente a generar imágenes, vídeo, audio y modelos 3D a través del servidor MCP de Scenario, una plataforma de generación, así que necesitas cuenta allí. Para programar una web no aporta. Puede servirte si necesitas imágenes de producto o recursos 3D para una web o un juego:
+
+```bash
+claude mcp add --transport http scenario https://mcp.scenario.com/mcp
+npx skills add scenario-labs/skills --skill scenario
+```
+
 ## Lo que ya viene de serie (y mucha gente no usa)
 
 Antes de instalar nada, mira lo que trae Claude Code. Según la [referencia de comandos](https://code.claude.com/docs/en/commands), a octubre de 2026:
@@ -141,7 +178,7 @@ La documentación explica que, si tienes muchas, Claude Code recorta descripcion
 Lo que yo haría en un proyecto web típico:
 
 1. **Siempre**: frontend-design y Context7.
-2. **Funcionalidades largas**: Superpowers.
+2. **Funcionalidades largas**: Superpowers, o `grill-me` y `to-spec` de Matt Pocock si prefieres algo más ligero.
 3. **Antes de producción**: webapp-testing y los plugins de Trail of Bits que encajen con tu stack.
 4. **Para tu equipo**: skill-creator y skills propias en `.claude/skills/` con vuestras convenciones.
 

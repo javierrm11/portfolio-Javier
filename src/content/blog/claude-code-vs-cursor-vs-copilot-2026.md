@@ -8,6 +8,8 @@ readTime: 6
 cover: ./covers/claude-code-vs-cursor-vs-copilot-2026.jpg
 ---
 
+*Actualizado el 5 de noviembre de 2026 con Copilot Fusion y las novedades de GitHub Universe.*
+
 Respuesta corta: **Claude Code** si quieres un agente que trabaje sobre todo tu repositorio desde la terminal (o tu editor) con los modelos de Anthropic; **Cursor** si quieres un editor pensado entero alrededor de la IA y te encaja su giro hacia los modelos Grok; **GitHub Copilot** si vives en GitHub, quieres la entrada más barata y prefieres elegir entre modelos de varios proveedores. Abajo tienes el detalle, con precios verificados en las webs oficiales **a octubre de 2026**.
 
 Aviso de sesgo: en este blog escribo mucho sobre Claude Code. Para compensarlo, todo lo que sigue sale de la documentación y las páginas de precios oficiales, y no hay benchmarks inventados.
@@ -18,6 +20,7 @@ Si leíste comparativas de 2025, varias cosas ya no son ciertas:
 
 - **Cursor ahora es de SpaceX.** La compra de Anysphere, la empresa detrás de Cursor, [se cerró el 14 de agosto de 2026](https://thenextweb.com/news/spacex-cursor-acquisition-completed-gpu-fleet). En octubre Cursor pasó a venderse dentro de "The X Subscription", junto a Grok y X Premium, según el [anuncio en su foro](https://forum.cursor.com/t/introducing-the-x-subscription/174450).
 - **Copilot cobra por créditos.** Los planes de GitHub Copilot miden ahora el uso en [GitHub AI Credits](https://docs.github.com/en/copilot/get-started/plans) (1 crédito = 0,01 USD), y hay un plan Max nuevo.
+- **Copilot Fusion elige el modelo por ti.** Presentado el 28 de octubre en [GitHub Universe](https://github.blog/news-insights/company-news/github-universe-2026-evolving-every-layer-of-the-stack/): analiza cada tarea y decide si resolverla con uno o con varios modelos, sin que tengas que escoger. Según GitHub, su nivel Max se queda a dos puntos de Opus 5.5 Max en el índice de agentes de programación de Artificial Analysis, a la mitad de coste y en un 40 % menos de tiempo por tarea. Es una cifra del propio fabricante. En el mismo evento presentó la app de Copilot y los proyectos, que lanzan varias sesiones de agentes en paralelo.
 - **Claude Code ya no es solo terminal.** Según su [documentación](https://code.claude.com/docs/en/overview), funciona en terminal, VS Code, JetBrains, app de escritorio y web.
 
 ## Cómo trabaja cada uno
@@ -26,7 +29,7 @@ Si leíste comparativas de 2025, varias cosas ya no son ciertas:
 
 **Cursor** es un editor (un fork de VS Code) con la IA dentro: autocompletado (Tab), un Agent en el panel lateral que edita y ejecuta comandos, checkpoints para deshacer, agentes en la nube y revisión de PRs con Bugbot en los planes superiores. También tiene CLI, pero su fuerte es la experiencia dentro del editor.
 
-**GitHub Copilot** empezó como autocompletado y hoy cubre más: chat y modo agente en el IDE, un agente en la nube que trabaja sobre una rama y [prepara una pull request](https://docs.github.com/en/copilot/concepts/agents/coding-agent/about-coding-agent), revisión de código y [Copilot CLI](https://docs.github.com/en/copilot/how-tos/copilot-cli/set-up-copilot-cli/install-copilot-cli). Su ventaja es la integración con GitHub: issues, PRs y Actions.
+**GitHub Copilot** empezó como autocompletado y hoy cubre más: chat y modo agente en el IDE, un agente en la nube que trabaja sobre una rama y [prepara una pull request](https://docs.github.com/en/copilot/concepts/agents/coding-agent/about-coding-agent), revisión de código y [Copilot CLI](https://docs.github.com/en/copilot/how-tos/copilot-cli/set-up-copilot-cli/install-copilot-cli). Su ventaja es la integración con GitHub: issues, PRs y Actions. Desde finales de octubre, con Copilot Fusion, puedes dejar que sea Copilot quien elija el modelo para cada tarea.
 
 ## Modelos
 

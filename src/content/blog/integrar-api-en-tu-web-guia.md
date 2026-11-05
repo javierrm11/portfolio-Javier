@@ -1,6 +1,6 @@
 ---
-title: "Cómo integrar una API en tu web: guía práctica"
-description: "Qué es una API, ejemplos para negocios (pagos, reservas, mapas, WhatsApp, CRM), los pasos para integrarla bien, código en TypeScript y cuánto cuesta."
+title: "Integración de APIs en tu web: guía práctica y precios"
+description: "Qué es la integración de una API web, ejemplos para negocios (pagos, reservas, WhatsApp, CRM), los 5 pasos para hacerla bien, código en TypeScript y cuánto cuesta."
 pubDate: 2026-09-22
 category: apis
 tags: ["APIs externas", "TypeScript", "Integraciones"]

@@ -1,6 +1,6 @@
 ---
-title: "Integrar la API de WhatsApp Business con IA generativa"
-description: "Webhooks, plantillas aprobadas y respuestas automáticas que no suenan a robot."
+title: "Agente IA con la API de WhatsApp Business para empresas"
+description: "Cómo se monta un agente de IA sobre la API oficial de WhatsApp Business: webhooks, plantillas aprobadas, la ventana de 24 horas y respuestas que no suenan a robot."
 pubDate: 2026-01-03
 category: ia
 tags: ["WhatsApp API", "IA", "Supabase"]
