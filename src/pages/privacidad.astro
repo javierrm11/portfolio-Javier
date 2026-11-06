@@ -1,0 +1,51 @@
+---
+import LegalPage from '../components/LegalPage.astro';
+import { OWNER } from '../lib/legal';
+---
+<LegalPage title="Política de privacidad" description="Qué datos recoge javierm.dev, para qué, con quién se comparten y cómo ejercer tus derechos." path="/privacidad/">
+  <p>Aquí te explico, sin rodeos, qué datos personales recoge esta web, para qué los uso y qué puedes hacer con ellos, conforme al Reglamento General de Protección de Datos (RGPD) y la Ley Orgánica 3/2018 (LOPDGDD).</p>
+
+  <h2>Responsable</h2>
+  <ul>
+    <li><strong>Responsable:</strong> {OWNER.name}, NIF {OWNER.nif}</li>
+    <li><strong>Domicilio:</strong> {OWNER.address}</li>
+    <li><strong>Contacto para temas de privacidad:</strong> <a href={`mailto:${OWNER.email}`}>{OWNER.email}</a></li>
+  </ul>
+
+  <h2>Qué datos recojo y para qué</h2>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Cuándo</th><th>Qué datos</th><th>Para qué</th><th>Base legal</th></tr></thead>
+      <tbody>
+        <tr><td>Formulario de contacto</td><td>Nombre, email, servicio que te interesa, tu mensaje y la página desde la que escribes</td><td>Responderte y, si quieres, prepararte un presupuesto</td><td>Tu consentimiento al enviarlo y la aplicación de medidas precontractuales (art. 6.1.a y 6.1.b RGPD)</td></tr>
+        <tr><td>WhatsApp, email o teléfono</td><td>Tu número o email, tu nombre y lo que me cuentes</td><td>Responderte y, si trabajamos juntos, gestionar el proyecto</td><td>Medidas precontractuales y, después, el contrato (art. 6.1.b)</td></tr>
+        <tr><td>Chat "Pregúntame"</td><td>El texto de tus preguntas</td><td>Generar la respuesta. Esta web no guarda las conversaciones</td><td>Tu consentimiento al escribir (art. 6.1.a)</td></tr>
+        <tr><td>Analizador web</td><td>La dirección web que escribes</td><td>Analizarla. No guardo las direcciones ni los resultados</td><td>Tu consentimiento al pedir el análisis (art. 6.1.a)</td></tr>
+        <tr><td>Navegación</td><td>Páginas vistas, país, tipo de dispositivo y web de procedencia, de forma agregada y sin cookies</td><td>Saber qué contenidos interesan y mejorar la web</td><td>Interés legítimo (art. 6.1.f)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Tu dirección IP se usa unos segundos en memoria para limitar abusos del chat y del analizador (un número máximo de peticiones por minuto) y no se guarda.</p>
+  <p>Por favor, no escribas datos personales sensibles en el chat ni en el analizador.</p>
+
+  <h2>Con quién se comparten</h2>
+  <p>No vendo ni cedo tus datos. Para que la web funcione intervienen estos proveedores, que los tratan por mi cuenta o, en el caso de WhatsApp, según sus propias condiciones:</p>
+  <ul>
+    <li><strong>Vercel Inc.</strong> (EE. UU.): aloja la web y da las estadísticas de visitas sin cookies. Como cualquier servidor, registra datos técnicos de las peticiones por seguridad.</li>
+    <li><strong>Formspree, Inc.</strong> (EE. UU.): recibe los mensajes del formulario y me los reenvía por email.</li>
+    <li><strong>Google</strong>: la API de Gemini genera las respuestas del chat a partir de tu pregunta, y la API de PageSpeed Insights analiza la web que pides en el analizador.</li>
+    <li><strong>Meta (WhatsApp)</strong>: si me escribes por WhatsApp, la conversación se rige también por la política de privacidad de WhatsApp.</li>
+    <li><strong>Google (Gmail)</strong>: el correo con el que te respondo.</li>
+  </ul>
+  <p>Algunos de estos proveedores están en Estados Unidos. Las transferencias se hacen con las garantías que prevé el RGPD, como el Marco de Privacidad de Datos UE-EE. UU. o las cláusulas contractuales tipo de la Comisión Europea, según indica cada proveedor.</p>
+
+  <h2>Cuánto tiempo los guardo</h2>
+  <p>Los mensajes de contacto, el tiempo necesario para atender tu consulta y, si no llegamos a trabajar juntos, como mucho un año. Si trabajamos juntos, los datos del proyecto y de facturación, el tiempo que exigen las obligaciones fiscales y contables.</p>
+
+  <h2>Tus derechos</h2>
+  <p>Puedes pedirme en cualquier momento acceder a tus datos, rectificarlos, suprimirlos, oponerte a su tratamiento, limitarlo o llevártelos (portabilidad), y retirar tu consentimiento. Escríbeme a <a href={`mailto:${OWNER.email}`}>{OWNER.email}</a> indicando qué derecho quieres ejercer.</p>
+  <p>Si crees que no he tratado bien tus datos, puedes reclamar ante la <a href="https://www.aepd.es/" rel="noopener noreferrer" target="_blank">Agencia Española de Protección de Datos</a>.</p>
+
+  <h2>Menores</h2>
+  <p>La web está pensada para empresas y profesionales. Si tienes menos de 14 años, no envíes tus datos.</p>
+</LegalPage>

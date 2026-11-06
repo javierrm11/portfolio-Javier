@@ -163,13 +163,33 @@ html.lazy-bg #footer:not(.bg-in)::before {
    inicio del iPhone. */
 .footer-bottom {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 0 1rem;
   padding-block: 1rem calc(1rem + env(safe-area-inset-bottom, 0px));
   border-top: 1px solid var(--border-subtle);
   font-size: 0.8125rem;
   color: var(--text-secondary);
+}
+
+.footer-legal {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 1.25rem;
+}
+
+.footer-legal a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.footer-legal a:hover {
+  color: var(--accent-from);
+  text-decoration: underline;
 }
 
 .back-to-top {

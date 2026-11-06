@@ -173,7 +173,10 @@ const base = page === 'home' ? '' : '/';
       if (!link) return;
       const id = link.getAttribute("href");
       if (!id || id === "#") return;
-      const target = document.querySelector(id);
+      // getElementById y no querySelector: los apartados de los artículos
+      // pueden tener ids que empiezan por número ("1-superpowers…"), que no
+      // son selectores CSS válidos y hacían saltar un error.
+      const target = document.getElementById(decodeURIComponent(id.slice(1)));
       if (!target) return;
       e.preventDefault();
       setMenu(false);

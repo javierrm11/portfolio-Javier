@@ -22,9 +22,49 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 const cat = CATEGORIES[post.data.category];
 const cta = ctaForPost(post.id, post.data.category);
+
+const SITE = 'https://www.javierm.dev';
+const url = `${SITE}/blog/${post.id}/`;
+// Imagen para redes generada con el título (src/pages/og/[slug].jpg.ts).
+const ogImage = `${SITE}/og/${post.id}.jpg`;
+const updated = post.data.updatedDate && post.data.updatedDate > post.data.pubDate ? post.data.updatedDate : undefined;
+
+// Índice solo en artículos largos: con menos de cuatro apartados estorba más que ayuda.
+const toc = headings.filter((h) => h.depth === 2);
+const showToc = toc.length >= 4;
+
+// Datos estructurados: artículo con autor y migas de pan (Inicio › Blog › artículo).
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'BlogPosting',
+      '@id': `${url}#articulo`,
+      headline: post.data.title,
+      description: post.data.description,
+      image: ogImage,
+      datePublished: post.data.pubDate.toISOString(),
+      dateModified: (updated ?? post.data.pubDate).toISOString(),
+      inLanguage: 'es-ES',
+      articleSection: cat.label,
+      keywords: post.data.tags.join(', '),
+      mainEntityOfPage: url,
+      author: { '@type': 'Person', '@id': `${SITE}/#javier`, name: post.data.author, url: `${SITE}/` },
+      publisher: { '@type': 'Person', '@id': `${SITE}/#javier`, name: 'Javier Ruiz Molero', url: `${SITE}/` },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${SITE}/` },
+        { '@type': 'ListItem', position: 2, name: 'Blog', item: `${SITE}/blog` },
+        { '@type': 'ListItem', position: 3, name: post.data.title, item: url },
+      ],
+    },
+  ],
+};
 
 const allPosts = await getCollection('blog');
 const related = allPosts
@@ -42,7 +82,9 @@ const related = allPosts
     title={`${post.data.title} | Blog de Javier Ruiz Molero`}
     description={post.data.description}
     path={`/blog/${post.id}/`}
+    image={ogImage}
   />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 </head>
 <body>
   <Header page="blog" />
@@ -54,15 +96,21 @@ const related = allPosts
         Volver al blog
       </a>
 
-      <article>
+      <!-- data-pagefind-body: el buscador del blog indexa solo los artículos,
+           y dentro de ellos se salta lo que lleva data-pagefind-ignore. -->
+      <article data-pagefind-body>
         <div class="post-article-head">
           <span class="blog-eyebrow" style={`color:${cat.color}`}>{cat.label}</span>
           <h1>{post.data.title}</h1>
-          <div class="post-meta-full">
+          <div class="post-meta-full" data-pagefind-ignore>
             <div class="post-avatar"></div>
             <div class="who">
               <b>{post.data.author}</b>
-              <span>{formatDate(post.data.pubDate)} · {post.data.readTime} min de lectura</span>
+              <span>
+                <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+                {updated && <> · Actualizado el <time datetime={updated.toISOString()}>{formatDate(updated)}</time></>}
+                {' '}· {post.data.readTime} min de lectura
+              </span>
             </div>
           </div>
         </div>
@@ -71,13 +119,22 @@ const related = allPosts
           <Image src={post.data.cover} alt="" widths={[700, 1100, 1400]} sizes="(min-width: 900px) 1100px, 100vw" loading="eager" />
         </div>
 
+        {showToc && (
+          <nav class="post-toc" aria-labelledby="post-toc-title" data-pagefind-ignore>
+            <p id="post-toc-title" class="post-toc-title">En este artículo</p>
+            <ol>
+              {toc.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}
+            </ol>
+          </nav>
+        )}
+
         <div class="prose">
           <Content />
         </div>
 
         {cta && <PostCta cta={cta} />}
 
-        <div class="post-tags-share">
+        <div class="post-tags-share" data-pagefind-ignore>
           <div class="post-tags">
             {post.data.tags.map((tag) => <span class="post-tag">{tag}</span>)}
           </div>
@@ -91,7 +148,7 @@ const related = allPosts
           </div>
         </div>
 
-        <div class="author-card">
+        <div class="author-card" data-pagefind-ignore>
           <div class="post-avatar"></div>
           <div>
             <h3>{post.data.author}</h3>
@@ -100,7 +157,7 @@ const related = allPosts
         </div>
 
         {related.length > 0 && (
-          <div class="related-wrap">
+          <div class="related-wrap" data-pagefind-ignore>
             <h3 class="blog-section-label" style="margin-top:0"><span style="font-family:'Poppins',var(--font-sans);font-weight:800;font-size:1.25rem;color:var(--text-primary)">Sigue leyendo</span></h3>
             <div class="related-grid">
               {related.map((r) => {

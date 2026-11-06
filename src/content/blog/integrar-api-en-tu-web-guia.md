@@ -131,6 +131,8 @@ Para una pyme, muchas integraciones se quedan dentro de los tramos gratuitos o e
 - Si va dentro de una **web nueva** (reservas, mapa, pagos): parte de la web profesional, desde 349 € pago único y 2–3 semanas, más la complejidad de la integración.
 - Si es una **aplicación con lógica propia** (panel interno, varias APIs combinadas, usuarios): app a medida, desde 1.490 € y 4–8 semanas.
 
+Si quieres ver tu caso concreto, en la página de [integración de APIs](/servicios/integracion-apis/) eliges qué quieres conectar y te sale el precio y el plazo al momento.
+
 ## Integración de APIs en Córdoba y en remoto
 
 Trabajo desde Córdoba y en remoto con negocios de cualquier parte de España. Si tienes un negocio en Córdoba, te pilla cerca; si estás en otra ciudad, lo vemos por videollamada. En los dos casos, el punto de partida es el mismo: revisar qué programas usas y qué tiene sentido conectar.
@@ -139,4 +141,4 @@ Una buena pregunta para empezar cualquier integración de API: ¿qué tarea repi
 
 ## ¿Qué quieres conectar?
 
-Cuéntame qué servicio quieres integrar en tu web y te digo cómo lo haría y cuánto costaría. [Escríbeme por WhatsApp](https://wa.me/34611434736?text=Hola%20Javier%2C%20vengo%20de%20tu%20blog%20y%20me%20interesa%20integrar%20una%20API%20en%20mi%20web), mira los [servicios y precios](/#servicios) o usa el [formulario de contacto](/#contact).
+Cuéntame qué servicio quieres integrar en tu web y te digo cómo lo haría y cuánto costaría, o calcula tu caso en la página de [integración de APIs](/servicios/integracion-apis/). [Escríbeme por WhatsApp](https://wa.me/34611434736?text=Hola%20Javier%2C%20vengo%20de%20tu%20blog%20y%20me%20interesa%20integrar%20una%20API%20en%20mi%20web), mira los [servicios y precios](/#servicios) o usa el [formulario de contacto](/#contact).

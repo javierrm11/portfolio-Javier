@@ -2,11 +2,33 @@
 import { defineConfig, envField } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import vercel from '@astrojs/vercel';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
+
+// Índice del buscador del blog. Se genera al terminar la compilación sobre las
+// páginas ya escritas (dist/client) y antes de que el adaptador de Vercel las
+// copie a .vercel/output/static: las integraciones propias corren antes que la
+// del adaptador. Solo entra lo marcado con data-pagefind-body (los artículos).
+/** @type {import('astro').AstroIntegration} */
+const pagefindIndex = {
+  name: 'pagefind-index',
+  hooks: {
+    'astro:build:done': async ({ dir, logger }) => {
+      const pagefind = await import('pagefind');
+      const site = fileURLToPath(dir);
+      const { index } = await pagefind.createIndex({});
+      const { page_count } = await index.addDirectory({ path: site });
+      await index.writeFiles({ outputPath: path.join(site, 'pagefind') });
+      await pagefind.close();
+      logger.info(`Buscador: ${page_count} páginas indexadas`);
+    },
+  },
+};
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://www.javierm.dev', // 👈 muy importante para que el sitemap funcione
-  integrations: [sitemap()],
+  integrations: [sitemap({ filter: (page) => !page.includes('/og/') && !page.endsWith('/404/') }), pagefindIndex],
   // El CSS va dentro del HTML en vez de en archivos aparte: cada hoja externa
   // bloqueaba el primer pintado en móvil mientras se descargaba.
   build: { inlineStylesheets: 'always' },

@@ -1,0 +1,91 @@
+---
+// Página para enlaces rotos: en vez de un callejón sin salida, lleva a lo que
+// suele buscar quien llega (servicios, analizador, blog) y deja a mano el contacto.
+import { getCollection } from 'astro:content';
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+import { contactWa, TEL_HREF, PHONE_DISPLAY } from '../lib/services';
+import '../styles/global.css';
+import '../styles/header.css';
+import '../styles/footer.css';
+import '../styles/servicio.css';
+
+const latest = (await getCollection('blog'))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+---
+<html lang="es">
+<head>
+  <BaseHead title="Página no encontrada | Javier Ruiz Molero" description="La página que buscas no existe o se ha movido." path="/404" type="website" noindex />
+</head>
+<body>
+  <Header page="servicio" />
+  <main class="servicio-main">
+    <section class="srv-section nf">
+      <div class="srv-wrap nf-wrap">
+        <p class="nf-code" aria-hidden="true">404</p>
+        <h1>Esta página no existe</h1>
+        <p class="nf-lead">Puede que el enlace esté mal escrito o que la página se haya movido. Esto es lo que suele buscar quien llega aquí:</p>
+
+        <ul class="nf-links">
+          <li><a href="/#servicios"><strong>Servicios y precios</strong><span>Webs, apps, automatizaciones y agentes de IA</span></a></li>
+          <li><a href="/analizador-web/"><strong>Analizador web gratis</strong><span>Mide la velocidad y el SEO de tu web en un minuto</span></a></li>
+          <li><a href="/blog"><strong>Blog</strong><span>Guías y precios para empresas pequeñas</span></a></li>
+        </ul>
+
+        {latest.length > 0 && (
+          <>
+            <h2 class="nf-sub">Lo último del blog</h2>
+            <ul class="nf-posts">
+              {latest.map((post) => <li><a href={`/blog/${post.id}/`}>{post.data.title}</a></li>)}
+            </ul>
+          </>
+        )}
+
+        <div class="nf-contact">
+          <p>¿Buscabas algo concreto? Pregúntame directamente.</p>
+          <div class="nf-actions">
+            <a class="srv-btn srv-btn--wa" href={contactWa} target="_blank" rel="noopener noreferrer">Escribir por WhatsApp</a>
+            <a class="srv-btn nf-tel" href={TEL_HREF}>Llamar al {PHONE_DISPLAY}</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer page="servicio" />
+  <WhatsAppButton autoOpen={false} />
+</body>
+</html>
+
+<style>
+  .nf-wrap { max-width: 760px; }
+  .nf-code {
+    font-family: 'Poppins', var(--font-sans);
+    font-weight: 800;
+    font-size: clamp(4rem, 14vw, 7rem);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--accent-from);
+  }
+  h1 { margin-top: 0.5rem; font-size: clamp(1.75rem, 4vw, 2.5rem); }
+  .nf-lead { margin-top: 0.875rem; font-size: 1.125rem; line-height: 1.6; color: var(--text-secondary); }
+  .nf-links { display: grid; gap: 0.75rem; margin-top: 1.75rem; list-style: none; }
+  .nf-links a {
+    display: flex; flex-direction: column; gap: 0.25rem; padding: 1.125rem 1.25rem;
+    border: 1px solid var(--border-subtle); border-radius: var(--radius-md);
+    color: var(--text-primary); text-decoration: none;
+    transition: border-color var(--transition-base);
+  }
+  .nf-links a:hover { border-color: var(--accent-from); }
+  .nf-links strong { font-size: 1.0625rem; }
+  .nf-links span { color: var(--text-secondary); }
+  .nf-sub { margin-top: 2.5rem; font-size: 1.25rem; }
+  .nf-posts { margin-top: 0.75rem; padding-left: 1.25rem; display: grid; gap: 0.5rem; }
+  .nf-posts a { color: var(--accent-from); font-weight: 600; line-height: 1.5; }
+  .nf-contact { margin-top: 2.5rem; padding: 1.5rem; border-radius: var(--radius-md); background: var(--srv-tint); }
+  .nf-contact p { font-weight: 700; }
+  .nf-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem; }
+  .nf-tel { border: 1px solid rgba(16, 24, 40, 0.18); color: var(--text-primary); }
+</style>

@@ -30,6 +30,15 @@ export function buildSystemPrompt(posts: PostSummary[]): string {
         `Preguntas frecuentes:\n${pageFaqs}`,
       ].filter(Boolean).join('\n');
     })
+    .concat([
+      // Tiene página propia pero no es un plan de services.ts (ver src/lib/apiIntegrations.ts).
+      [
+        '### Integración de APIs',
+        `Página: ${SITE}/servicios/integracion-apis/ (allí el visitante elige qué conectar y ve precio y plazo al momento)`,
+        'Precio: desde 149 € por integración si ya tiene web (1–2 semanas); dentro de una web nueva, desde 349 € (2–3 semanas); una herramienta interna con varias APIs, desde 1.490 € (4–8 semanas). Mantenimiento opcional: 15 €/mes.',
+        'Qué es: conectar la web con pagos, reservas y citas, avisos por WhatsApp Business, formularios y CRM, o el programa de facturación, para que los datos pasen solos.',
+      ].join('\n'),
+    ])
     .join('\n\n');
 
   const projectList = projects

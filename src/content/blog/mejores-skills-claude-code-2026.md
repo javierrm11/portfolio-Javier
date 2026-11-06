@@ -2,6 +2,7 @@
 title: "Mejores skills de Claude Code en 2026 para desarrollo web"
 description: "Las skills de Claude Code que de verdad aportan en desarrollo web: qué hace cada una, el comando exacto para instalarla y cuáles conviene evitar."
 pubDate: 2026-10-27
+updatedDate: 2026-11-05
 category: claude
 tags: ["Claude Code", "Agent Skills", "Plugins", "Productividad"]
 readTime: 9

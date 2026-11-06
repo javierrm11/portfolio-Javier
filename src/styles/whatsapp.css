@@ -216,6 +216,41 @@
   }
 }
 
+/* ── Botón de llamar, encima del del chat ─────────────────────── */
+/* Mismo tamaño que el botón del chat (60px; 56px en móvil). */
+.wa-call {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--accent-from);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 24px rgba(16, 24, 40, 0.28);
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.wa-call:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(16, 24, 40, 0.32);
+}
+
+.wa-call:focus-visible {
+  outline: 3px solid var(--accent-from);
+  outline-offset: 3px;
+}
+
+/* Con el chat abierto, el panel ocupa ese hueco. */
+.wa-widget.is-open .wa-call { display: none; }
+
+@media (max-width: 600px) {
+  .wa-call {
+    width: 56px;
+    height: 56px;
+  }
+}
+
 @media print {
   .wa-widget { display: none; }
 }

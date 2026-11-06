@@ -10,9 +10,13 @@ interface Props {
   path: string; // ej. "/blog" o "/blog/mi-post"
   // Las páginas de servicio no son artículos (og:type website).
   type?: 'article' | 'website';
+  /** Imagen para redes (URL absoluta). Los artículos llevan la suya, con su título. */
+  image?: string;
+  /** La 404 y similares: que Google no las guarde. */
+  noindex?: boolean;
 }
 
-const { title, description, path, type = 'article' } = Astro.props;
+const { title, description, path, type = 'article', image = 'https://www.javierm.dev/og-image.jpg', noindex = false } = Astro.props;
 const url = `https://www.javierm.dev${path}`;
 ---
 <meta charset="utf-8" />
@@ -33,16 +37,19 @@ const url = `https://www.javierm.dev${path}`;
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={url} />
-<meta property="og:image" content="https://www.javierm.dev/og-image.jpg" />
+<meta property="og:image" content={image} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
 <meta property="og:site_name" content="Javier Ruiz Molero" />
 <meta property="og:locale" content="es_ES" />
 
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
-<meta name="twitter:image" content="https://www.javierm.dev/og-image.jpg" />
+<meta name="twitter:image" content={image} />
 
-<meta name="robots" content="index, follow" />
+<meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow'} />
 <meta http-equiv="content-language" content="es" />
+<link rel="alternate" type="application/rss+xml" title="Blog de Javier Ruiz Molero" href="https://www.javierm.dev/rss.xml" />
 
 <FontPreloads />

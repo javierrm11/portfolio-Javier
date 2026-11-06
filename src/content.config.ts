@@ -13,6 +13,9 @@ const blog = defineCollection({
     title: z.string(),
     description: z.string(),
     pubDate: z.coerce.date(),
+    // Solo cuando el contenido cambia de verdad (no por una errata): se ve en
+    // el artículo y va como dateModified en sus datos estructurados.
+    updatedDate: z.coerce.date().optional(),
     // Debe coincidir con una clave de CATEGORIES en src/lib/blogCategories.ts.
     category: z.enum(['seo-tecnico', 'ia', 'nextjs', 'supabase', 'apis', 'claude', 'negocios', 'carrera']),
     tags: z.array(z.string()).default([]),

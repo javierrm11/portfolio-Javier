@@ -1,0 +1,332 @@
+---
+// Página del servicio de integración de APIs (variantes 1 y 2 del explorador
+// de diseño, combinadas): el visitante elige qué conectar y si ya tiene web, y
+// ve al momento precio, plazo y un WhatsApp con su caso ya escrito. Tiene
+// archivo propio porque no es un plan de services.ts: no sale en la home.
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import WhatsAppButton from '../../components/WhatsAppButton.astro';
+import ContactForm from '../../components/ContactForm.astro';
+import { plans, formatPrice, PHONE, TEL_HREF, PHONE_DISPLAY, EMAIL } from '../../lib/services';
+import { steps } from '../../lib/servicePages';
+import { INTEGRATIONS, DEFAULT_INTEGRATION, quote } from '../../lib/apiIntegrations';
+import '../../styles/global.css';
+import '../../styles/header.css';
+import '../../styles/footer.css';
+import '../../styles/servicio.css';
+
+const SITE = 'https://www.javierm.dev';
+const path = '/servicios/integracion-apis/';
+const title = 'Integración de APIs en tu web desde 149 € | Javier Ruiz Molero';
+const description = 'Conecto tu web con pagos, reservas, WhatsApp, tu CRM o tu facturación. Elige qué quieres conectar y ve el precio al momento. Desde Córdoba y en remoto.';
+
+const first = INTEGRATIONS.find((i) => i.id === DEFAULT_INTEGRATION)!;
+const initial = quote(first.id, true, PHONE);
+
+const rules = [
+  { title: 'Claves en el servidor', desc: 'Las contraseñas de cada servicio nunca llegan al navegador de tus clientes.', icon: 'M6 10V7a6 6 0 0 1 12 0v3 M5 10h14v11H5z' },
+  { title: 'Sin facturas sorpresa', desc: 'Caché y límites de uso para que un pico de visitas no dispare lo que pagas al servicio.', icon: 'M12 3v18 M17 7.5c0-1.9-2.2-3-5-3s-5 1.1-5 3 2 2.7 5 3.5 5 1.6 5 3.5-2.2 3-5 3-5-1.1-5-3' },
+  { title: 'Si el servicio falla, tu web no', desc: 'Cada integración está preparada para cuando el otro lado no responde.', icon: 'M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z' },
+  { title: 'Documentada para tu equipo', desc: 'Queda escrito qué hace cada pieza, con el código y las cuentas a tu nombre.', icon: 'M6 3h9l3 3v15H6z M9 9h6 M9 13h6 M9 17h4' },
+];
+
+const faqs = [
+  { q: '¿Qué es integrar una API en mi web?', a: 'Conectar tu web con un servicio externo, como una pasarela de pago, tu agenda, WhatsApp o tu CRM, para que se pasen los datos solos y nadie tenga que copiar y pegar.' },
+  { q: '¿Cuánto cuesta integrar una API?', a: 'Desde 149 € si es conectar herramientas que ya usas, en 1–2 semanas. Si va dentro de una web nueva, desde 349 €. Una herramienta interna con varias APIs, desde 1.490 €. Siempre con presupuesto cerrado antes de empezar.' },
+  { q: '¿Tengo que pagar también al servicio que conectamos?', a: 'Depende del servicio. Stripe cobra por cada pago y Google Maps incluye 10.000 usos gratis al mes por servicio, por ejemplo. Muchas integraciones de una pyme caben en los tramos gratuitos; te lo digo antes de empezar.' },
+  { q: '¿Qué pasa si el servicio externo falla o cambia?', a: 'Tu web sigue funcionando, porque cada integración está preparada para ese caso. Con el mantenimiento opcional (15 €/mes) reviso que todo siga funcionando y la ajusto si la herramienta cambia.' },
+  { q: '¿Trabajas fuera de Córdoba?', a: 'Sí. Trabajo desde Córdoba y en remoto con empresas de toda España.' },
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Service',
+      '@id': `${SITE}${path}#servicio`,
+      name: 'Integración de APIs',
+      description,
+      url: `${SITE}${path}`,
+      provider: { '@id': `${SITE}/#negocio` },
+      areaServed: [{ '@type': 'City', name: 'Córdoba' }, { '@type': 'Country', name: 'España' }],
+      offers: { '@type': 'Offer', priceSpecification: { '@type': 'PriceSpecification', minPrice: 149, priceCurrency: 'EUR' } },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${SITE}/` },
+        { '@type': 'ListItem', position: 2, name: 'Servicios', item: `${SITE}/#servicios` },
+        { '@type': 'ListItem', position: 3, name: 'Integración de APIs', item: `${SITE}${path}` },
+      ],
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+    },
+  ],
+};
+---
+
+<html lang="es">
+<head>
+  <BaseHead title={title} description={description} path={path} type="website" />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+</head>
+<body>
+  <Header page="servicio" />
+  <main class="servicio-main">
+
+    <section class="srv-hero srv-section--tint">
+      <div class="srv-wrap srv-hero-grid api-hero">
+        <div>
+          <nav class="srv-breadcrumb" aria-label="Migas de pan">
+            <a href="/">Inicio</a> / <a href="/#servicios">Servicios</a> / <span aria-current="page">Integración de APIs</span>
+          </nav>
+          <h1>Integración de APIs en tu web</h1>
+          <p class="srv-lead">Conecto tu web con los programas que ya usas: pagos, reservas, WhatsApp, tu CRM o tu facturación. Elige lo tuyo y ves al momento qué incluye, cuánto cuesta y en cuánto tiempo está.</p>
+          <ul class="api-checks">
+            <li>Presupuesto cerrado antes de empezar</li>
+            <li>Código, cuentas y claves a tu nombre</li>
+            <li>30 días de soporte tras la entrega</li>
+          </ul>
+        </div>
+
+        <!-- El selector: sin JavaScript se ve la primera opción con su precio;
+             con JavaScript, cada clic actualiza el resultado y el WhatsApp. -->
+        <div class="api-card" id="api-picker" data-phone={PHONE}>
+          <p class="api-q" id="api-q1">1. ¿Qué quieres conectar?</p>
+          <div class="api-chips" role="group" aria-labelledby="api-q1">
+            {INTEGRATIONS.map((item) => (
+              <button type="button" class="api-chip" data-id={item.id} aria-pressed={item.id === first.id ? 'true' : 'false'}>{item.label}</button>
+            ))}
+          </div>
+
+          <div id="api-web">
+            <p class="api-q" id="api-q2">2. ¿Ya tienes web?</p>
+            <div class="api-seg" role="group" aria-labelledby="api-q2">
+              <button type="button" class="api-seg-btn" data-web="si" aria-pressed="true">Sí, conectarlo a mi web</button>
+              <button type="button" class="api-seg-btn" data-web="no" aria-pressed="false">No, necesito web nueva</button>
+            </div>
+          </div>
+
+          <div class="api-result" aria-live="polite">
+            <p class="api-title" id="api-title">{first.title}</p>
+            <p id="api-text">{first.text}</p>
+            <p class="api-note" id="api-note">{initial.note}</p>
+            <div class="api-bottom">
+              <div class="api-price">
+                <strong id="api-price">{initial.price}</strong>
+                <span><span id="api-time">{initial.time}</span> · precio orientativo</span>
+              </div>
+              <div class="api-actions">
+                <a class="srv-btn srv-btn--wa" id="api-wa" href={initial.whatsapp} target="_blank" rel="noopener noreferrer">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.4-4.2A8.5 8.5 0 1 1 8 19.3z"></path><path d="M9 8.6c.2 2.9 3 5.8 6.1 6.2l1.2-1.4-2-1-1 .8c-1-.5-2.2-1.6-2.7-2.7l.8-1-1-2z"></path></svg>
+                  Pedir presupuesto
+                </a>
+                <a class="api-call" href={TEL_HREF} aria-label={`Llamar al ${PHONE_DISPLAY}`}>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="srv-section">
+      <div class="srv-wrap">
+        <h2>Así trabajo cada integración</h2>
+        <div class="srv-includes api-rules">
+          {rules.map((r) => (
+            <article>
+              <span class="srv-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={r.icon}></path></svg>
+              </span>
+              <h3>{r.title}</h3>
+              <p>{r.desc}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="srv-section srv-section--tint">
+      <div class="srv-wrap">
+        <h2>Cómo trabajamos</h2>
+        <ol class="srv-steps">
+          {steps.map((st) => (
+            <li>
+              <span class="srv-step-n">{st.n}</span>
+              <strong>{st.title}</strong>
+              <span>{st.desc}</span>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <section class="srv-section">
+      <div class="srv-wrap srv-price-faq">
+        <div class="srv-price">
+          <span class="srv-launch">Precio de lanzamiento</span>
+          <p class="srv-from">Desde</p>
+          <strong>149 €</strong>
+          <p class="srv-billing">por integración · 1–2 semanas</p>
+          <ul>
+            {['Análisis de lo que quieres conectar', 'Conexión segura, con caché y límites', 'Pruebas con datos reales', 'Documentación para tu equipo'].map((inc) => (
+              <li>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+                {inc}
+              </li>
+            ))}
+          </ul>
+          <a class="srv-btn srv-btn--primary" href="#api-picker">Calcular mi caso</a>
+          <p class="srv-note"><strong>Mantenimiento opcional: 15 €/mes.</strong> Reviso que todo siga funcionando y la ajusto si alguna herramienta cambia.</p>
+          <p class="srv-note">Dentro de una web nueva, desde 349 €. Una herramienta interna con varias APIs, desde 1.490 €. Lo que cobre el servicio externo va aparte.</p>
+        </div>
+        <div class="srv-faq">
+          <h2>Preguntas frecuentes</h2>
+          {faqs.map((f) => (
+            <details>
+              <summary>{f.q}</summary>
+              <p>{f.a}</p>
+            </details>
+          ))}
+          <p class="api-guide">¿Quieres el detalle técnico? Lo explico en la <a href="/blog/integrar-api-en-tu-web-guia/">guía de integración de APIs</a>, con ejemplos y código.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="srv-section srv-section--tint">
+      <div class="srv-wrap">
+        <div id="contacto" class="srv-contact">
+          <div class="srv-contact-info">
+            <h2>¿Qué quieres conectar?</h2>
+            <p>Dime qué programas usas y te digo cómo lo haría, cuánto cuesta y en cuánto tiempo.</p>
+            <div class="srv-contact-actions">
+              <a class="srv-btn srv-btn--wa" href={quote(first.id, true, PHONE).whatsapp} target="_blank" rel="noopener noreferrer">Escribir por WhatsApp</a>
+              <a class="srv-btn srv-btn--primary" href={TEL_HREF}>Llamar al {PHONE_DISPLAY}</a>
+            </div>
+            <ul class="srv-contact-direct">
+              <li><a href={`mailto:${EMAIL}`}>{EMAIL}</a></li>
+            </ul>
+          </div>
+          <ContactForm selected="automatizaciones" />
+        </div>
+        <nav class="srv-others" aria-label="Otros servicios">
+          <h2>Otros servicios</h2>
+          <ul>
+            {plans.map((o) => (
+              <li><a href={`/servicios/${o.slug}/`}><span>{o.title}</span><span>desde {formatPrice(o.priceFrom)}</span></a></li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+    </section>
+  </main>
+  <Footer page="servicio" />
+  <WhatsAppButton />
+</body>
+</html>
+
+<script>
+  import { INTEGRATIONS, quote } from '../../lib/apiIntegrations';
+
+  const picker = document.getElementById('api-picker');
+  if (picker) {
+    const phone = picker.dataset.phone ?? '';
+    const chips = Array.from(picker.querySelectorAll<HTMLButtonElement>('.api-chip'));
+    const webButtons = Array.from(picker.querySelectorAll<HTMLButtonElement>('.api-seg-btn'));
+    const webRow = document.getElementById('api-web');
+    const text = (id: string, value: string) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    };
+    let picked = chips.find((c) => c.getAttribute('aria-pressed') === 'true')?.dataset.id ?? INTEGRATIONS[0].id;
+    let hasWeb = true;
+
+    const update = () => {
+      const item = INTEGRATIONS.find((i) => i.id === picked) ?? INTEGRATIONS[0];
+      const q = quote(item.id, hasWeb, phone);
+      chips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.id === item.id)));
+      webButtons.forEach((b) => b.setAttribute('aria-pressed', String((b.dataset.web === 'si') === hasWeb)));
+      // La herramienta interna no depende de tener web: la pregunta sobra.
+      if (webRow) webRow.hidden = Boolean(item.standalone);
+      text('api-title', item.title);
+      text('api-text', item.text);
+      text('api-note', q.note);
+      text('api-price', q.price);
+      text('api-time', q.time);
+      document.getElementById('api-wa')?.setAttribute('href', q.whatsapp);
+    };
+
+    chips.forEach((c) => c.addEventListener('click', () => { picked = c.dataset.id ?? picked; update(); }));
+    webButtons.forEach((b) => b.addEventListener('click', () => { hasWeb = b.dataset.web === 'si'; update(); }));
+  }
+</script>
+
+<style>
+  .api-hero { align-items: start; }
+  .api-checks { display: grid; gap: 0.625rem; margin-top: 1.5rem; list-style: none; }
+  .api-checks li { display: flex; align-items: center; gap: 0.625rem; font-weight: 600; }
+  .api-checks li::before {
+    content: ''; flex-shrink: 0; width: 18px; height: 18px; border-radius: 50%;
+    background: var(--srv-check) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4L18 8'/%3E%3C/svg%3E") center / 12px no-repeat;
+  }
+
+  .api-card {
+    display: grid; gap: 1rem; padding: clamp(1.25rem, 3vw, 1.75rem);
+    border-radius: 22px; background: #fff; border: 1px solid #e3ebf5;
+    box-shadow: 0 30px 70px -40px rgba(6, 20, 42, 0.45);
+    scroll-margin-top: 6rem;
+  }
+  .api-q { font-family: 'Poppins', var(--font-sans); font-weight: 700; font-size: 1.0625rem; margin-bottom: 0.625rem; }
+  .api-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .api-chip, .api-seg-btn {
+    min-height: 44px; padding: 0 1rem; border: 1px solid rgba(16, 24, 40, 0.2); background: #fff;
+    font: inherit; font-weight: 700; font-size: 0.9375rem; color: var(--text-primary); cursor: pointer;
+    transition: background var(--transition-base), border-color var(--transition-base), color var(--transition-base);
+  }
+  .api-chip { border-radius: 999px; }
+  .api-chip:hover, .api-seg-btn:hover { border-color: var(--accent-from); }
+  .api-chip[aria-pressed='true'] { background: var(--accent-from); border-color: var(--accent-from); color: #fff; }
+  .api-chip:focus-visible, .api-seg-btn:focus-visible, .api-call:focus-visible { outline: 3px solid var(--accent-from); outline-offset: 2px; }
+
+  .api-seg { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
+  .api-seg-btn { border-radius: 10px; min-height: 48px; }
+  .api-seg-btn[aria-pressed='true'] { background: #e6f0fb; border-color: var(--accent-from); color: #0b4f9c; }
+
+  .api-result { display: grid; gap: 0.5rem; padding: 1.25rem; border-radius: 14px; background: var(--srv-tint); }
+  .api-title { font-family: 'Poppins', var(--font-sans); font-weight: 700; font-size: 1.25rem; line-height: 1.3; }
+  .api-result p { line-height: 1.55; color: var(--text-secondary); }
+  .api-result .api-title { color: var(--text-primary); }
+  .api-note { font-size: 0.875rem; }
+  .api-note:empty { display: none; }
+  .api-bottom { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1rem; margin-top: 0.5rem; }
+  .api-price { display: grid; gap: 0.125rem; }
+  .api-price strong { font-family: 'Poppins', var(--font-sans); font-weight: 800; font-size: clamp(1.75rem, 3vw, 2.125rem); line-height: 1.1; }
+  .api-price span { font-size: 0.9375rem; color: var(--text-secondary); }
+  .api-actions { display: flex; gap: 0.5rem; }
+  .api-actions .srv-btn { min-height: 52px; padding: 0 1.25rem; font-size: 0.9375rem; }
+  .api-call {
+    display: inline-flex; align-items: center; justify-content: center; width: 52px; height: 52px;
+    border-radius: var(--radius-sm); background: var(--accent-from); color: #fff;
+  }
+
+  /* Cuatro reglas: en cuatro columnas en vez de las tres de .srv-includes,
+     para que ninguna quede sola en otra fila. */
+  .api-rules { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  @media (max-width: 1023px) { .api-rules { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 640px) { .api-rules { grid-template-columns: minmax(0, 1fr); } }
+  .api-actions .srv-btn { white-space: nowrap; }
+
+  .api-guide { margin-top: 1.25rem; line-height: 1.6; color: var(--text-secondary); }
+  .api-guide a { color: var(--accent-from); font-weight: 700; }
+
+  @media (max-width: 480px) {
+    .api-seg { grid-template-columns: minmax(0, 1fr); }
+    .api-actions { width: 100%; }
+    .api-actions .srv-btn { flex: 1; }
+  }
+</style>

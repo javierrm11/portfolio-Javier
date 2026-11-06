@@ -1,0 +1,61 @@
+---
+// Plantilla de las páginas legales (aviso legal, privacidad, cookies): misma
+// cabecera, pie y estilo de lectura; el texto va en cada página.
+import BaseHead from './BaseHead.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import WhatsAppButton from './WhatsAppButton.astro';
+import { LEGAL_UPDATED } from '../lib/legal';
+import '../styles/global.css';
+import '../styles/header.css';
+import '../styles/footer.css';
+import '../styles/servicio.css';
+
+interface Props {
+  title: string;
+  description: string;
+  path: string;
+}
+
+const { title, description, path } = Astro.props;
+---
+<html lang="es">
+<head>
+  <BaseHead title={`${title} | Javier Ruiz Molero`} description={description} path={path} type="website" />
+</head>
+<body>
+  <Header page="servicio" />
+  <main class="servicio-main">
+    <section class="srv-section">
+      <article class="srv-wrap legal">
+        <h1>{title}</h1>
+        <p class="legal-updated">Última actualización: {LEGAL_UPDATED}</p>
+        <slot />
+        <nav class="legal-nav" aria-label="Textos legales">
+          <a href="/aviso-legal/">Aviso legal</a>
+          <a href="/privacidad/">Privacidad</a>
+          <a href="/cookies/">Cookies</a>
+        </nav>
+      </article>
+    </section>
+  </main>
+  <Footer page="servicio" />
+  <WhatsAppButton autoOpen={false} />
+</body>
+</html>
+
+<style>
+  .legal { max-width: 760px; font-size: 1.0625rem; line-height: 1.7; }
+  .legal h1 { font-size: clamp(1.875rem, 4vw, 2.5rem); }
+  .legal-updated { margin-top: 0.5rem; font-size: 0.9375rem; color: var(--text-secondary); }
+  .legal :global(h2) { margin-top: 2.25rem; font-size: 1.375rem; }
+  .legal :global(p), .legal :global(ul) { margin-top: 0.875rem; }
+  .legal :global(ul) { padding-left: 1.25rem; }
+  .legal :global(li + li) { margin-top: 0.375rem; }
+  .legal :global(a) { color: var(--accent-from); }
+  .legal :global(table) { width: 100%; margin-top: 1rem; border-collapse: collapse; font-size: 0.9375rem; }
+  .legal :global(th), .legal :global(td) { padding: 0.625rem 0.75rem; border: 1px solid var(--border-subtle); text-align: left; vertical-align: top; }
+  .legal :global(.table-scroll) { overflow-x: auto; }
+  .legal-nav { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border-subtle); }
+  .legal-nav a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 700; color: var(--text-primary); }
+</style>

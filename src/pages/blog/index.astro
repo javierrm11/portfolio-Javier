@@ -74,6 +74,15 @@ const categoryCounts = Object.fromEntries(
         <h3>Últimos artículos</h3>
       </div>
 
+      <!-- Buscador: el índice lo genera Pagefind al compilar (ver astro.config.mjs),
+           así que no hay servidor ni coste. En `pnpm dev` no existe todavía. -->
+      <div class="blog-search" role="search">
+        <label for="blog-search-input" class="blog-search-label">Buscar en el blog</label>
+        <input id="blog-search-input" type="search" placeholder="Precios, WhatsApp, SEO, Claude Code…" autocomplete="off" />
+        <p id="blog-search-status" class="blog-search-status" aria-live="polite"></p>
+        <ul id="blog-search-results" class="blog-search-results" hidden></ul>
+      </div>
+
       {usedCategories.length > 1 && (
         <>
           {/* Móvil/tablet (<900px): desplegable — con 6 categorías, la fila
@@ -142,6 +151,69 @@ const categoryCounts = Object.fromEntries(
 </html>
 
 <script>
+  // Buscador con Pagefind: se descarga solo cuando alguien escribe, y solo los
+  // trozos del índice que necesita esa búsqueda.
+  type PagefindResult = { url: string; excerpt: string; meta: { title?: string } };
+  type Pagefind = { search: (q: string) => Promise<{ results: { data: () => Promise<PagefindResult> }[] }> };
+
+  const input = document.getElementById('blog-search-input') as HTMLInputElement | null;
+  const status = document.getElementById('blog-search-status');
+  const list = document.getElementById('blog-search-results');
+  let pagefind: Promise<Pagefind> | undefined;
+  let timer: number | undefined;
+  let lastQuery = '';
+
+  const loadPagefind = () => {
+    pagefind ??= import(/* @vite-ignore */ `${location.origin}/pagefind/pagefind.js`) as Promise<Pagefind>;
+    return pagefind;
+  };
+
+  const render = (items: PagefindResult[], query: string) => {
+    if (!list || !status) return;
+    list.replaceChildren(
+      ...items.map((item) => {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = item.url;
+        const title = document.createElement('strong');
+        title.textContent = item.meta.title ?? item.url;
+        const excerpt = document.createElement('p');
+        // El extracto lo genera Pagefind a partir de los propios artículos y
+        // solo trae <mark> para resaltar la palabra buscada.
+        excerpt.innerHTML = item.excerpt;
+        a.append(title, excerpt);
+        li.append(a);
+        return li;
+      }),
+    );
+    list.hidden = items.length === 0;
+    status.textContent = items.length
+      ? `${items.length === 1 ? '1 artículo' : `${items.length} artículos`} sobre «${query}»`
+      : `No he escrito nada sobre «${query}» todavía. Prueba con otra palabra o pregúntame por WhatsApp.`;
+  };
+
+  const run = async (query: string) => {
+    lastQuery = query;
+    if (query.length < 2) {
+      list?.setAttribute('hidden', '');
+      if (status) status.textContent = '';
+      return;
+    }
+    try {
+      const pf = await loadPagefind();
+      const search = await pf.search(query);
+      const items = await Promise.all(search.results.slice(0, 8).map((r) => r.data()));
+      if (query === lastQuery) render(items, query);
+    } catch {
+      if (status) status.textContent = 'El buscador no está disponible ahora mismo. Usa las categorías de abajo.';
+    }
+  };
+
+  input?.addEventListener('input', () => {
+    window.clearTimeout(timer);
+    timer = window.setTimeout(() => run(input.value.trim()), 200);
+  });
+
   // Filtro de categoría, sin recargar página: las tarjetas ya están todas
   // en el HTML (son pocos posts), así que basta con mostrar/ocultar por
   // data-cat. El post destacado no se filtra: siempre queda arriba.

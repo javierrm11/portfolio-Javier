@@ -176,6 +176,18 @@ select.form-input option {
   cursor: wait;
 }
 
+.form-legal {
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.form-legal a {
+  color: inherit;
+  text-decoration: underline;
+}
+
 .submit-btn {
   background: var(--gradient-accent);
   color: white;

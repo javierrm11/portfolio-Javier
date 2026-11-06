@@ -2,7 +2,7 @@
 // cuánto cuesta una web no busca lo mismo que el de uno sobre Claude Code: a
 // quien llega con un problema de empresa se le ofrece ese servicio, y al resto,
 // el analizador, que no le pide ningún compromiso. Los precios salen de `plans`.
-import { plans, formatPrice, contactWa } from './services';
+import { plans, formatPrice, contactWa, waHref } from './services';
 import type { CollectionEntry } from 'astro:content';
 
 type Category = CollectionEntry<'blog'>['data']['category'];
@@ -41,11 +41,13 @@ const planCopy: Record<string, { title: string; text: (price: string) => string 
 };
 
 const ANALYZER = 'analizador';
-type Offer = keyof typeof planCopy | typeof ANALYZER;
+// La integración de APIs tiene página propia pero no es un plan de services.ts.
+const INTEGRATION = 'integracion-apis';
+type Offer = keyof typeof planCopy | typeof ANALYZER | typeof INTEGRATION;
 
 const BY_CATEGORY: Record<Category, Offer> = {
   negocios: 'diseno-web-cordoba',
-  apis: 'automatizaciones',
+  apis: INTEGRATION,
   'seo-tecnico': ANALYZER,
   ia: ANALYZER,
   nextjs: ANALYZER,
@@ -84,6 +86,15 @@ export function ctaForPost(postId: string, category: Category): PostCta | null {
       text: 'Mi analizador gratuito mide su velocidad y su SEO con los datos de Google y te dice qué falla, sin registrarte.',
       analyzerHref: '/analizador-web/',
       whatsappHref: contactWa,
+    };
+  }
+
+  if (offer === INTEGRATION) {
+    return {
+      title: '¿Qué quieres conectar a tu web?',
+      text: 'Conecto tu web con pagos, reservas, WhatsApp, tu CRM o tu facturación, desde 149 € por integración y con el presupuesto cerrado antes de empezar.',
+      whatsappHref: waHref('Hola Javier, vengo de tu blog y me interesa integrar una API en mi web.'),
+      serviceHref: '/servicios/integracion-apis/',
     };
   }
 
