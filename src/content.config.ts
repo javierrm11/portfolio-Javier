@@ -22,6 +22,9 @@ const blog = defineCollection({
     readTime: z.number().int().positive(),
     // El post destacado arriba del todo del listado (uno solo debería llevar true).
     featured: z.boolean().default(false),
+    // Puesto en "Lo más leído" (1 = el más visto), sacado a mano de Vercel
+    // Analytics. Sin el campo, el artículo no sale en esa lista.
+    popular: z.number().int().positive().optional(),
     author: z.string().default('Javier Ruiz Molero'),
     // Foto de portada (Unsplash, licencia libre), ruta relativa a este
     // mismo archivo .md — ver src/content/blog/covers/.

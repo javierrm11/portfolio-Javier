@@ -5,6 +5,7 @@ pubDate: 2026-11-05
 category: ia
 tags: ["OpenAI", "Codex", "Git", "Agentes de IA"]
 readTime: 4
+popular: 6
 cover: ./covers/openai-compra-pierre-codex.jpg
 ---
 

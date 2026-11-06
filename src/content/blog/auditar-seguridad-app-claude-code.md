@@ -5,6 +5,7 @@ pubDate: 2026-09-30
 category: claude
 tags: ["Claude Code", "Seguridad", "Supabase"]
 readTime: 7
+popular: 3
 cover: ./covers/auditar-seguridad-app-claude-code.jpg
 ---
 

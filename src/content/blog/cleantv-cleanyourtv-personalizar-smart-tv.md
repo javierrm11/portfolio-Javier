@@ -5,6 +5,7 @@ pubDate: 2026-11-02
 category: claude
 tags: ["Claude Code", "Open source", "Android TV"]
 readTime: 5
+popular: 2
 cover: ./covers/cleantv-cleanyourtv-personalizar-smart-tv.jpg
 ---
 

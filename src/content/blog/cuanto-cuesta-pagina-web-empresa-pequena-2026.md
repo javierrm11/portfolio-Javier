@@ -5,6 +5,7 @@ pubDate: 2026-11-02
 category: negocios
 tags: ["Precios", "Diseño web", "Empresas"]
 readTime: 5
+popular: 5
 cover: ./covers/cuanto-cuesta-pagina-web-empresa-pequena-2026.jpg
 ---
 

@@ -5,6 +5,7 @@ pubDate: 2026-11-02
 category: negocios
 tags: ["AI Act", "Chatbots", "Empresas"]
 readTime: 5
+popular: 4
 cover: ./covers/ai-act-chatbot-avisar-ia-empresas.jpg
 ---
 

@@ -18,6 +18,11 @@ const allPosts = (await getCollection('blog')).sort(
 const featured = allPosts.find((p) => p.data.featured) ?? allPosts[0];
 const rest = allPosts.filter((p) => p.id !== featured?.id);
 
+// "Lo más leído": el orden lo da el campo popular de cada artículo (ver content.config.ts).
+const popular = allPosts
+  .filter((p) => p.data.popular)
+  .sort((a, b) => (a.data.popular ?? 0) - (b.data.popular ?? 0));
+
 const usedCategories = [...new Set(allPosts.map((p) => p.data.category))] as CategoryKey[];
 
 // Recuento por categoría para el desplegable de móvil/tablet (variante "3"
@@ -70,6 +75,30 @@ const categoryCounts = Object.fromEntries(
     </section>
 
     <div class="blog-wrap">
+      {popular.length > 0 && (
+        <section class="blog-popular" aria-labelledby="blog-popular-title">
+          <div class="blog-section-label">
+            <h3 id="blog-popular-title">Lo más leído</h3>
+          </div>
+          <ol class="blog-popular-list">
+            {popular.map((post, i) => {
+              const pcat = CATEGORIES[post.data.category];
+              return (
+                <li>
+                  <a href={`/blog/${post.id}/`}>
+                    <span class="blog-popular-n" aria-hidden="true">{i + 1}</span>
+                    <span class="blog-popular-text">
+                      <strong>{post.data.title}</strong>
+                      <span>{pcat.label} · {post.data.readTime} min</span>
+                    </span>
+                  </a>
+                </li>
+              );
+            })}
+          </ol>
+        </section>
+      )}
+
       <div class="blog-section-label">
         <h3>Últimos artículos</h3>
       </div>
@@ -127,7 +156,7 @@ const categoryCounts = Object.fromEntries(
                 <Image src={post.data.cover} alt="" widths={[350, 700]} sizes="(min-width: 1100px) 33vw, (min-width: 700px) 50vw, 100vw" loading="lazy" />
               </div>
               <div class="blog-card-body">
-                <span class="blog-card-cat" style={`color:${cat.color}`}><span class="cat-dot" style={`background:${cat.color}`}></span>{cat.label}</span>
+                <span class="blog-card-cat" style={`color:${cat.color}`}><span class="cat-dot" style={`background:${cat.color}`}></span>{cat.label}{post.data.popular && <span class="blog-card-popular">Más leído</span>}</span>
                 <h4>{post.data.title}</h4>
                 <p>{post.data.description}</p>
                 <div class="blog-card-foot">

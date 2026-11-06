@@ -6,6 +6,7 @@ updatedDate: 2026-11-05
 category: claude
 tags: ["Claude Code", "Agent Skills", "Plugins", "Productividad"]
 readTime: 9
+popular: 1
 cover: ./covers/mejores-skills-claude-code-2026.jpg
 featured: true
 ---

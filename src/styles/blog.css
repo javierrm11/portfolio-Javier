@@ -363,6 +363,31 @@ main.blog-main.has-hero {
 .post-toc a:hover { color: var(--accent-from); text-decoration: underline; }
 .prose h2 { scroll-margin-top: 6rem; }
 
+/* "Lo más leído" (blog/index.astro) y su etiqueta en las tarjetas. */
+.blog-popular-list {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.75rem;
+}
+@media (min-width: 700px) { .blog-popular-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1100px) { .blog-popular-list { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.blog-popular-list a {
+  display: flex; align-items: flex-start; gap: 0.875rem; height: 100%; box-sizing: border-box;
+  padding: 1rem 1.125rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);
+  color: var(--text-primary); text-decoration: none; transition: border-color var(--transition-base);
+}
+.blog-popular-list a:hover { border-color: var(--accent-from); }
+.blog-popular-n {
+  flex-shrink: 0; font-family: 'Poppins', var(--font-sans); font-weight: 800; font-size: 1.75rem;
+  line-height: 1; color: var(--accent-from); min-width: 1.5rem;
+}
+.blog-popular-text { display: grid; gap: 0.25rem; }
+.blog-popular-text strong { font-size: 0.9375rem; line-height: 1.35; }
+.blog-popular-text span { font-size: 0.8125rem; color: var(--text-secondary); }
+.blog-card-popular {
+  margin-left: 0.5rem; padding: 0.15rem 0.5rem; border-radius: var(--radius-full);
+  background: #fff4e5; color: #9a3412; font-size: 0.6875rem; letter-spacing: 0.04em;
+}
+
 /* Buscador del blog (blog/index.astro, con Pagefind). */
 .blog-search { max-width: 640px; margin-bottom: 1.75rem; }
 .blog-search-label { display: block; font-weight: 700; font-size: 0.9375rem; margin-bottom: 0.5rem; }
