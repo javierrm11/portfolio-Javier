@@ -26,7 +26,7 @@ Si en tu ficha no hay web, o la web no dice cuánto cuesta un corte ni deja rese
 - **Horario, dirección y mapa.** Con el mismo nombre, dirección y teléfono que en Google. Parece un detalle, pero es lo que más ayuda al SEO local.
 - **El equipo.** Quién corta, quién hace color. Mucha clientela es fiel a una persona, no al salón.
 - **Reseñas.** Enlaza tu ficha de Google para que te dejen opinión.
-- **Textos legales.** Aviso legal, privacidad y cookies, que [son obligatorios](https://takum.io/cuanto-cuesta-una-pagina-web-espana/) en una web española.
+- **Textos legales.** Aviso legal, privacidad y cookies, que [son obligatorios](https://www.boe.es/buscar/act.php?id=BOE-A-2002-13758) en una web española.
 - **Velocidad.** La mayoría de visitas llegan desde el móvil y muchas con datos. Una web lenta pierde reservas antes de cargar.
 
 Si ya tienes web y no sabes cómo está, puedes [analizar gratis su velocidad y su SEO](/analizador-web/) en un minuto.
@@ -105,3 +105,5 @@ Estos son mis precios actuales:
 El dominio y el alojamiento van aparte y quedan a tu nombre. Si necesitas algo más, como varias páginas de servicios con mucho contenido o una tienda de productos, te doy el precio cerrado por escrito antes de empezar.
 
 Para comparar con otras ofertas, te sirve la lista de preguntas de [cuánto cuesta una página web para una empresa pequeña](/blog/cuanto-cuesta-pagina-web-empresa-pequena-2026/). Y si añades un asistente con IA a tu web, recuerda que [debe avisar de que es una IA](/blog/ai-act-chatbot-avisar-ia-empresas/).
+
+*Foto de portada: [Daderot](https://commons.wikimedia.org/wiki/File:Hair_salon_-_Arlington,_MA.jpg), [CC0](https://creativecommons.org/publicdomain/zero/1.0/), recortada.*
