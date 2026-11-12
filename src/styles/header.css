@@ -13,7 +13,7 @@
 /* Oculta al bajar, visible al subir (ver el script de Header.astro). Se
    desliza con `top` y no con transform: un transform en #header lo haría
    bloque contenedor del overlay fixed del menú móvil. -6rem cubre de sobra
-   su alto (~65px) y visibility:hidden, aplicada al terminar la salida, saca
+   su alto (~68px) y visibility:hidden, aplicada al terminar la salida, saca
    los enlaces del orden de tabulación mientras está fuera. */
 #header.header--hidden {
   top: -6rem;
@@ -46,20 +46,19 @@
   }
 }
 
-/* Barra de cristal (variante "Header 3"): fondo oscuro translucido siempre
-   visible, para que los enlaces blancos se lean sobre las secciones claras.
-   Va en un pseudo-elemento (no en #header) porque un backdrop-filter en
-   #header lo convertiria en bloque contenedor del overlay del menu movil
-   (fixed). */
+/* Barra azul marino casi opaca: con más transparencia, sobre las páginas
+   y secciones claras se veía gris. Va en un pseudo-elemento (no en #header)
+   porque un backdrop-filter en #header lo convertiría en bloque contenedor
+   del overlay del menú móvil (fixed). */
 #header::before {
   content: '';
   position: absolute;
   inset: 0;
   z-index: 0;
-  background: rgba(6, 20, 40, 0.72);
+  background: rgba(6, 20, 42, 0.95);
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .header-inner {
@@ -77,9 +76,13 @@
   transition: padding var(--transition-base);
 }
 
-/* Logo — blanco fijo: el header flota transparente sobre el Hero (foto
-   oscura), así que el logo se queda en blanco pase lo que pase debajo. */
+/* Logo: "JRM" y, en pantallas anchas, nombre y especialidad al lado. Blanco
+   fijo, como todo lo de la barra, que siempre es oscura. */
 .logo-mark {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 44px;
   font-family: 'Poppins', var(--font-sans);
   font-size: 1.375rem;
   font-weight: 800;
@@ -88,61 +91,82 @@
   text-decoration: none;
 }
 
-/* Nav links (escritorio, flotando sobre el Hero). El overlay móvil de
-   abajo tiene su propio fondo claro y pisa este color con el suyo. */
-.nav-link {
-  font-size: 0.9375rem;
+.logo-sub {
+  display: none;
+  padding-left: 0.75rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.72);
-  text-decoration: none;
-  position: relative;
-  padding: 0.25rem 0;
-  transition: color var(--transition-base);
-  letter-spacing: 0.01em;
+  line-height: 1.25;
+  letter-spacing: 0;
+  color: rgba(255, 255, 255, 0.75);
 }
 
-.nav-link::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0;
-  height: 1.5px;
-  background: var(--gradient-accent);
-  border-radius: 1px;
-  transition: width var(--transition-base);
-}
-
-.nav-link:hover,
-.nav-link.active {
-  color: #fff;
-}
-
-.nav-link:hover::after,
-.nav-link.active::after {
-  width: 100%;
-}
-
-/* Header buttons row */
+/* Botones de la derecha: teléfono, "Pide presupuesto" y, en móvil, el menú. */
 #header-buttons {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
 }
 
-/* Hamburger button */
-/* Color fijo en blanco (como .logo-mark y .nav-link): la barra del header
-   es siempre oscura translúcida, pase lo que pase detrás, así que el icono
-   no debe depender de --text-primary (que aquí cae al valor raíz oscuro,
-   pensado para fondos claros, y se perdía contra la barra). */
+.header-phone {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-from);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  text-decoration: none;
+  transition: opacity var(--transition-base);
+}
+
+.header-phone:hover { opacity: 0.9; }
+.header-phone-text { display: none; }
+
+.header-cta {
+  display: none;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 1.25rem;
+  border-radius: var(--radius-sm);
+  background: var(--accent-from);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: opacity var(--transition-base), transform var(--transition-base);
+}
+
+.header-cta:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+.header-phone:focus-visible,
+.header-cta:focus-visible,
+.menu-btn:focus-visible,
+.nav-link:focus-visible,
+.nav-service:focus-visible {
+  outline: 3px solid #4fc3ff;
+  outline-offset: 2px;
+}
+
+/* Hamburguesa: blanca fija, como el resto de la barra. */
 .menu-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: var(--radius-sm);
   cursor: pointer;
   color: #fff;
@@ -150,8 +174,8 @@
 }
 
 .menu-btn:hover {
-  background: rgba(255, 255, 255, 0.14);
-  border-color: rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.35);
 }
 
 /* Hamburguesa → X: tres barras que rotan y se cruzan al abrir. En CSS y no
@@ -176,50 +200,90 @@
 .menu-bars span:nth-child(2) { top: 6px; }
 .menu-bars span:nth-child(3) { top: 12px; }
 
-.menu-btn.active .menu-bars span:nth-child(1) {
-  transform: translateY(6px) rotate(45deg);
-}
-.menu-btn.active .menu-bars span:nth-child(2) {
-  opacity: 0;
-}
-.menu-btn.active .menu-bars span:nth-child(3) {
-  transform: translateY(-6px) rotate(-45deg);
+.menu-btn.active .menu-bars span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.menu-btn.active .menu-bars span:nth-child(2) { opacity: 0; }
+.menu-btn.active .menu-bars span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+/* ── Enlaces y desplegable (comunes) ───────────────────────────── */
+#main-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-/* ── Móvil/tablet: overlay a pantalla completa ────────────────────
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color var(--transition-base), background var(--transition-base);
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: #fff;
+}
+
+.nav-chevron { transition: transform var(--transition-base); }
+.nav-services-btn[aria-expanded='true'] .nav-chevron { transform: rotate(180deg); }
+
+.nav-badge {
+  padding: 0.125rem 0.5rem;
+  border-radius: var(--radius-full);
+  background: rgba(37, 211, 102, 0.18);
+  color: #7ee0a8;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* [hidden] tiene que ganar al display de la propia clase. */
+.nav-dropdown[hidden] { display: none; }
+
+.nav-service {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+}
+
+.nav-service-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+}
+
+.nav-contact { display: none; }
+
+/* ── Móvil/tablet: menú a pantalla completa ──────────────────────
    Se oculta con visibility+opacity en vez de display:none para poder
    animar la entrada y la salida (display no es animable). Mismo corte
    (899/900px) que el resto de secciones del sitio. */
 @media (max-width: 899px) {
-  /* Variante "5" del explorador: foto de escritorio (la del Hero) ocupando
-     la franja superior, degradada hacia el panel sólido de abajo, donde
-     va la lista de enlaces con separadores. */
   #main-nav {
-    --nav-photo-h: clamp(200px, 34vh, 320px);
     position: fixed;
     inset: 0;
     z-index: 1;
-    /* Con scroll vertical: en móviles bajos no caben todos los enlaces. */
+    display: flex;
+    flex-direction: column;
+    /* Con scroll vertical: con el acordeón de servicios abierto, en móviles
+       bajos no cabe todo. */
     overflow-x: hidden;
     overflow-y: auto;
+    padding-top: 68px;
     background: #06142a;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;
-  }
-
-  #main-nav::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: var(--nav-photo-h);
-    background-image:
-      linear-gradient(180deg, rgba(6, 20, 40, 0.15) 0%, #06142a 96%),
-      url('/hero-desk-m.webp');
-    background-size: cover;
-    background-position: center;
   }
 
   #main-nav.open {
@@ -227,144 +291,250 @@
     visibility: visible;
   }
 
-  #main-nav ul {
-    position: relative;
-    list-style: none;
+  #main-nav > ul {
     display: flex;
     flex-direction: column;
-    margin-top: var(--nav-photo-h);
-    padding: 0.25rem clamp(1.5rem, 6vw, 2.5rem) 0;
+    flex-grow: 1;
+    padding: 0.5rem clamp(1rem, 5vw, 2.5rem);
   }
 
-  #main-nav li {
+  #main-nav > ul > li {
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
 
+  #main-nav > ul > li:last-child { border-bottom: 0; }
+
   #main-nav .nav-link {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: clamp(0.75rem, 2.3vh, 1.25rem) 0;
-    font-size: clamp(1.25rem, 5.5vw, 1.5rem);
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    color: rgba(255, 255, 255, 0.8);
-    /* Entrada escalonada: cada enlace entra un pelín después que el
-       anterior (delay por :nth-child más abajo). */
+    width: 100%;
+    justify-content: flex-start;
+    min-height: 58px;
+    font-family: 'Poppins', var(--font-sans);
+    font-size: clamp(1.125rem, 5vw, 1.375rem);
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.9);
+    /* Entrada escalonada (delay por :nth-child más abajo). */
     opacity: 0;
     transform: translateY(14px);
     transition: opacity 0.4s ease, transform 0.4s ease, color var(--transition-base);
   }
+
+  #main-nav .nav-services-btn { justify-content: space-between; }
+
+  #main-nav .nav-link.active { color: #4fc3ff; }
+
+  #main-nav .nav-badge { font-family: var(--font-sans); }
 
   #main-nav.open .nav-link {
     opacity: 1;
     transform: none;
   }
 
-  #main-nav.open li:nth-child(1) .nav-link { transition-delay: 0.08s; }
-  #main-nav.open li:nth-child(2) .nav-link { transition-delay: 0.14s; }
-  #main-nav.open li:nth-child(3) .nav-link { transition-delay: 0.2s; }
-  #main-nav.open li:nth-child(4) .nav-link { transition-delay: 0.26s; }
+  #main-nav.open > ul > li:nth-child(1) .nav-link { transition-delay: 0.06s; }
+  #main-nav.open > ul > li:nth-child(2) .nav-link { transition-delay: 0.11s; }
+  #main-nav.open > ul > li:nth-child(3) .nav-link { transition-delay: 0.16s; }
+  #main-nav.open > ul > li:nth-child(4) .nav-link { transition-delay: 0.21s; }
+  #main-nav.open > ul > li:nth-child(5) .nav-link { transition-delay: 0.26s; }
 
-  /* La línea inferior del hover de escritorio aquí no aporta. */
-  #main-nav .nav-link::after {
-    display: none;
-  }
+  /* Servicios: acordeón dentro del menú. */
+  .nav-dropdown { padding: 0 0 0.75rem; }
 
-  #main-nav .nav-link:hover,
-  #main-nav .nav-link.active {
+  .nav-service {
+    justify-content: space-between;
+    min-height: 44px;
+    padding: 0 0.25rem;
     color: #fff;
-    font-weight: 700;
   }
 
-  /* Punto de acento a la derecha del enlace activo. */
-  #main-nav .nav-link-dot {
-    display: inline-block;
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: #4fc3ff;
-    flex-shrink: 0;
-    opacity: 0;
-    transition: opacity var(--transition-base);
+  .nav-service-icon { display: none; }
+
+  .nav-service-text {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
   }
 
-  #main-nav .nav-link.active .nav-link-dot {
-    opacity: 1;
+  .nav-service-text strong { font-weight: 500; font-size: 1rem; }
+  .nav-service-text span { font-size: 0.875rem; color: #8fd3ff; white-space: nowrap; }
+  .nav-service[aria-current='page'] strong { color: #4fc3ff; font-weight: 700; }
+
+  .nav-dropdown-foot { display: none; }
+
+  .nav-contact {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+    padding: 1rem clamp(1rem, 5vw, 2.5rem) calc(1rem + env(safe-area-inset-bottom, 0px));
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
   }
+
+  .nav-contact a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 52px;
+    border-radius: var(--radius-sm);
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .nav-contact-wa { background: #25D366; color: #0b2a17; }
+  .nav-contact-tel { background: var(--accent-from); color: #fff; }
 }
 
-/* Boton "Ver proyectos" de la barra (solo escritorio; en movil manda la
-   hamburguesa). Su override a display:inline-flex vive en el media query
-   de abajo — declarada ANTES de este bloque, para que gane el empate de
-   especificidad de la que va despues en el CSS: si esta regla base
-   fuera la ultima en el archivo, su "display:none" sin condicion
-   ganaria siempre al de la media query, aunque la media query si se
-   cumpliera (asi se rompio el boton la primera vez). */
-.header-cta {
-  display: none;
-  align-items: center;
-  gap: 0.5rem;
-  background: var(--accent-from);
-  color: #fff;
-  font-weight: 700;
-  font-size: 0.875rem;
-  padding: 0.6875rem 1.25rem;
-  border-radius: var(--radius-sm);
-  text-decoration: none;
-  transition: opacity var(--transition-base), transform var(--transition-base);
-}
-
-.header-cta:hover {
-  opacity: 0.92;
-  transform: translateY(-1px);
-}
-
-/* Escritorio/tablet ancho — enlaces planos, sin píldora ni fondo: el
-   propio .nav-link (arriba) ya trae el color apagado + la línea de
-   acento que crece al hover/activo, así que aquí solo hace falta
-   posicionar la lista a la derecha del header. */
+/* ── Escritorio ──────────────────────────────────────────────────
+   El menú va centrado en el hueco que dejan el logo y los botones: se
+   reserva ese espacio con padding-inline (no "right: <gutter>" a secas, que
+   se descuadraba en monitores anchos porque .header-inner tiene max-width). */
 @media (min-width: 900px) {
-  /* Mismo box que .header-inner (max-width + margin-inline:auto +
-     padding-inline) en vez de un "right" a secas: así el borde derecho de
-     la lista cae exactamente donde cae el borde derecho del header-inner
-     (el logo) en CUALQUIER ancho de ventana. Con solo "right: <gutter>"
-     quedaba descuadrado en monitores anchos, porque header-inner (con
-     max-width) deja de pegarse al borde de la ventana antes que esto. */
   #main-nav {
+    --nav-left: 5.5rem;
+    --nav-right: 14rem;
     display: flex;
     justify-content: center;
     position: absolute;
     inset: 0 0 auto 0;
     top: 50%;
     transform: translateY(-50%);
-    /* Por encima de .header-inner (z-index:2): esa capa existe para que la
-       hamburguesa se quede clicable sobre el overlay del menú móvil, pero
-       en escritorio .header-inner sigue ocupando TODO el ancho de la barra
-       (justify-content:space-between dejando hueco vacío en el centro), así
-       que sin esto tapaba a los propios enlaces — los interceptaba el hueco
-       vacío del centro y ningún enlace del menú respondía al clic. */
+    /* Por encima de .header-inner (z-index:2): esa capa ocupa todo el ancho
+       de la barra y, sin esto, el hueco vacío del centro taparía los
+       enlaces y ninguno respondería al clic. */
     z-index: 3;
     max-width: var(--container-max);
     margin-inline: auto;
-    padding-inline: clamp(1rem, 4vw, 3rem);
+    padding-inline: calc(clamp(1rem, 4vw, 3rem) + var(--nav-left)) calc(clamp(1rem, 4vw, 3rem) + var(--nav-right));
+    box-sizing: border-box;
     pointer-events: none;
   }
 
-  #main-nav ul {
-    list-style: none;
+  #main-nav > ul {
     display: flex;
-    gap: clamp(1.5rem, 2.5vw, 2.25rem);
+    align-items: center;
+    gap: 0.125rem;
     pointer-events: auto;
   }
 
-  .menu-btn {
-    display: none;
+  #main-nav .nav-link {
+    padding: 0 0.625rem;
+    border-radius: var(--radius-sm);
   }
 
-  .header-cta {
+  #main-nav .nav-link:hover,
+  #main-nav .nav-services-btn[aria-expanded='true'] {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  /* Sección actual: subrayado de acento. */
+  #main-nav .nav-link.active { box-shadow: inset 0 -3px 0 #4fc3ff; }
+
+  /* La etiqueta "Gratis" solo cuando hay sitio de sobra (ver abajo). */
+  #main-nav .nav-badge { display: none; }
+
+  .menu-btn { display: none; }
+  .header-cta { display: inline-flex; }
+
+  /* Desplegable de servicios. */
+  .nav-services { position: relative; }
+
+  .nav-dropdown {
+    position: absolute;
+    top: calc(100% + 0.875rem);
+    left: 0;
+    width: min(640px, calc(100vw - 2rem));
+    box-sizing: border-box;
+    padding: 1.25rem;
+    border-radius: var(--radius-lg);
+    background: #fff;
+    color: #0a0a0a;
+    box-shadow: 0 30px 70px -20px rgba(6, 20, 42, 0.55);
+  }
+
+  .nav-dropdown-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.25rem;
+  }
+
+  .nav-service {
+    padding: 0.75rem;
+    border-radius: var(--radius-md);
+    color: #0a0a0a;
+    transition: background var(--transition-base);
+  }
+
+  .nav-service:hover,
+  .nav-service[aria-current='page'] {
+    background: #f4f8fc;
+  }
+
+  .nav-service:focus-visible { outline-color: var(--accent-from); }
+
+  .nav-service-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: #e6f0fb;
+    color: var(--accent-from);
+  }
+
+  .nav-service-text strong { font-size: 0.9375rem; }
+  .nav-service-text span { font-size: 0.8125rem; color: #4b5563; }
+
+  .nav-dropdown-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 0.75rem;
+    padding: 0.875rem 0.75rem 0.125rem;
+    border-top: 1px solid #e5e7eb;
+    font-size: 0.875rem;
+    color: #4b5563;
+  }
+
+  .nav-dropdown-foot a:not(.nav-dropdown-wa) {
+    color: var(--accent-from);
+    font-weight: 700;
+  }
+
+  .nav-dropdown-wa {
     display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 0.875rem;
+    border-radius: var(--radius-sm);
+    background: #25D366;
+    color: #0b2a17;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
   }
 }
 
+/* Pantallas anchas: nombre junto al logo, teléfono con número y etiqueta
+   "Gratis". Los anchos reservados al menú crecen en la misma medida. */
+@media (min-width: 1240px) {
+  #main-nav {
+    --nav-left: 12.5rem;
+    --nav-right: 21rem;
+  }
+
+  #main-nav .nav-link { padding: 0 0.875rem; }
+  #main-nav .nav-badge { display: inline-block; }
+
+  .logo-sub { display: block; }
+
+  .header-phone {
+    width: auto;
+    padding: 0 0.5rem;
+    background: transparent;
+  }
+
+  .header-phone:hover { opacity: 1; color: #4fc3ff; }
+  .header-phone-text { display: inline; }
+}

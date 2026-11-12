@@ -1,31 +1,79 @@
 ---
-// Cabecera del sitio: la misma en la home y en el blog (page="blog" ajusta
-// los enlaces de sección para que apunten a "/#seccion" en vez de "#seccion"
-// — si no, en /blog apuntarían a un id que no existe en esa página — y marca
-// "Blog" como activo). El fondo de cristal oscuro (#header::before, en
-// header.css) ya es siempre opaco, así que se lee igual en cualquier página,
-// no solo flotando sobre la foto del Hero.
+// Cabecera del sitio, la misma en todas las páginas (variante "A · Barra con
+// menú de servicios" del explorador de diseño). En la home los enlaces de
+// sección son "#seccion"; en el resto de páginas, "/#seccion", porque esos ids
+// solo existen en la home. La sección activa se deduce de la URL. El fondo de
+// cristal oscuro (#header::before, en header.css) es siempre opaco, así que se
+// lee igual sobre la foto del hero que sobre una página clara.
+import { plans, formatPrice, contactWa, TEL_HREF, PHONE_DISPLAY } from '../lib/services';
+
 interface Props {
   page?: 'home' | 'blog' | 'servicio';
 }
 const { page = 'home' } = Astro.props;
 const base = page === 'home' ? '' : '/';
+const path = Astro.url.pathname;
+
+const section = path.startsWith('/blog')
+  ? 'blog'
+  : path.startsWith('/servicios')
+    ? 'servicios'
+    : path.startsWith('/analizador-web')
+      ? 'analizador'
+      : '';
+
+// "Pide presupuesto" lleva al formulario de la propia página cuando lo tiene
+// (servicios y analizador usan #contacto); si no, al de la home.
+const ctaHref = page === 'home' ? '#contact' : section === 'servicios' || section === 'analizador' ? '#contacto' : '/#contact';
+
+// Iconos de 24×24 en trazo, uno por servicio.
+const ICONS: Record<string, string> = {
+  'diseno-web-cordoba': 'M3 5h18v11H3z M8 20h8 M12 16v4',
+  'agente-ia-whatsapp': 'M3.5 20.5l1.4-4.2A8.5 8.5 0 1 1 8 19.3z',
+  'chatbot-ia': 'M4 5h16v11H8l-4 4z M8 10h8',
+  automatizaciones: 'M13 3L5 14h6l-1 7 8-11h-6z',
+  'integracion-apis': 'M8 8l-4 4 4 4 M16 8l4 4-4 4 M14 4l-4 16',
+  'apps-a-medida': 'M4 4h7v7H4z M13 4h7v7h-7z M4 13h7v7H4z M13 13h7v7h-7z',
+};
+
+// Los planes de services.ts y la integración de APIs, que tiene página propia
+// pero no es un plan (ver src/lib/apiIntegrations.ts).
+const byPlan = Object.fromEntries(plans.map((p) => [p.slug, p]));
+const services = [
+  'diseno-web-cordoba',
+  'agente-ia-whatsapp',
+  'chatbot-ia',
+  'automatizaciones',
+  'integracion-apis',
+  'apps-a-medida',
+].map((slug) => ({
+  slug,
+  href: `/servicios/${slug}/`,
+  title: slug === 'integracion-apis' ? 'Integración de APIs' : byPlan[slug].title,
+  price: `desde ${formatPrice(slug === 'integracion-apis' ? 149 : byPlan[slug].priceFrom)}`,
+  icon: ICONS[slug],
+  current: path === `/servicios/${slug}/`,
+}));
 ---
 <header id="header">
   <!-- El overlay del menú (#main-nav) es hermano de .header-inner, NO su
-       hijo: la animación de entrada de GSAP (Main.astro) escribe un
+       hijo: la animación de entrada del hero (main.css) escribe un
        transform, y un transform convierte al elemento en bloque contenedor
        de sus descendientes position:fixed — el overlay quedaba recortado a
        la caja del header (una franja de ~88px) en vez de cubrir la ventana.
        Animando .header-inner el transform vive ahí y el nav se queda fuera
        de su alcance. -->
   <div class="header-inner">
-    <a href={page === 'home' ? '#hero' : '/'} class="logo-mark">JRM</a>
+    <a href={page === 'home' ? '#hero' : '/'} class="logo-mark" aria-label="Javier Ruiz Molero, inicio">
+      <span>JRM</span>
+      <span class="logo-sub" aria-hidden="true">Javier Ruiz<br>Webs, apps e IA</span>
+    </a>
     <div id="header-buttons" class="header-buttons">
-      <a href={`${base}#proyectos`} class="header-cta">
-        Ver proyectos
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M7 17L17 7M9 7h8v8"></path></svg>
+      <a href={TEL_HREF} class="header-phone" aria-label={`Llamar al ${PHONE_DISPLAY}`}>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+        <span class="header-phone-text">{PHONE_DISPLAY.replace('+34 ', '')}</span>
       </a>
+      <a href={ctaHref} class="header-cta">Pide presupuesto</a>
       <button
         id="menu-toggle"
         class="menu-btn"
@@ -44,49 +92,67 @@ const base = page === 'home' ? '' : '/';
 
   <nav id="main-nav" aria-label="Navegación principal">
     <ul>
-      <li>
-        <a href={`${base}#servicios`} class="nav-link">
+      <li class="nav-services">
+        <button
+          type="button"
+          id="nav-services-btn"
+          class:list={['nav-link', 'nav-services-btn', { active: section === 'servicios' }]}
+          aria-expanded="false"
+          aria-controls="nav-services"
+        >
           <span class="nav-text">Servicios</span>
-          <span class="nav-link-dot" aria-hidden="true"></span>
+          <svg class="nav-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+        </button>
+        <div id="nav-services" class="nav-dropdown" hidden>
+          <ul class="nav-dropdown-grid">
+            {services.map((s) => (
+              <li>
+                <a href={s.href} class="nav-service" aria-current={s.current ? 'page' : undefined}>
+                  <span class="nav-service-icon" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d={s.icon}></path></svg>
+                  </span>
+                  <span class="nav-service-text">
+                    <strong>{s.title}</strong>
+                    <span>{s.price}</span>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+          <div class="nav-dropdown-foot">
+            <span>¿No sabes cuál? <a href="/analizador-web/">Analiza tu web gratis</a></span>
+            <a href={contactWa} class="nav-dropdown-wa" target="_blank" rel="noopener noreferrer">Preguntar por WhatsApp</a>
+          </div>
+        </div>
+      </li>
+      <li>
+        <a href={`${base}#proyectos`} class="nav-link">
+          <span class="nav-text">Proyectos</span>
+        </a>
+      </li>
+      <li>
+        <a href="/blog" class:list={['nav-link', { active: section === 'blog' }]} aria-current={section === 'blog' ? 'page' : undefined}>
+          <span class="nav-text">Blog</span>
+        </a>
+      </li>
+      <li>
+        <a href="/analizador-web/" class:list={['nav-link', { active: section === 'analizador' }]} aria-current={section === 'analizador' ? 'page' : undefined}>
+          <span class="nav-text">Analiza tu web</span>
+          <span class="nav-badge">Gratis</span>
         </a>
       </li>
       <li>
         <a href={`${base}#about-me`} class="nav-link">
           <span class="nav-text">Sobre mí</span>
-          <span class="nav-link-dot" aria-hidden="true"></span>
-        </a>
-      </li>
-      <li>
-        <a href={`${base}#proyectos`} class="nav-link">
-          <span class="nav-text">Proyectos</span>
-          <span class="nav-link-dot" aria-hidden="true"></span>
-        </a>
-      </li>
-      <li>
-        <a href={`${base}#tecnologias`} class="nav-link">
-          <span class="nav-text">Tecnologías</span>
-          <span class="nav-link-dot" aria-hidden="true"></span>
-        </a>
-      </li>
-      <li>
-        <a href="/blog" class:list={['nav-link', { active: page === 'blog' }]}>
-          <span class="nav-text">Blog</span>
-          <span class="nav-link-dot" aria-hidden="true"></span>
-        </a>
-      </li>
-      <li>
-        <a href="/analizador-web/" class="nav-link">
-          <span class="nav-text">Analizar mi web</span>
-          <span class="nav-link-dot" aria-hidden="true"></span>
-        </a>
-      </li>
-      <li>
-        <a href={`${base}#contact`} class="nav-link">
-          <span class="nav-text">Contacto</span>
-          <span class="nav-link-dot" aria-hidden="true"></span>
         </a>
       </li>
     </ul>
+
+    <!-- Solo en el menú del móvil: las dos formas de contacto, siempre a mano. -->
+    <div class="nav-contact">
+      <a href={contactWa} class="nav-contact-wa" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+      <a href={TEL_HREF} class="nav-contact-tel">Llamar</a>
+    </div>
   </nav>
 </header>
 
@@ -97,6 +163,32 @@ const base = page === 'home' ? '' : '/';
   const header = document.getElementById("header");
   const nav = document.getElementById("main-nav");
   const menuToggle = document.getElementById("menu-toggle");
+  const servicesBtn = document.getElementById("nav-services-btn");
+  const servicesPanel = document.getElementById("nav-services");
+
+  // Desplegable de servicios: un panel en escritorio y un acordeón dentro del
+  // menú en móvil. Es el mismo elemento; solo cambia el CSS.
+  const setServices = (open: boolean) => {
+    if (!servicesBtn || !servicesPanel) return;
+    servicesBtn.setAttribute("aria-expanded", String(open));
+    servicesPanel.hidden = !open;
+  };
+
+  if (servicesBtn && servicesPanel) {
+    servicesBtn.addEventListener("click", () => {
+      setServices(servicesBtn.getAttribute("aria-expanded") !== "true");
+    });
+    // Se cierra al hacer clic fuera, como cualquier desplegable.
+    document.addEventListener("click", (e) => {
+      const target = e.target as Node;
+      if (!servicesBtn.contains(target) && !servicesPanel.contains(target)) setServices(false);
+    });
+    // Y si el foco sale de él con el teclado.
+    servicesPanel.parentElement?.addEventListener("focusout", (e) => {
+      const next = (e as FocusEvent).relatedTarget as Node | null;
+      if (next && !servicesPanel.parentElement?.contains(next)) setServices(false);
+    });
+  }
 
   if (header) {
     const mobile = window.matchMedia("(max-width: 819px)");
@@ -109,7 +201,8 @@ const base = page === 'home' ? '' : '/';
       ticking = false;
       const y = window.scrollY;
       const delta = y - lastY;
-      if (mobile.matches || y < TOP_ZONE || nav?.classList.contains("open")) {
+      const servicesOpen = servicesBtn?.getAttribute("aria-expanded") === "true";
+      if (mobile.matches || y < TOP_ZONE || nav?.classList.contains("open") || servicesOpen) {
         header.classList.remove("header--hidden");
       } else if (Math.abs(delta) >= THRESHOLD) {
         header.classList.toggle("header--hidden", delta > 0);
@@ -137,6 +230,7 @@ const base = page === 'home' ? '' : '/';
       nav.classList.toggle("open", open);
       menuToggle.setAttribute("aria-expanded", String(open));
       menuToggle.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
+      if (!open) setServices(false);
       // Bloquea el scroll de la página mientras el overlay está abierto: si
       // no, el fondo se desplaza por detrás del menú.
       document.body.style.overflow = open ? "hidden" : "";
@@ -146,19 +240,26 @@ const base = page === 'home' ? '' : '/';
       setMenu(!nav.classList.contains("open"));
     });
 
-    const navLinks = document.querySelectorAll<HTMLAnchorElement>(".nav-link");
-    navLinks.forEach((link) => {
+    // Cualquier enlace del menú (también los del desplegable y los de
+    // contacto) lo cierra al pulsarlo.
+    nav.querySelectorAll<HTMLAnchorElement>("a").forEach((link) => {
       link.addEventListener("click", () => setMenu(false));
     });
 
-    // Cerrar también con Escape y tocando el fondo del overlay (solo el
-    // fondo: e.target === nav excluye enlaces y botón).
+    // Cerrar también tocando el fondo del overlay (solo el fondo: e.target
+    // === nav excluye enlaces y botones).
     nav.addEventListener("click", (e) => {
       if (e.target === nav) setMenu(false);
     });
 
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && nav.classList.contains("open")) setMenu(false);
+      if (e.key !== "Escape") return;
+      if (servicesBtn?.getAttribute("aria-expanded") === "true") {
+        setServices(false);
+        servicesBtn.focus();
+      } else if (nav.classList.contains("open")) {
+        setMenu(false);
+      }
     });
 
     // Desplazamiento suave SOLO para la navegación por anclas EN LA MISMA
