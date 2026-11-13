@@ -21,7 +21,7 @@ Google lo publicó en su [panel de estado de la Búsqueda](https://status.search
 | Alcance | Global, todos los idiomas |
 | Qué busca, según Google | Mostrar mejor contenido relevante y satisfactorio, de todo tipo de webs |
 
-Es la tercera actualización principal del año, después de la de [marzo](https://status.search.google.com/incidents/7eTbAa2jWdToLkraZj5y), que terminó el 8 de abril, y la de [mayo](https://status.search.google.com/incidents/wdAXJk6LRRihEjpzEeWE), que terminó el 2 de junio, según [Search Engine Land](https://searchengineland.com/google-november-2026-core-update-rolling-out-now-501348) y [Search Engine Roundtable](https://www.seroundtable.com/google-november-2026-core-update-42504.html). Las dos anteriores tardaron unos 12 días.
+Es la tercera actualización principal del año, después de la de [marzo](https://status.search.google.com/incidents/7eTbAa2jWdToLkraZj5y), que terminó el 8 de abril, y la de [mayo](https://status.search.google.com/incidents/wdAXJk6LRRihEjpzEeWE), que terminó el 2 de junio, según [Search Engine Land](https://searchengineland.com/google-november-2026-core-update-rolling-out-now-501348) y [Search Engine Roundtable](https://www.seroundtable.com/google-november-2026-core-update-42504.html). Las dos anteriores tardaron 12 días cada una, según el propio panel: del 27 de marzo al 8 de abril y del 21 de mayo al 2 de junio.
 
 Google no ha dado ninguna pista nueva sobre esta en concreto. Según Search Engine Land, se remite a su consejo de siempre: si haces contenido útil para las personas, no hay nada nuevo ni especial que hacer.
 
@@ -67,12 +67,12 @@ Google recomienda adaptar la respuesta al tamaño de la caída:
 - **Unas pocas posiciones**: no hagas cambios drásticos. Es normal.
 - **Una caída grande y en muchas páginas**: toca revisar el contenido con calma.
 
-Para esa revisión, Google propone en su guía preguntas como estas:
+Para esa revisión, Google remite a su [guía sobre contenido útil](https://developers.google.com/search/docs/fundamentals/creating-helpful-content), con preguntas como estas:
 
 - ¿Aporta tu página información, datos o análisis propios, o repite lo que ya dicen otras?
 - ¿Responde de verdad a lo que busca alguien, o está escrita para Google?
 - ¿Se nota quién está detrás y por qué sabe de lo que habla?
-- ¿Te fiarías de ella si fuera de la competencia?
+- ¿Es el tipo de página que guardarías, compartirías o recomendarías?
 
 Traducido a un negocio pequeño: precios reales, fotos de tus trabajos, tu zona de servicio, quién eres y opiniones de clientes. Es lo que un texto genérico, hecho con IA o copiado, no puede tener.
 
@@ -111,3 +111,5 @@ Y si además quieres que te citen los resúmenes de IA de Google o ChatGPT, lo e
 - No hagas cambios a la carrera mientras dura.
 - Cuando acabe, espera una semana y compara en Search Console con la semana del 3 al 9 de noviembre.
 - Si has bajado mucho, revisa si tu contenido aporta algo propio. Si apenas sales en Google, empieza por lo básico.
+
+*Foto de portada: [Lalmch (Pixabay)](https://commons.wikimedia.org/wiki/File:Analytics_2016-02-26_at_10.19.24_AM.jpg), [CC0](https://creativecommons.org/publicdomain/zero/1.0/), recortada.*
