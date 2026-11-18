@@ -12,7 +12,7 @@ la marcará como hecha (`- [x]`) en la misma pull request.
 ## Miércoles · Vender (para dueños de empresas pequeñas)
 
 - [x] Página web para peluquerías en Córdoba: qué necesita y cuánto cuesta
-- [ ] Cuánto cuesta un chatbot con IA para la web de una empresa en 2026
+- [x] Cuánto cuesta un chatbot con IA para la web de una empresa en 2026
 - [ ] Web para clínicas y centros de fisioterapia: reservas, SEO local y precio
 - [ ] Integrar los pagos en la web de tu negocio: opciones, comisiones y precio
 
