@@ -18,8 +18,11 @@ import '../styles/analizador.css';
 
 const SITE = 'https://www.javierm.dev';
 const path = '/analizador-web/';
-const title = 'Analizador web gratis: test de velocidad y SEO de tu página';
-const description = 'Analiza gratis la velocidad y el SEO de tu página web con datos de Google PageSpeed: Core Web Vitals y una lista clara de qué arreglar. Sin registro.';
+// Pensados para ganar el clic en búsquedas como "analizar mi web", "test de
+// velocidad web" o "analizar SEO de mi web": lo que se busca, gratis, y la
+// diferencia frente a PageSpeed (en español, con qué arreglar primero).
+const title = 'Analizar mi web gratis: test de velocidad y SEO en español';
+const description = 'Analiza tu web gratis en 1 minuto: velocidad con datos de Google PageSpeed, Core Web Vitals, SEO y qué arreglar primero, explicado en español y sin registro.';
 
 const categories = [
   { id: 'velocidad', name: 'Velocidad', intro: 'Cuánto tarda tu página en verse y en responder. La nota sale de estas medidas y cambia un poco en cada análisis.' },
@@ -86,6 +89,14 @@ const faqs = [
   {
     q: '¿Por qué la nota cambia cada vez que analizo mi web?',
     a: 'Porque cada medición es una carga real, y varían la red, el servidor y lo que carguen terceros como anuncios o analítica. Unos puntos arriba o abajo son normales: fíjate en la tendencia y no en una sola medición.',
+  },
+  {
+    q: '¿Sirve para WordPress, Wix o Shopify?',
+    a: 'Sí. Analiza cualquier página pública, esté hecha con WordPress, Wix, Shopify, PrestaShop o a medida. Si es un WordPress, además te lo señala, porque necesita actualizaciones frecuentes para estar seguro.',
+  },
+  {
+    q: '¿Puedo analizar la web de mi competencia?',
+    a: 'Sí, cualquier página pública. Es una buena forma de comparar: si la web de tu competencia carga más rápido o tiene mejor SEO técnico que la tuya, ya sabes por dónde empezar.',
   },
   {
     q: '¿Es gratis? ¿Tengo que registrarme?',
@@ -168,7 +179,9 @@ const jsonLd = {
         <header class="an-summary">
           <div class="an-summary-text">
             <p id="an-date" class="an-summary-date"></p>
-            <h2 id="an-host" class="an-summary-host"></h2>
+            <!-- Un <p> y no un <h2>: está vacío hasta que se analiza una web, y un
+                 encabezado vacío en el HTML que lee Google es una mala señal. -->
+            <p id="an-host" class="an-summary-host"></p>
             <p id="an-verdict" class="an-verdict" aria-live="polite"></p>
             <div class="an-summary-actions">
               <div class="an-device" role="group" aria-label="Dispositivo analizado">
@@ -279,6 +292,35 @@ const jsonLd = {
 
         <h2>Analizador SEO: lo que puede decirte y lo que no</h2>
         <p>Este análisis revisa si tu página está bien construida para que Google la entienda. No mide en qué posición sales, cuántas visitas tienes ni qué tal van tus palabras clave: para eso está <a href="https://search.google.com/search-console/about" target="_blank" rel="noopener noreferrer">Google Search Console</a>, que es gratis y usa tus datos reales. Un resultado perfecto aquí tampoco garantiza aparecer el primero, porque el contenido y la reputación de tu web pesan mucho más.</p>
+
+        <h2>Analizador web o PageSpeed Insights: qué cambia</h2>
+        <p>La velocidad sale de <a href="https://pagespeed.web.dev/" target="_blank" rel="noopener noreferrer">PageSpeed Insights</a>, la herramienta oficial de Google, así que las cifras son las mismas que verías allí. Lo que cambia es todo lo demás:</p>
+        <div class="an-table-wrap">
+          <table class="an-table">
+            <thead>
+              <tr><th></th><th>PageSpeed Insights</th><th>Este analizador</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Velocidad en móvil y ordenador</strong></td><td>Sí</td><td>Sí, con los mismos datos de Google</td></tr>
+              <tr><td><strong>Cómo explica los problemas</strong></td><td>Con términos técnicos, pensado para desarrolladores</td><td>Sin tecnicismos y ordenados de más a menos graves</td></tr>
+              <tr><td><strong>Revisión SEO</strong></td><td>La auditoría SEO de Lighthouse</td><td>La de Lighthouse más una revisión propia: título, descripción, H1, sitemap, datos estructurados y etiquetas para redes</td></tr>
+              <tr><td><strong>Lo que pide una web de empresa</strong></td><td>No lo mira</td><td>Si es fácil contactar contigo, si hay textos legales, si usa HTTPS y si es un WordPress</td></tr>
+              <tr><td><strong>Registro</strong></td><td>No</td><td>No</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Si eres desarrollador, PageSpeed Insights te da más detalle técnico. Si llevas un negocio y quieres saber qué tocar primero, este informe está pensado para ti.</p>
+
+        <h2>Test de velocidad según el tipo de web</h2>
+        <p>El analizador funciona con cualquier web pública, esté hecha como esté. Esto es lo que suele frenar a cada tipo:</p>
+        <h3>WordPress</h3>
+        <p>Demasiados plugins, temas «multiusos» que cargan de todo aunque no lo uses, imágenes subidas sin optimizar y alojamientos compartidos muy baratos. Un plugin de caché y quitar lo que sobra suelen dar el mayor salto. Además, hay que mantenerlo al día: lo explico en <a href="/blog/wordpress-vulnerabilidades-incibe-empresas/">qué revisar para que tu WordPress sea seguro</a>.</p>
+        <h3>Wix, Squarespace y otros constructores</h3>
+        <p>Tienes menos control sobre el código, así que el margen está en el contenido: imágenes más ligeras, menos animaciones y menos aplicaciones añadidas. Si aun así la nota en móvil se queda muy baja, el límite suele estar en la propia plataforma.</p>
+        <h3>Tiendas online: Shopify, WooCommerce o PrestaShop</h3>
+        <p>Las aplicaciones de terceros (reseñas, chats, ventanas emergentes, píxeles de publicidad) son la causa más habitual: cada una añade sus propios scripts. Revisa cuáles usas de verdad y analiza también una ficha de producto, no solo la portada, porque es ahí donde se decide la compra.</p>
+        <h3>Webs a medida</h3>
+        <p>Aquí no hay excusa de plataforma: imágenes en formato moderno, fuentes servidas desde la propia web y el mínimo JavaScript posible. Es lo que hice en esta misma web, y lo cuento con números en <a href="/blog/core-web-vitals-astro-lighthouse/">Core Web Vitals en Astro</a>.</p>
       </div>
     </section>
 

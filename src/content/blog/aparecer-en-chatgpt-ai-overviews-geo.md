@@ -70,7 +70,7 @@ Y si no quieres que Google use un fragmento concreto en sus resúmenes, existen 
 
 ### 7. Haz que tu web sea rápida y rastreable
 
-Nada de esto sirve si la web tarda en cargar o el contenido importante solo aparece después de ejecutar mucho JavaScript. Es la base de todo, y lo cuento con un caso práctico en [Core Web Vitals con Astro y Lighthouse](/blog/core-web-vitals-astro-lighthouse/).
+Nada de esto sirve si la web tarda en cargar o el contenido importante solo aparece después de ejecutar mucho JavaScript. Es la base de todo, y lo cuento con un caso práctico en [Core Web Vitals con Astro y Lighthouse](/blog/core-web-vitals-astro-lighthouse/). Para ver en un minuto cómo está la tuya, usa el [analizador web](/analizador-web/): mide la velocidad con los datos de Google y revisa si la página es rastreable.
 
 ## ¿Y llms.txt? Su estado real
 

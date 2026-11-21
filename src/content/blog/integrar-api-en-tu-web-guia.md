@@ -123,7 +123,7 @@ Hay dos costes distintos: lo que cobra el servicio y lo que cuesta el desarrollo
 - **Google Maps Platform**: la mayoría de servicios básicos incluyen [10.000 usos gratis al mes](https://developers.google.com/maps/billing-and-pricing/pricing) por servicio; a partir de ahí, por ejemplo, el mapa dinámico cuesta 7 $ por cada 1.000 cargas.
 - **WhatsApp Business**: Meta cobra por mensaje según el tipo. Lo desgloso en [cuánto cuesta un agente IA para WhatsApp Business](/blog/cuanto-cuesta-agente-ia-whatsapp-business-2026/).
 
-Para una pyme, muchas integraciones se quedan dentro de los tramos gratuitos o en pocos euros al mes. Lo importante es poner caché y límites para que una visita masiva no dispare la factura.
+Para una pyme, muchas integraciones se quedan dentro de los tramos gratuitos o en pocos euros al mes. Lo importante es poner caché y límites para que una visita masiva no dispare la factura. Y comprueba que la integración no ha ralentizado la página: puedes [analizar la velocidad de tu web gratis](/analizador-web/) antes y después.
 
 **Lo que cuesta el desarrollo.** Depende de dónde vaya la integración. Mis precios de lanzamiento, como referencia:
 

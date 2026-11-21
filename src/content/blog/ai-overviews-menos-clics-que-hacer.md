@@ -47,7 +47,7 @@ Te cuento el caso que tengo más a mano: esta web. En Search Console, javierm.de
 
 Siendo honesto, en mi caso los AI Overviews no son el problema principal. Con una posición media de 25 estoy en la tercera página de resultados, donde casi nadie llega, con o sin resumen de IA. Antes de culpar a Google, toca hacer los deberes: mejores títulos, contenido que responda de verdad a lo que se busca y más autoridad. Este artículo es parte de esos deberes.
 
-Te lo cuento porque es muy habitual: mucha gente ve que bajan los clics y lo atribuye a la IA, cuando el problema de fondo es otro. **Mira primero tu posición media.** Si estás en el top 5 y los clics caen, probablemente sí sea el resumen. Si estás en la página 2 o 3, el problema es de posicionamiento.
+Te lo cuento porque es muy habitual: mucha gente ve que bajan los clics y lo atribuye a la IA, cuando el problema de fondo es otro. **Mira primero tu posición media.** Si estás en el top 5 y los clics caen, probablemente sí sea el resumen. Si estás en la página 2 o 3, el problema es de posicionamiento, y un buen primer paso es [analizar el SEO de tu web gratis](/analizador-web/) para descartar fallos técnicos.
 
 ## 5 estrategias que sí funcionan
 

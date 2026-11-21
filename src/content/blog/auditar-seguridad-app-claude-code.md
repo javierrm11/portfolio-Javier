@@ -145,6 +145,7 @@ El tercer punto es el que más hallazgos da: endpoints que comprueban que hay se
 3. `pnpm audit --prod` e interpretación con Claude.
 4. Inventario de entradas y autorización.
 5. `/security-review` antes de cada merge, y el plugin security-guidance activo mientras desarrollo.
+6. Con la app ya publicada, un [análisis web gratuito](/analizador-web/) para comprobar que usa HTTPS y que la versión sin él redirige bien.
 
 Y una advertencia honesta: estas revisiones no son deterministas. La documentación de Claude Security lo dice claro: dos escaneos del mismo código pueden encontrar cosas distintas. Úsalas como una capa más, junto a tus escáneres de CI y una revisión humana, no como un sello de "seguro".
 

@@ -181,7 +181,7 @@ Lo que yo haría en un proyecto web típico:
 
 1. **Siempre**: frontend-design y Context7.
 2. **Funcionalidades largas**: Superpowers, o `grill-me` y `to-spec` de Matt Pocock si prefieres algo más ligero.
-3. **Antes de producción**: webapp-testing y los plugins de Trail of Bits que encajen con tu stack.
+3. **Antes de producción**: webapp-testing y los plugins de Trail of Bits que encajen con tu stack. Y al publicar, pasa la web por un [test de velocidad y SEO gratis](/analizador-web/) para ver qué se ha quedado pesado.
 4. **Para tu equipo**: skill-creator y skills propias en `.claude/skills/` con vuestras convenciones.
 
 `/skills` te enseña las que tienes cargadas y cuántos tokens ocupa cada una. Si alguna no la has usado en un mes, fuera.
