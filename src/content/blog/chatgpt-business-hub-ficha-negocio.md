@@ -98,3 +98,5 @@ Hay dos casos en los que tiene sentido que me escribas.
 - Un negocio con local en España aún no puede reclamar su ficha: hoy solo se pueden reclamar las fichas locales de Estados Unidos.
 - Los negocios online sí pueden probarlo. El agente de empresa es solo para Estados Unidos.
 - Mientras tanto, lo que ChatGPT dice de ti depende de tu web, tu ficha de Google y la coherencia de tus datos. Eso sí lo puedes arreglar hoy.
+
+*Foto de portada: [Drew Coffman](https://commons.wikimedia.org/wiki/File:Empty_coffee_shop_interior_with_wooden_table_and_water_skis.jpg), [CC0](https://creativecommons.org/publicdomain/zero/1.0/), recortada.*

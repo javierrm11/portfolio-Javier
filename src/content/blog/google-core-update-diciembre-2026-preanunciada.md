@@ -107,3 +107,5 @@ Antes de nada, puedes comprobar gratis la velocidad y el SEO básico de tu pági
 - Quiere entender mejor las preguntas largas y complejas, y mejorar los resultados personalizados.
 - Mide ya cómo te ha ido la de noviembre, para no mezclar los efectos.
 - Prepara tu web respondiendo a las preguntas reales de tus clientes, sin cambiarlo todo a la carrera.
+
+*Foto de portada: [Shixart1985](https://commons.wikimedia.org/wiki/File:Hands_are_typing_on_a_laptop_keyboard_while_a_clock_rests_next_to_the_device.jpg), [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/), recortada.*

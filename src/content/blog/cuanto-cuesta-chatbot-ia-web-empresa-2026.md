@@ -107,3 +107,5 @@ Da igual a quién se lo compres. Pregunta esto:
 **No compensa** si recibes dos mensajes a la semana. Ahí te basta con una buena página de preguntas frecuentes y un botón de WhatsApp. Y si tus clientes ya te escriben sobre todo por WhatsApp, quizá te interesa más un agente en ese canal: lo desgloso en [cuánto cuesta un agente IA para WhatsApp Business](/blog/cuanto-cuesta-agente-ia-whatsapp-business-2026/).
 
 Si quieres ver qué más se puede automatizar en una empresa pequeña, aquí tienes [7 tareas que tu pyme puede automatizar con IA](/blog/tareas-pyme-automatizar-ia/).
+
+*Foto de portada: [Simon Hattinga Verschure webmarbles](https://commons.wikimedia.org/wiki/File:Typing_on_a_laptop_(Unsplash).jpg), [CC0](https://creativecommons.org/publicdomain/zero/1.0/), recortada.*

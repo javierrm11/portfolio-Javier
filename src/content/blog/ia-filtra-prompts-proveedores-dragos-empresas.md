@@ -72,3 +72,5 @@ Dragos añade una tercera idea para quien ya tiene sistemas en marcha: sembrar s
 Los routers y los modelos abiertos alojados por terceros han abaratado mucho la IA, y eso es bueno para las empresas pequeñas. Pero el precio por mensaje no es lo único que cuenta. Un agente de WhatsApp que atiende a tus clientes maneja nombres, teléfonos y a veces datos de salud. Ahorrar unos euros al mes mandando esas conversaciones a un proveedor desconocido no compensa.
 
 Si estás pensando en montar uno, en [cuánto cuesta un agente IA para WhatsApp Business](/blog/cuanto-cuesta-agente-ia-whatsapp-business-2026/) tienes las cuentas con un proveedor claro. Y si quieres un chatbot para tu web con los datos bien controlados desde el principio, es lo que hago en el servicio de [chatbot con IA](/servicios/chatbot-ia/).
+
+*Foto de portada: [Nikowsk](https://commons.wikimedia.org/wiki/File:Old_key_and_laptop.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/), recortada.*

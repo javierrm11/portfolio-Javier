@@ -111,3 +111,5 @@ Y si además quieres que te citen los resúmenes de IA de Google o ChatGPT, lo e
 - No hagas cambios a la carrera mientras dura.
 - Cuando acabe, espera una semana y compara en Search Console con la semana del 3 al 9 de noviembre.
 - Si has bajado mucho, revisa si tu contenido aporta algo propio. Si apenas sales en Google, empieza por lo básico.
+
+*Foto de portada: [Panelxf](https://commons.wikimedia.org/wiki/File:Laptop_Google_Search.jpg), [CC0](https://creativecommons.org/publicdomain/zero/1.0/), recortada.*

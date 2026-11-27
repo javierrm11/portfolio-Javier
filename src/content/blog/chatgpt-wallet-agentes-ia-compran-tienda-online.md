@@ -81,3 +81,5 @@ Si quieres saber cómo de legible es tu web hoy, para personas y para máquinas,
 Durante años, optimizar una tienda era optimizarla para Google y para el cliente con el móvil en la mano. Ahora aparece un tercer visitante: el agente que compra por encargo. Todavía es pequeño, va limitado a un país y a un plan caro, y OpenAI ya tuvo que rehacer su primer intento. Pero la dirección es clara, y las tiendas que lo noten primero serán las que tengan una web limpia, rápida y fácil de entender.
 
 Si tu web está hecha a medida, adaptarla cuando llegue el momento es cuestión de horas. Si depende de plugins que no controlas, revisa al menos qué bloquean.
+
+*Foto de portada: [Shixart1985](https://commons.wikimedia.org/wiki/File:Close-up_of_a_woman_looking_at_a_credit_card_while_working_on_her_laptop.jpg), [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/), recortada.*
